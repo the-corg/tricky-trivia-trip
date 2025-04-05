@@ -75,7 +75,16 @@
             <Button Grid.Row="4" Grid.Column="1" Content="Answer 2" Margin="5"/>
             <Button Grid.Row="5" Grid.Column="1" Content="Answer 3" Margin="5"/>
             <Button Grid.Row="6" Grid.Column="1" Content="Answer 4" Margin="5"/>
-            <Button Grid.Row="7" Grid.Column="1" Content="Next >" Margin="5" Padding="20 0" HorizontalAlignment="Right"/>
+            <Grid Grid.Row="7" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" MinWidth="150"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*" MinWidth="100"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="End Session" Margin="5"/>
+                <Button Grid.Column="3" Content="Next >" Margin="5"/>
+            </Grid>
+            
 
         </Grid>
 
