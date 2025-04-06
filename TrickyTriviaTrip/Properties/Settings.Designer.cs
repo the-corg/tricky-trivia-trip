@@ -58,5 +58,14 @@ namespace TrickyTriviaTrip.Properties {
                 return ((string)(this["DatabaseFileName"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TrickyTriviaTrip.DatabaseScripts.CreateDatabase.sql")]
+        public string CreateDatabaseScript {
+            get {
+                return ((string)(this["CreateDatabaseScript"]));
+            }
+        }
     }
 }

@@ -14,5 +14,8 @@
     <Setting Name="DatabaseFileName" Type="System.String" Scope="Application">
       <Value Profile="(Default)">trivia.db</Value>
     </Setting>
+    <Setting Name="CreateDatabaseScript" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">TrickyTriviaTrip.DatabaseScripts.CreateDatabase.sql</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

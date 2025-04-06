@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Microsoft.Data.Sqlite;
+﻿using System.Data.Common;
+using System.Data.SQLite;
 
 namespace TrickyTriviaTrip.DataAccess
 {
@@ -12,9 +12,11 @@ namespace TrickyTriviaTrip.DataAccess
             _connectionString = databaseConfig.ConnectionString;
         }
 
-        public IDbConnection CreateConnection()
+        public async Task<DbConnection> GetConnectionAsync()
         {
-            return new SqliteConnection(_connectionString);
+            DbConnection connection = new SQLiteConnection(_connectionString);
+            await connection.OpenAsync();
+            return connection;
         }
 
     }
