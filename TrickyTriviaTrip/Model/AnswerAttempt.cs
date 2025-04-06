@@ -6,6 +6,6 @@
         public long PlayerId { get; set; }
         public long QuestionId { get; set; }
         public long AnswerOptionId { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

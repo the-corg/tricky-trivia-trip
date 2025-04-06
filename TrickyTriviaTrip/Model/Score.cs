@@ -5,6 +5,6 @@
         public long Id { get; set; }
         public long PlayerId { get; set; }
         public int Value { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }
