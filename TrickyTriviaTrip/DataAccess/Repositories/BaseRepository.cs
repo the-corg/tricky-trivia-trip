@@ -1,7 +1,11 @@
 ﻿
+
+using System.Data;
+using System.Data.SQLite;
+
 namespace TrickyTriviaTrip.DataAccess
 {
-    public class BaseRepository<T> : IRepository<T> where T : class
+    public abstract class BaseRepository<T> : IRepository<T> where T : class
     {
         private readonly IDbConnectionFactory _connectionFactory;
 
@@ -10,30 +14,50 @@ namespace TrickyTriviaTrip.DataAccess
             _connectionFactory = connectionFactory;
         }
 
-        public T GetById(int id)
+        protected abstract string TableName { get; }
+        protected abstract T MapToEntity(IDataReader reader);
+
+        #region CRUD operations
+
+        public abstract Task AddAsync(T entity);
+        public abstract Task UpdateAsync(T entity);
+
+        public Task Delete(int id)
         {
+            // TODO
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var list = new List<T>();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM {TableName}";
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                list.Add(MapToEntity(reader));
+            }
+
+            return list;
         }
 
-        public void Add(T entity)
+        public virtual async Task<T?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+            using var connection = await _connectionFactory.GetConnectionAsync();
 
-        public void Update(T entity)
-        {
-            throw new NotImplementedException();
-        }
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM {TableName} WHERE Id = @Id";
+            cmd.Parameters.Add(new SQLiteParameter("@Id", id));
 
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
+            using var reader = await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapToEntity(reader) : null;
         }
+        #endregion
+
 
     }
 }

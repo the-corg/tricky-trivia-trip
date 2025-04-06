@@ -9,5 +9,12 @@ namespace TrickyTriviaTrip.DataAccess
 
         }
 
+        protected override string TableName => "AnswerAttempt";
+
+
+        #region CRUD operations
+
+        #endregion
+
     }
 }

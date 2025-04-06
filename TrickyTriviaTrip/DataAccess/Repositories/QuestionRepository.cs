@@ -9,5 +9,12 @@ namespace TrickyTriviaTrip.DataAccess
 
         }
 
+        protected override string TableName => "Question";
+
+
+        #region CRUD operations
+
+        #endregion
+
     }
 }
