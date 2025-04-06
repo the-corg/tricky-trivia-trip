@@ -1,6 +1,4 @@
-﻿
-
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
 
 namespace TrickyTriviaTrip.DataAccess
@@ -22,10 +20,15 @@ namespace TrickyTriviaTrip.DataAccess
         public abstract Task AddAsync(T entity);
         public abstract Task UpdateAsync(T entity);
 
-        public Task Delete(int id)
+        public virtual async Task Delete(int id)
         {
-            // TODO
-            throw new NotImplementedException();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"DELETE FROM {TableName} WHERE Id = @Id";
+            cmd.Parameters.Add(new SQLiteParameter("@Id", id));
+
+            await cmd.ExecuteNonQueryAsync();
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
@@ -57,7 +60,6 @@ namespace TrickyTriviaTrip.DataAccess
             return await reader.ReadAsync() ? MapToEntity(reader) : null;
         }
         #endregion
-
 
     }
 }

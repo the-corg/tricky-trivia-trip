@@ -1,4 +1,5 @@
-﻿using TrickyTriviaTrip.Model;
+﻿using System.Data;
+using TrickyTriviaTrip.Model;
 
 namespace TrickyTriviaTrip.DataAccess
 {
@@ -14,7 +15,21 @@ namespace TrickyTriviaTrip.DataAccess
 
         #region CRUD operations
 
+        public override Task AddAsync(AnswerOption entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task UpdateAsync(AnswerOption entity)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
+
+        protected override AnswerOption MapToEntity(IDataReader reader)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }
