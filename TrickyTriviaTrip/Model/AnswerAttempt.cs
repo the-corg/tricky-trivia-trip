@@ -1,11 +1,11 @@
-﻿namespace TrickyTriviaTrip
+﻿namespace TrickyTriviaTrip.Model
 {
     public class AnswerAttempt
     {
-        public int Id { get; set; }
-        public int PlayerId { get; set; }
-        public int QuestionId { get; set; }
-        public int AnswerOptionId { get; set; }
+        public long Id { get; set; }
+        public long PlayerId { get; set; }
+        public long QuestionId { get; set; }
+        public long AnswerOptionId { get; set; }
         public DateTime DateTime { get; set; }
     }
 }

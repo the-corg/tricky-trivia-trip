@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TrickyTriviaTrip
+namespace TrickyTriviaTrip.ViewModel
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

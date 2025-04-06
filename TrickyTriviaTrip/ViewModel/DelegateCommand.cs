@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace TrickyTriviaTrip
+namespace TrickyTriviaTrip.ViewModel
 {
     public class DelegateCommand : ICommand
     {

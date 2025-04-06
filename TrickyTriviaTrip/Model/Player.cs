@@ -1,8 +1,8 @@
-﻿namespace TrickyTriviaTrip
+﻿namespace TrickyTriviaTrip.Model
 {
     public class Player
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public required string Name { get; set; }
     }
 }

@@ -1,9 +1,9 @@
-﻿namespace TrickyTriviaTrip
+﻿namespace TrickyTriviaTrip.Model
 {
     public class AnswerOption
     {
-        public int Id { get; set; }
-        public int QuestionId { get; set; }
+        public long Id { get; set; }
+        public long QuestionId { get; set; }
         public required string Text { get; set; }
         public bool IsCorrect { get; set; }
     }
