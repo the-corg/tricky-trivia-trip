@@ -15,3 +15,4 @@ The UI is not really functional yet, since I first wanted to concentrate on desi
 - Model classes
 - Initial database schema creation
 - `BaseRepository<T>` class
+- (partially) child Repository classes

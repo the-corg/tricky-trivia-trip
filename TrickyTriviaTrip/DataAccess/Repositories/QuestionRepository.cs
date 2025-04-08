@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SQLite;
 using TrickyTriviaTrip.Model;
 
 namespace TrickyTriviaTrip.DataAccess
@@ -7,7 +8,6 @@ namespace TrickyTriviaTrip.DataAccess
     {
         public QuestionRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
         {
-
         }
 
         protected override string TableName => "Question";
@@ -15,20 +15,37 @@ namespace TrickyTriviaTrip.DataAccess
 
         #region CRUD operations
 
-        public override Task AddAsync(Question entity)
+        public override async Task AddAsync(Question entity)
         {
-            throw new NotImplementedException();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = "INSERT INTO Question (Text) VALUES (@Text)";
+            cmd.Parameters.Add(new SQLiteParameter("@Text", entity.Text));
+
+            await cmd.ExecuteNonQueryAsync();
         }
 
-        public override Task UpdateAsync(Question entity)
+        public override async Task UpdateAsync(Question entity)
         {
-            throw new NotImplementedException();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = "UPDATE Question SET Text = @Text WHERE Id = @Id";
+            cmd.Parameters.Add(new SQLiteParameter("@Text", entity.Text));
+            cmd.Parameters.Add(new SQLiteParameter("@Id", entity.Id));
+
+            await cmd.ExecuteNonQueryAsync();
         }
         #endregion
 
         protected override Question MapToEntity(IDataReader reader)
         {
-            throw new NotImplementedException();
+            return new Question
+            {
+                Id = reader.GetInt64(reader.GetOrdinal("Id")),
+                Text = reader.GetString(reader.GetOrdinal("Text"))
+            };
         }
 
     }

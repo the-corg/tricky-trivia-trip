@@ -5,7 +5,7 @@ namespace TrickyTriviaTrip.DataAccess
 {
     public abstract class BaseRepository<T> : IRepository<T> where T : class
     {
-        private readonly IDbConnectionFactory _connectionFactory;
+        protected readonly IDbConnectionFactory _connectionFactory;
 
         protected BaseRepository(IDbConnectionFactory connectionFactory)
         {
@@ -20,7 +20,7 @@ namespace TrickyTriviaTrip.DataAccess
         public abstract Task AddAsync(T entity);
         public abstract Task UpdateAsync(T entity);
 
-        public virtual async Task Delete(int id)
+        public virtual async Task DeleteAsync(int id)
         {
             using var connection = await _connectionFactory.GetConnectionAsync();
 
