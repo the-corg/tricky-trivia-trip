@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace TrickyTriviaTrip.Utilities
 {
+    /// <summary>
+    /// Utility class for reading text from an embedded resource (e.g., .sql script file)
+    /// </summary>
     public static class EmbeddedResource
     {
         public static async Task<string> ReadAsync(string resourceName)

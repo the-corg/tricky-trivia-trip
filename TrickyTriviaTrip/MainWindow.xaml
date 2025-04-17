@@ -6,12 +6,16 @@
         xmlns:local="clr-namespace:TrickyTriviaTrip"
         mc:Ignorable="d" 
         Title="Tricky Trivia Trip" Height="450" Width="800"
+        MinHeight="360" MinWidth="480"
         WindowStartupLocation="CenterScreen"
         StateChanged="Window_StateChanged"
-        FontSize="24" FontFamily="Segoe UI">
+        FontSize="24" FontFamily="Segoe UI"
+        SnapsToDevicePixels="True">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome GlassFrameThickness="0 1 0 0" CornerRadius="0" CaptionHeight="{StaticResource TitleBarHeight}" />
+        <!-- Nonzero GlassFrameThickness provides a dropshadow for the window -->
+        <WindowChrome GlassFrameThickness="0 0.001 0 0" CornerRadius="0" 
+                      ResizeBorderThickness="7" CaptionHeight="{StaticResource TitleBarHeight}" />
     </WindowChrome.WindowChrome>
 
     <!-- Commands for Title Bar buttons -->
@@ -24,14 +28,14 @@
 
 
     <!-- Main Window Grid -->
-    <Grid SnapsToDevicePixels="True">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height ="Auto"/>
             <RowDefinition Height ="*"/>
         </Grid.RowDefinitions>
 
         <!-- Window Title Bar -->
-        <Grid Height="{StaticResource TitleBarHeight}" Background="{StaticResource 2_Dark}">
+        <Grid Height="{StaticResource TitleBarHeight}" Background="{StaticResource 3_MediumDark}">
             <TextBlock Text="Tricky Trivia Trip" Foreground="White" FontSize="22" FontFamily="Segoe Print" Margin="10 -2 0 0"/>
 
             <!--Caption buttons-->
@@ -51,7 +55,7 @@
 
 
         <!-- Content -->
-        <Grid Grid.Row="1">
+        <!--<Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition/>
@@ -86,7 +90,7 @@
             </Grid>
             
 
-        </Grid>
+        </Grid>-->
 
     </Grid>
 </Window>

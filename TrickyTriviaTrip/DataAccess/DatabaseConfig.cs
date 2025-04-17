@@ -2,11 +2,14 @@
 
 namespace TrickyTriviaTrip.DataAccess
 {
-    public class DatabaseConfig
+    /// <summary>
+    /// Exposes database connection string and possibly other database configuration parameters
+    /// </summary>
+    public class DatabaseConfig : IDatabaseConfig
     {
 
-        private string _databaseFileName;
-        private string _databaseFolderPath;
+        private readonly string _databaseFileName;
+        private readonly string _databaseFolderPath;
 
         public DatabaseConfig()
         {

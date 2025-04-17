@@ -3,6 +3,9 @@ using TrickyTriviaTrip.Utilities;
 
 namespace TrickyTriviaTrip.DataAccess
 {
+    /// <summary>
+    /// Creates and initializes the database if it doesn't exist
+    /// </summary>
     public class SqliteDatabaseInitializer : IDatabaseInitializer
     {
         private readonly IDbConnectionFactory _connectionFactory;

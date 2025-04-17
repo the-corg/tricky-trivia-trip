@@ -19,11 +19,11 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource 5_MediumLight}"/>
+                <Setter Property="Background" Value="{StaticResource 6_Light}"/>
                 <Setter Property="Foreground" Value="{StaticResource 1_VeryDark}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource 3_MediumDark}"/>
+                <Setter Property="Background" Value="{StaticResource 2_Dark}"/>
                 <Setter Property="Foreground" Value="{StaticResource 1_VeryDark}"/>
             </Trigger>
         </Style.Triggers>

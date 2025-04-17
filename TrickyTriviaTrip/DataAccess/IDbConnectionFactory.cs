@@ -2,6 +2,9 @@
 
 namespace TrickyTriviaTrip.DataAccess
 {
+    /// <summary>
+    /// Creates and opens a database connection
+    /// </summary>
     public interface IDbConnectionFactory
     {
         // Using DbConnection because IDbConnection doesn't have

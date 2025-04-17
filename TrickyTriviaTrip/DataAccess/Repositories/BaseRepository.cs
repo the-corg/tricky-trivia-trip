@@ -3,6 +3,10 @@ using System.Data.SQLite;
 
 namespace TrickyTriviaTrip.DataAccess
 {
+    /// <summary>
+    /// Base repository class for database access
+    /// </summary>
+    /// <typeparam name="T">Model class</typeparam>
     public abstract class BaseRepository<T> : IRepository<T> where T : class
     {
         protected readonly IDbConnectionFactory _connectionFactory;

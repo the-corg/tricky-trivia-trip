@@ -1,5 +1,8 @@
 ﻿namespace TrickyTriviaTrip.Model
 {
+    /// <summary>
+    /// Model class for an answer attempt made by a player
+    /// </summary>
     public class AnswerAttempt
     {
         public long Id { get; set; }

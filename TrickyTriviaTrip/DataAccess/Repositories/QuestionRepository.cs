@@ -4,6 +4,9 @@ using TrickyTriviaTrip.Model;
 
 namespace TrickyTriviaTrip.DataAccess
 {
+    /// <summary>
+    /// Provides basic database operations for Question
+    /// </summary>
     public class QuestionRepository : BaseRepository<Question>
     {
         public QuestionRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)

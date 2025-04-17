@@ -3,6 +3,9 @@ using TrickyTriviaTrip.Model;
 
 namespace TrickyTriviaTrip.DataAccess
 {
+    /// <summary>
+    /// Provides basic database operations for Score
+    /// </summary>
     public class ScoreRepository : BaseRepository<Score>
     {
         public ScoreRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)

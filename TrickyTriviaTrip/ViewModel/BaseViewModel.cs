@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace TrickyTriviaTrip.ViewModel
 {
+    /// <summary>
+    /// Base class for view models, provides INotifyPropertyChanged implementation to inheriting ViewModels
+    /// </summary>
     public class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;

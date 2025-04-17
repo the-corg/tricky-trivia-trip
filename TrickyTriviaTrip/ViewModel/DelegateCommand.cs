@@ -2,6 +2,9 @@
 
 namespace TrickyTriviaTrip.ViewModel
 {
+    /// <summary>
+    /// Provides a simple ICommand implementation; used for commands in view models
+    /// </summary>
     public class DelegateCommand : ICommand
     {
         private readonly Action<object?> _execute;
