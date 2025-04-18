@@ -1,7 +1,10 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.Model;
+using TrickyTriviaTrip.Services;
+using TrickyTriviaTrip.ViewModel;
 
 namespace TrickyTriviaTrip
 {
@@ -25,10 +28,16 @@ namespace TrickyTriviaTrip
             services.AddSingleton<MainWindow>();
 
             // View Models
-            //services.AddSingleton<GameViewModel>();
+            services.AddSingleton<MainViewModel>();
+            services.AddSingleton<GameViewModel>();
+            services.AddSingleton<MenuViewModel>();
+            services.AddSingleton<StatsViewModel>();
+
+            // API
+            services.AddSingleton<ITriviaApiClient, TriviaApiClient>();
 
             // Database
-            services.AddSingleton<DatabaseConfig>();
+            services.AddSingleton<IDatabaseConfig, DatabaseConfig>();
             services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>();
             services.AddSingleton<IDatabaseInitializer, SqliteDatabaseInitializer>();
 
@@ -40,7 +49,8 @@ namespace TrickyTriviaTrip
             services.AddTransient<IRepository<AnswerAttempt>, AnswerAttemptRepository>();
 
             // Other
-            //services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IMessageService, MessageService>();
+            services.AddSingleton<INavigationService, NavigationService>();
 
         }
 

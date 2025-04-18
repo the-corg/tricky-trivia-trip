@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using TrickyTriviaTrip.ViewModel;
 
 namespace TrickyTriviaTrip
 {
@@ -8,9 +9,12 @@ namespace TrickyTriviaTrip
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly MainViewModel _viewModel;
+        public MainWindow(MainViewModel mainViewModel)
         {
             InitializeComponent();
+            _viewModel = mainViewModel;
+            DataContext = _viewModel;
         }
 
         #region Handling window state changes

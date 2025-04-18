@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+﻿using TrickyTriviaTrip.ViewModel;
 
 namespace TrickyTriviaTrip.Services
 {
@@ -7,7 +7,8 @@ namespace TrickyTriviaTrip.Services
     /// </summary>
     public interface INavigationService
     {
-        UserControl CurrentView { get; }
+        BaseViewModel CurrentViewModel { get; }
+        event Action? CurrentViewModelChanged;
         void NavigateToMenu();
         void NavigateToGame();
         void NavigateToStats();
@@ -15,22 +16,50 @@ namespace TrickyTriviaTrip.Services
 
     public class NavigationService : INavigationService
     {
-        public NavigationService() { }
-        public UserControl CurrentView { get; private set; }
+        private readonly GameViewModel _gameViewModel;
+        private readonly MenuViewModel _menuViewModel;
+        private readonly StatsViewModel _statsViewModel;
+
+        private BaseViewModel _currentViewModel;
+
+
+        public NavigationService(GameViewModel gameViewModel, MenuViewModel menuViewModel, StatsViewModel statsViewModel)
+        { 
+            _gameViewModel = gameViewModel;
+            _menuViewModel = menuViewModel;
+            _statsViewModel = statsViewModel;
+
+            _currentViewModel = _gameViewModel;
+        }
+
+        public BaseViewModel CurrentViewModel
+        {
+            get => _currentViewModel;
+            private set
+            {
+                if (_currentViewModel == value)
+                    return;
+
+                _currentViewModel = value;
+                CurrentViewModelChanged?.Invoke();
+            }
+        }
+
+        public event Action? CurrentViewModelChanged;
 
         public void NavigateToGame()
         {
-            throw new NotImplementedException();
+            CurrentViewModel = _gameViewModel;
         }
 
         public void NavigateToMenu()
         {
-            throw new NotImplementedException();
+            CurrentViewModel = _menuViewModel;
         }
 
         public void NavigateToStats()
         {
-            throw new NotImplementedException();
+            CurrentViewModel = _statsViewModel;
         }
     }
 }

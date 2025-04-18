@@ -10,7 +10,7 @@ namespace TrickyTriviaTrip.DataAccess
     {
         private readonly string _connectionString;
 
-        public SqliteConnectionFactory(DatabaseConfig databaseConfig)
+        public SqliteConnectionFactory(IDatabaseConfig databaseConfig)
         {
             _connectionString = databaseConfig.ConnectionString;
         }

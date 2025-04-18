@@ -11,7 +11,7 @@ namespace TrickyTriviaTrip.DataAccess
         private readonly IDbConnectionFactory _connectionFactory;
         private readonly string _databaseFilePath;
 
-        public SqliteDatabaseInitializer(IDbConnectionFactory connectionFactory, DatabaseConfig dbConfig)
+        public SqliteDatabaseInitializer(IDbConnectionFactory connectionFactory, IDatabaseConfig dbConfig)
         {
             _connectionFactory = connectionFactory;
             _databaseFilePath = dbConfig.FullDatabasePath;
