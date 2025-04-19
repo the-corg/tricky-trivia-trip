@@ -29,7 +29,7 @@ namespace TrickyTriviaTrip.Services
             _menuViewModel = menuViewModel;
             _statsViewModel = statsViewModel;
 
-            _currentViewModel = _gameViewModel;
+            _currentViewModel = _menuViewModel;
         }
 
         public BaseViewModel CurrentViewModel

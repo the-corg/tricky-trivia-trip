@@ -3,4 +3,6 @@
                     xmlns:sys="clr-namespace:System;assembly=netstandard">
 
     <sys:Double x:Key="TitleBarHeight">36</sys:Double>
+    <sys:Double x:Key="MenuPrimaryFontSize">36</sys:Double>
+    <sys:Double x:Key="MenuSecondaryFontSize">24</sys:Double>
 </ResourceDictionary>

@@ -5,9 +5,59 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TrickyTriviaTrip.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Content="TEST"/>
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="{StaticResource 3_MediumDark}" 
+             Foreground="{StaticResource Gold}" 
+             FontSize="{StaticResource MenuPrimaryFontSize}">
 
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1.5*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Welcome, PLAYER_NAME or Good job, PLAYER_NAME + Edit button -->
+        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Welcome," Style="{StaticResource MenuTextPrimary}"/>
+            <Button Grid.Column="1" Content="{Binding PlayerName}" Margin="0" 
+                    Style="{StaticResource MenuButton}" HorizontalContentAlignment="Left"
+                    ToolTip="Change player or add new player"/>
+            <TextBlock Grid.Column="2" Text="!" Style="{StaticResource MenuTextPrimary}"/>
+            <Button Grid.Column="3" Content="✏️" Style="{StaticResource MenuButton}" 
+                    Opacity="0.5" FontWeight="ExtraLight" ToolTip="Edit player name" 
+                    FontSize="{StaticResource MenuSecondaryFontSize}"/>
+        </Grid>
+
+        <!-- Empty line or Your score is: XX -->
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="Your score is: 24" Style="{StaticResource MenuTextSecondary}"/>
+
+        <!-- Empty line or You answered X/10 questions correctly -->
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="You answered 10/10 questions correctly" Style="{StaticResource MenuTextSecondary}"/>
+
+        <!-- Start Game or Start New Game -->
+        <Button Grid.Row="4" Grid.Column="1" Content="Start Game" Style="{StaticResource MenuButton}"/>
+
+        <!-- View Stats -->
+        <Button Grid.Row="5" Grid.Column="1" Content="View Stats" Style="{StaticResource MenuButton}"/>
+        
+        <!-- Exit Game -->
+        <Button Grid.Row="6" Grid.Column="1" Content="Exit Game" Style="{StaticResource MenuButton}"/>
     </Grid>
 </UserControl>

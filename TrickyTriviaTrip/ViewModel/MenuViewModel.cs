@@ -6,5 +6,6 @@
     public class MenuViewModel : BaseViewModel
     {
 
+        public string? PlayerName => Environment.UserName;
     }
 }
