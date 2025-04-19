@@ -9,6 +9,13 @@ namespace TrickyTriviaTrip.DataAccess
     /// </summary>
     public class AnswerAttemptRepository : BaseRepository<AnswerAttempt>
     {
+        // Ordinal positions of table columns, lazily loaded in MapToEntity
+        private int? _ordinalId;
+        private int? _ordinalPlayerId;
+        private int? _ordinalQuestionId;
+        private int? _ordinalAnswerOptionId;
+        private int? _ordinalTimestamp;
+
         public AnswerAttemptRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
         {
         }
@@ -52,11 +59,11 @@ namespace TrickyTriviaTrip.DataAccess
         {
             return new AnswerAttempt
             {
-                Id = reader.GetInt64(reader.GetOrdinal("Id")),
-                PlayerId = reader.GetInt64(reader.GetOrdinal("PlayerId")),
-                QuestionId = reader.GetInt64(reader.GetOrdinal("QuestionId")),
-                AnswerOptionId = reader.GetInt64(reader.GetOrdinal("AnswerOptionId")),
-                Timestamp = reader.GetDateTime(reader.GetOrdinal("Timestamp"))
+                Id = reader.GetInt64(_ordinalId ??= reader.GetOrdinal("Id")),
+                PlayerId = reader.GetInt64(_ordinalPlayerId ??= reader.GetOrdinal("PlayerId")),
+                QuestionId = reader.GetInt64(_ordinalQuestionId ??= reader.GetOrdinal("QuestionId")),
+                AnswerOptionId = reader.GetInt64(_ordinalAnswerOptionId ??= reader.GetOrdinal("AnswerOptionId")),
+                Timestamp = reader.GetDateTime(_ordinalTimestamp ??= reader.GetOrdinal("Timestamp"))
             };
         }
 

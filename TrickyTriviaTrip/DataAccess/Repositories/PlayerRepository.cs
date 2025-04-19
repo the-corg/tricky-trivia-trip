@@ -9,6 +9,10 @@ namespace TrickyTriviaTrip.DataAccess
     /// </summary>
     public class PlayerRepository : BaseRepository<Player>
     {
+        // Ordinal positions of table columns, lazily loaded in MapToEntity
+        private int? _ordinalId;
+        private int? _ordinalName;
+
         public PlayerRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
         {
         }
@@ -46,8 +50,8 @@ namespace TrickyTriviaTrip.DataAccess
         {
             return new Player
             {
-                Id = reader.GetInt64(reader.GetOrdinal("Id")),
-                Name = reader.GetString(reader.GetOrdinal("Name"))
+                Id = reader.GetInt64(_ordinalId ??= reader.GetOrdinal("Id")),
+                Name = reader.GetString(_ordinalName ??= reader.GetOrdinal("Name"))
             };
         }
 

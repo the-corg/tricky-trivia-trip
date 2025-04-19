@@ -44,6 +44,7 @@ namespace TrickyTriviaTrip.Api
 
             // TODO: Handle the response codes
 
+            // TODO: Fix this html -> string conversion (e.g., use the setters in the objects used for json deserialization)
             foreach (var r in response.Results)
             {
                 r.Question = System.Net.WebUtility.HtmlDecode(r.Question);

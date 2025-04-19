@@ -9,6 +9,13 @@ namespace TrickyTriviaTrip.DataAccess
     /// </summary>
     public class QuestionRepository : BaseRepository<Question>
     {
+        // Ordinal positions of table columns, lazily loaded in MapToEntity
+        private int? _ordinalId;
+        private int? _ordinalText;
+        private int? _ordinalDifficulty;
+        private int? _ordinalCategory;
+        private int? _ordinalContentHash;
+
         public QuestionRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
         {
         }
@@ -46,8 +53,11 @@ namespace TrickyTriviaTrip.DataAccess
         {
             return new Question
             {
-                Id = reader.GetInt64(reader.GetOrdinal("Id")),
-                Text = reader.GetString(reader.GetOrdinal("Text"))
+                Id = reader.GetInt64(_ordinalId ??= reader.GetOrdinal("Id")),
+                Text = reader.GetString(_ordinalText ??= reader.GetOrdinal("Text")),
+                Difficulty = reader.GetString(_ordinalDifficulty ??= reader.GetOrdinal("Difficulty")),
+                Category = reader.GetString(_ordinalCategory ??= reader.GetOrdinal("Category")),
+                ContentHash = reader.GetString(_ordinalContentHash ??= reader.GetOrdinal("ContentHash"))
             };
         }
 

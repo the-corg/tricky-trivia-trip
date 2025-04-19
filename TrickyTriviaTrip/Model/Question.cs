@@ -7,5 +7,8 @@
     {
         public long Id { get; set; }
         public required string Text { get; set; }
+        public required string Difficulty { get; set; }
+        public required string Category { get; set; }
+        public required string ContentHash { get; set; }
     }
 }
