@@ -5,7 +5,14 @@
     /// </summary>
     public interface IDatabaseConfig
     {
+        /// <summary>
+        /// Connection string for the database
+        /// </summary>
         string ConnectionString { get; }
+
+        /// <summary>
+        /// Full path to the file that contains the database
+        /// </summary>
         string FullDatabasePath { get; }
     }
 }

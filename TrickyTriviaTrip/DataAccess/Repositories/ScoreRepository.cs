@@ -16,7 +16,7 @@ namespace TrickyTriviaTrip.DataAccess
         protected override string TableName => "Score";
 
         #region CRUD operations
-
+        // For the docstrings, see the interface
         public override Task AddAsync(Score entity)
         {
             throw new NotImplementedException();

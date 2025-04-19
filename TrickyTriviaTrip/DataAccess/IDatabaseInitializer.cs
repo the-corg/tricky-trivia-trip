@@ -5,6 +5,11 @@
     /// </summary>
     public interface IDatabaseInitializer
     {
+        /// <summary>
+        /// Checks whether the database already exists.<br/>
+        /// If not, creates it and initializes the schema
+        /// </summary>
+        /// <returns></returns>
         Task InitializeIfMissingAsync();
     }
 }

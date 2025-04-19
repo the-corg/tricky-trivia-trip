@@ -13,7 +13,6 @@ namespace TrickyTriviaTrip
     /// </summary>
     public partial class App : Application
     {
-
         private readonly ServiceProvider _serviceProvider;
 
         public App()
@@ -23,6 +22,7 @@ namespace TrickyTriviaTrip
             _serviceProvider = services.BuildServiceProvider();
         }
 
+        #region Configure services for dependency injection
         private void ConfigureServices(ServiceCollection services)
         {
             services.AddSingleton<MainWindow>();
@@ -53,7 +53,9 @@ namespace TrickyTriviaTrip
             services.AddSingleton<INavigationService, NavigationService>();
 
         }
+        #endregion
 
+        #region OnStartup (initialize everything and show Main Window)
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -64,8 +66,10 @@ namespace TrickyTriviaTrip
 
             // Show the main window
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            mainWindow.DataContext = _serviceProvider.GetRequiredService<MainViewModel>();
             mainWindow?.Show();
         }
+        #endregion
     }
 
 }

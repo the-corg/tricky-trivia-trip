@@ -17,6 +17,7 @@ namespace TrickyTriviaTrip.DataAccess
 
 
         #region CRUD operations
+        // For the docstrings, see the interface
         public override Task AddAsync(Player entity)
         {
             throw new NotImplementedException();

@@ -1,7 +1,7 @@
 ﻿namespace TrickyTriviaTrip.Model
 {
     /// <summary>
-    /// Model class for a question
+    /// Model class for a trivia question
     /// </summary>
     public class Question
     {

@@ -52,12 +52,15 @@
         <TextBlock Grid.Row="3" Grid.Column="1" Text="You answered 10/10 questions correctly" Style="{StaticResource MenuTextSecondary}"/>
 
         <!-- Start Game or Start New Game -->
-        <Button Grid.Row="4" Grid.Column="1" Content="Start Game" Style="{StaticResource MenuButton}"/>
+        <Button Grid.Row="4" Grid.Column="1" Content="Start Game" Style="{StaticResource MenuButton}"
+                Command="{Binding StartGameCommand}"/>
 
         <!-- View Stats -->
-        <Button Grid.Row="5" Grid.Column="1" Content="View Stats" Style="{StaticResource MenuButton}"/>
+        <Button Grid.Row="5" Grid.Column="1" Content="View Stats" Style="{StaticResource MenuButton}"
+                Command="{Binding ViewStatsCommand}"/>
         
         <!-- Exit Game -->
-        <Button Grid.Row="6" Grid.Column="1" Content="Exit Game" Style="{StaticResource MenuButton}"/>
+        <Button Grid.Row="6" Grid.Column="1" Content="Exit Game" Style="{StaticResource MenuButton}"
+                Command="{Binding ExitGameCommand}"/>
     </Grid>
 </UserControl>

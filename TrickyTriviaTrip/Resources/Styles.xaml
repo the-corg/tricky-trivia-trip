@@ -3,10 +3,10 @@
 
 
     <Style TargetType="ToolTip">
-        <Setter Property="Background" Value="{StaticResource 4_Medium}"/>
-        <Setter Property="Foreground" Value="{StaticResource ReddishBrown}"/>
+        <Setter Property="Background" Value="{StaticResource SemiTransparent}"/>
+        <Setter Property="Foreground" Value="Black"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontSize" Value="18"/>
     </Style>
     
     <!-- Title bar styles -->
@@ -78,24 +78,5 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
-    <!--
-
-    <ControlTemplate x:Key="ButtonTemplate1" TargetType="{x:Type ButtonBase}">
-        
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="true">
-                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>-->
 
 </ResourceDictionary>

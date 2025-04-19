@@ -17,5 +17,8 @@
     <Setting Name="CreateDatabaseScript" Type="System.String" Scope="Application">
       <Value Profile="(Default)">TrickyTriviaTrip.DatabaseScripts.CreateDatabase.sql</Value>
     </Setting>
+    <Setting Name="RetrieveTokenUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://opentdb.com/api_token.php?command=request</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

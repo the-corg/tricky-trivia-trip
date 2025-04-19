@@ -8,6 +8,11 @@ namespace TrickyTriviaTrip.Utilities
     /// </summary>
     public static class EmbeddedResource
     {
+        /// <summary>
+        /// Reads text from embedded resource asynchronously
+        /// </summary>
+        /// <param name="resourceName">Full name of the embedded resource (e.g., TrickyTriviaTrip.DatabaseScripts.CreateDatabase.sql)</param>
+        /// <returns></returns>
         public static async Task<string> ReadAsync(string resourceName)
         {
             var assembly = Assembly.GetExecutingAssembly();

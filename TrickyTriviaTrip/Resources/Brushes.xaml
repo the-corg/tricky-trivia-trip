@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-
     <!-- Forest green and its friends -->
     <SolidColorBrush Color="#032303" x:Key="1_VeryDark"/>
     <SolidColorBrush Color="#115411" x:Key="2_Dark"/>
@@ -17,7 +16,7 @@
     <SolidColorBrush Color="#8a9a5b" x:Key="PaleOlive"/>
     <SolidColorBrush Color="#3c2f2f" x:Key="ReddishBrown"/>
 
-
+    <SolidColorBrush Color="#5F83ba7f" x:Key="SemiTransparent"/>
 
     <!-- Kelly green and its friends
     <SolidColorBrush Color="#0f2504" x:Key="1_VeryDark"/>

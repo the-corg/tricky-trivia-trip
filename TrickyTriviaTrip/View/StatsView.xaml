@@ -7,19 +7,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <TabControl>
-        <TabItem Header="High Scores" >
-            
+        <TabItem Header="For Debug: API.LOADED">
+
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding Questions}"
+             AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+
         </TabItem>
-        <TabItem Header="History" >
-            
+
+        <TabItem Header="High Scores">
+
+
+
         </TabItem>
-        
+        <TabItem Header="History">
+
+        </TabItem>
+
         <!-- Dev tools -->
-        <TabItem Header="DB.Question" >
-            
+        <TabItem Header="DB.Question">
+
         </TabItem>
-        <TabItem Header="DB.AnswerOption" >
-            
+        <TabItem Header="DB.AnswerOption">
+
         </TabItem>
     </TabControl>
 

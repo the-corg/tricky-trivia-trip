@@ -7,8 +7,11 @@ namespace TrickyTriviaTrip.DataAccess
     /// </summary>
     public interface IDbConnectionFactory
     {
-        // Using DbConnection because IDbConnection doesn't have
-        // async methods like OpenAsync, ExecuteNonQueryAsync
+        /// <summary>
+        /// Creates and opens a database connection asynchronously
+        /// </summary>
+        /// <returns>Using DbConnection instead of IDbConnection here because the latter<br/>
+        /// doesn't provide async methods like OpenAsync, ExecuteNonQueryAsync, etc.</returns>
         Task<DbConnection> GetConnectionAsync();
     }
 }

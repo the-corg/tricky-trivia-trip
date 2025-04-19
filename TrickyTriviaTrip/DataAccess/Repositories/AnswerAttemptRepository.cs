@@ -17,7 +17,7 @@ namespace TrickyTriviaTrip.DataAccess
 
 
         #region CRUD operations
-
+        // For the docstrings, see the interface
         public override Task AddAsync(AnswerAttempt entity)
         {
             throw new NotImplementedException();

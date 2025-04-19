@@ -20,7 +20,7 @@ namespace TrickyTriviaTrip.DataAccess
         protected abstract T MapToEntity(IDataReader reader);
 
         #region CRUD operations
-
+        // For the docstrings, see the interface
         public abstract Task AddAsync(T entity);
         public abstract Task UpdateAsync(T entity);
 

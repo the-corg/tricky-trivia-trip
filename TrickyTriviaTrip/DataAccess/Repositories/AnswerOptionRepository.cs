@@ -17,7 +17,7 @@ namespace TrickyTriviaTrip.DataAccess
 
 
         #region CRUD operations
-
+        // For the docstrings, see the interface
         public override async Task AddAsync(AnswerOption entity)
         {
             using var connection = await _connectionFactory.GetConnectionAsync();

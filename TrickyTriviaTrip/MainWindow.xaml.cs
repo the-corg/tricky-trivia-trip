@@ -9,12 +9,9 @@ namespace TrickyTriviaTrip
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly MainViewModel _viewModel;
         public MainWindow(MainViewModel mainViewModel)
         {
             InitializeComponent();
-            _viewModel = mainViewModel;
-            DataContext = _viewModel;
         }
 
         #region Handling window state changes

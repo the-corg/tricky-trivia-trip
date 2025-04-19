@@ -67,5 +67,14 @@ namespace TrickyTriviaTrip.Properties {
                 return ((string)(this["CreateDatabaseScript"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://opentdb.com/api_token.php?command=request")]
+        public string RetrieveTokenUrl {
+            get {
+                return ((string)(this["RetrieveTokenUrl"]));
+            }
+        }
     }
 }

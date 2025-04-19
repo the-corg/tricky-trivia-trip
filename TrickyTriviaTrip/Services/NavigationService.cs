@@ -1,4 +1,5 @@
-﻿using TrickyTriviaTrip.ViewModel;
+﻿using Microsoft.Extensions.DependencyInjection;
+using TrickyTriviaTrip.ViewModel;
 
 namespace TrickyTriviaTrip.Services
 {
@@ -7,32 +8,45 @@ namespace TrickyTriviaTrip.Services
     /// </summary>
     public interface INavigationService
     {
-        BaseViewModel CurrentViewModel { get; }
+        /// <summary>
+        /// The view model of the currently active view
+        /// </summary>
+        BaseViewModel? CurrentViewModel { get; }
+        /// <summary>
+        /// Subscribe to this event to be notified when CurrentViewModel changes
+        /// </summary>
         event Action? CurrentViewModelChanged;
+        /// <summary>
+        /// Navigates to the main menu
+        /// </summary>
         void NavigateToMenu();
+        /// <summary>
+        /// Navigates to the game view
+        /// </summary>
         void NavigateToGame();
+        /// <summary>
+        /// Navigates to the stats view
+        /// </summary>
         void NavigateToStats();
     }
 
     public class NavigationService : INavigationService
     {
-        private readonly GameViewModel _gameViewModel;
-        private readonly MenuViewModel _menuViewModel;
-        private readonly StatsViewModel _statsViewModel;
+        private readonly IServiceProvider _serviceProvider;
 
-        private BaseViewModel _currentViewModel;
+        // Have to initialize these lazily to avoid circular dependency
+        private GameViewModel? _gameViewModel;
+        private MenuViewModel? _menuViewModel;
+        private StatsViewModel? _statsViewModel;
 
+        private BaseViewModel? _currentViewModel;
 
-        public NavigationService(GameViewModel gameViewModel, MenuViewModel menuViewModel, StatsViewModel statsViewModel)
-        { 
-            _gameViewModel = gameViewModel;
-            _menuViewModel = menuViewModel;
-            _statsViewModel = statsViewModel;
-
-            _currentViewModel = _menuViewModel;
+        public NavigationService(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
         }
 
-        public BaseViewModel CurrentViewModel
+        public BaseViewModel? CurrentViewModel
         {
             get => _currentViewModel;
             private set
@@ -49,17 +63,18 @@ namespace TrickyTriviaTrip.Services
 
         public void NavigateToGame()
         {
-            CurrentViewModel = _gameViewModel;
+            CurrentViewModel = _gameViewModel ??= _serviceProvider.GetRequiredService<GameViewModel>();
         }
 
         public void NavigateToMenu()
         {
-            CurrentViewModel = _menuViewModel;
+            CurrentViewModel = _menuViewModel ??= _serviceProvider.GetRequiredService<MenuViewModel>();
         }
 
         public void NavigateToStats()
         {
-            CurrentViewModel = _statsViewModel;
+            CurrentViewModel = _statsViewModel ??= _serviceProvider.GetRequiredService<StatsViewModel>();
         }
+
     }
 }

@@ -3,9 +3,7 @@ using System.Data.SQLite;
 
 namespace TrickyTriviaTrip.DataAccess
 {
-    /// <summary>
-    /// Creates and opens a database connection
-    /// </summary>
+    // For the docstrings, see the interface
     public class SqliteConnectionFactory : IDbConnectionFactory
     {
         private readonly string _connectionString;
