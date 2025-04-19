@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SQLite;
 using TrickyTriviaTrip.Model;
 
 namespace TrickyTriviaTrip.DataAccess
@@ -10,7 +11,6 @@ namespace TrickyTriviaTrip.DataAccess
     {
         public PlayerRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
         {
-
         }
 
         protected override string TableName => "Player";
@@ -18,20 +18,37 @@ namespace TrickyTriviaTrip.DataAccess
 
         #region CRUD operations
         // For the docstrings, see the interface
-        public override Task AddAsync(Player entity)
+        public override async Task AddAsync(Player entity)
         {
-            throw new NotImplementedException();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = "INSERT INTO Player (Name) VALUES (@Name)";
+            cmd.Parameters.Add(new SQLiteParameter("@Name", entity.Name));
+
+            await cmd.ExecuteNonQueryAsync();
         }
 
-        public override Task UpdateAsync(Player entity)
+        public override async Task UpdateAsync(Player entity)
         {
-            throw new NotImplementedException();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = "UPDATE Player SET Name = @Name WHERE Id = @Id";
+            cmd.Parameters.Add(new SQLiteParameter("@Name", entity.Name));
+            cmd.Parameters.Add(new SQLiteParameter("@Id", entity.Id));
+
+            await cmd.ExecuteNonQueryAsync();
         }
         #endregion
 
         protected override Player MapToEntity(IDataReader reader)
         {
-            throw new NotImplementedException();
+            return new Player
+            {
+                Id = reader.GetInt64(reader.GetOrdinal("Id")),
+                Name = reader.GetString(reader.GetOrdinal("Name"))
+            };
         }
 
     }

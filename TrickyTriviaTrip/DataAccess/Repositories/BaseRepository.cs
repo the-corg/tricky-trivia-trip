@@ -29,7 +29,8 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = $"DELETE FROM {TableName} WHERE Id = @Id";
+            cmd.CommandText = $"DELETE FROM @TableName WHERE Id = @Id";
+            cmd.Parameters.Add(new SQLiteParameter("@TableName", TableName));
             cmd.Parameters.Add(new SQLiteParameter("@Id", id));
 
             await cmd.ExecuteNonQueryAsync();
@@ -41,7 +42,8 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM {TableName}";
+            cmd.CommandText = $"SELECT * FROM @TableName";
+            cmd.Parameters.Add(new SQLiteParameter("@TableName", TableName));
 
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -57,7 +59,8 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM {TableName} WHERE Id = @Id";
+            cmd.CommandText = $"SELECT * FROM @TableName WHERE Id = @Id";
+            cmd.Parameters.Add(new SQLiteParameter("@TableName", TableName));
             cmd.Parameters.Add(new SQLiteParameter("@Id", id));
 
             using var reader = await cmd.ExecuteReaderAsync();

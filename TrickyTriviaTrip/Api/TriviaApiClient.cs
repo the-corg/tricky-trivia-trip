@@ -44,6 +44,17 @@ namespace TrickyTriviaTrip.Api
 
             // TODO: Handle the response codes
 
+            foreach (var r in response.Results)
+            {
+                r.Question = System.Net.WebUtility.HtmlDecode(r.Question);
+                r.CorrectAnswer = System.Net.WebUtility.HtmlDecode(r.CorrectAnswer);
+                r.Category = System.Net.WebUtility.HtmlDecode(r.Category);
+                for (var i = 0; i < 3; i++)
+                {
+                    r.IncorrectAnswers[i] = System.Net.WebUtility.HtmlDecode(r.IncorrectAnswers[i]);
+                }
+            }
+
             return response.Results;
         }
         // TODO: catch exceptions
