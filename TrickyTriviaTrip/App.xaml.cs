@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Net.Http;
+using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.DataAccess;
@@ -34,6 +35,7 @@ namespace TrickyTriviaTrip
             services.AddSingleton<StatsViewModel>();
 
             // API
+            services.AddSingleton<HttpClient>();
             services.AddSingleton<ITriviaApiClient, TriviaApiClient>();
 
             // Database

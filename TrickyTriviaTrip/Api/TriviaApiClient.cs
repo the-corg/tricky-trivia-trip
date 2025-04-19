@@ -1,5 +1,7 @@
-﻿using System.Net.Http;
+﻿using System.Diagnostics;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.Model;
 
@@ -20,13 +22,22 @@ namespace TrickyTriviaTrip.Api
         public async Task<IEnumerable<TriviaApiQuestion>> FetchNewQuestionsAsync(int amount = 10)
         {
             await RequestTokenIfNullAsync();
+            
+            // TODO: Delete this
+            Debug.WriteLine($"Current token: {_sessionToken}");
 
             var url = Properties.Settings.Default.TriviaApiBaseUrl + 
                 "?amount=" + amount +
                 "&type=multiple" +
                 "&token" + _sessionToken;
 
-            var response = await _httpClient.GetFromJsonAsync<TriviaApiResponse>(url);
+            // Ensures correct deserialization of snake_case keys from API response
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+            };
+
+            var response = await _httpClient.GetFromJsonAsync<TriviaApiResponse>(url, serializeOptions);
 
             if (response is null)
                 throw new Exception("Failed to get or deserialize Trivia API response");
@@ -35,6 +46,8 @@ namespace TrickyTriviaTrip.Api
 
             return response.Results;
         }
+        // TODO: catch exceptions
+
 
         // Requests a session token from Trivia API (if not requested earlier)
         private async Task RequestTokenIfNullAsync()
@@ -49,7 +62,6 @@ namespace TrickyTriviaTrip.Api
 
             _sessionToken = tokenResponse.Token;
         }
-
 
 
 
@@ -76,6 +88,7 @@ namespace TrickyTriviaTrip.Api
 
         /// <summary>
         /// Structure of one question from the API response to a request for questions.
+        /// Used only for JSON deserialization
         /// </summary>
         public class TriviaApiQuestion
         {

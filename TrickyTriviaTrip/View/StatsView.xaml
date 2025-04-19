@@ -9,7 +9,7 @@
     <TabControl>
         <TabItem Header="For Debug: API.LOADED">
 
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding Questions}"
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding TriviaApiQuestions}"
              AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
 
         </TabItem>
