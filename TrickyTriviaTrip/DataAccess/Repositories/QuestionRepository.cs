@@ -97,6 +97,7 @@ namespace TrickyTriviaTrip.DataAccess
 
             try
             {
+                // First insert the Question
                 using var cmd = connection.CreateCommand();
                 cmd.CommandText = "INSERT INTO Question (Text, Difficulty, Category, ContentHash) VALUES (@Text, @Difficulty, @Category, @ContentHash)";
                 cmd.Parameters.Add(new SQLiteParameter("@Text", questionWithAnswers.Question.Text));
@@ -106,12 +107,11 @@ namespace TrickyTriviaTrip.DataAccess
 
                 await cmd.ExecuteNonQueryAsync();
 
+                // Get id of the inserted question
                 var questionId = ((SQLiteConnection)connection).LastInsertRowId;
-
-                Debug.WriteLine("QuestionId: " + questionId);
-
                 questionWithAnswers.Question.Id = questionId;
 
+                // Insert all answer options
                 foreach (var answerOption in questionWithAnswers.AnswerOptions)
                 {
                     using var answerCmd = connection.CreateCommand();

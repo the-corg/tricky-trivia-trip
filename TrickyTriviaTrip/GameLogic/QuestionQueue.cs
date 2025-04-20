@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.Api.ApiResponses;
@@ -43,7 +44,7 @@ namespace TrickyTriviaTrip.GameLogic
         private readonly ITriviaApiClient _triviaApiClient;
         private readonly IQuestionRepository _questionRepository;
 
-        // TODO: Change this to private and to Queue<QuestionWithOptions>
+        // TODO: Change this to private
         public readonly Queue<QuestionWithAnswers> _queue = new();
         private bool _isFetching = false;
 
@@ -58,7 +59,23 @@ namespace TrickyTriviaTrip.GameLogic
         #region Public methods and properties 
         public QuestionWithAnswers GetNextQuestion()
         {
-            throw new NotImplementedException();
+            if (_queue.Count == 0)
+            {
+                // This shouldn't ever happen.
+                // The user will have to wait.
+                // (using the database as the faster option)
+                UrgentFetch();
+            }
+
+            var question = _queue.Dequeue();
+
+            // Background refill if too few questions left
+            if (_queue.Count <= _minBufferThreshold && !_isFetching)
+            {
+                _ = Task.Run(() => LoadQuestionsAsync(_backgroundLoadCount));
+            }
+
+            return question;
         }
 
         public async Task InitializeAsync()
@@ -79,6 +96,9 @@ namespace TrickyTriviaTrip.GameLogic
         /// <returns>The number of actually loaded new questions</returns>
         private async Task<int> LoadQuestionsAsync(int count)
         {
+            // TODO: remove this
+            Debug.WriteLine($"\nCount requested: {count}\nCurrent thread: {Thread.CurrentThread.ManagedThreadId}");
+
             _isFetching = true;
             int countAdded = 0;
 
@@ -91,9 +111,10 @@ namespace TrickyTriviaTrip.GameLogic
                     // Compute hash of the question and check if it exists in the database
                     var hash = ComputeHash(apiQuestion);
                     bool exists = await _questionRepository.ExistsByHashAsync(hash);
+
                     // Ignore existing questions
                     if (exists)
-                        continue;
+                        continue; 
 
                     // Transform the question from API-received object to Question and AnswerOptions
                     var question = new Question()
@@ -144,6 +165,12 @@ namespace TrickyTriviaTrip.GameLogic
 
             using var sha256 = SHA256.Create();
             return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(inputString)));
+        }
+
+        private async void UrgentFetch()
+        {
+            // Fetch a few questions from the database
+            throw new NotImplementedException();
         }
         #endregion
     }
