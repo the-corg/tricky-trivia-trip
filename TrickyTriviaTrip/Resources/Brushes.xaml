@@ -17,6 +17,13 @@
     <SolidColorBrush Color="#3c2f2f" x:Key="ReddishBrown"/>
 
     <SolidColorBrush Color="#5F83ba7f" x:Key="SemiTransparent"/>
+    
+    <!-- Green gradient for background -->
+    <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1" x:Key="GreenGradient">
+        <GradientStop Color="#115411" Offset="0.0" />
+        <GradientStop Color="#228b22" Offset="0.5" />
+        <GradientStop Color="#115411" Offset="1.0" />
+    </LinearGradientBrush>
 
     <!-- Kelly green and its friends
     <SolidColorBrush Color="#0f2504" x:Key="1_VeryDark"/>
