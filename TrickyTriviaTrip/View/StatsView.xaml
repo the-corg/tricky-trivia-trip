@@ -7,13 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <TabControl>
-        <TabItem Header="Debug: Question Queue">
-
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding TriviaApiQuestions}"
-             AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
-
-        </TabItem>
-
+        
         <TabItem Header="High Scores">
 
 
@@ -23,11 +17,22 @@
 
         </TabItem>
 
-        <!-- Dev tools -->
-        <TabItem Header="DB.Question">
+        <!-- Tables for debugging -->
+        <TabItem Header="Debug: Queue">
+
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding QuestionsFromQueue}"
+              AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
 
         </TabItem>
-        <TabItem Header="DB.AnswerOption">
+        
+        <TabItem Header="Debug: DB.Question">
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding Questions}"
+                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+
+        </TabItem>
+        <TabItem Header="Debug: DB.AnswerOption">
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding AnswerOptions}"
+                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
 
         </TabItem>
     </TabControl>

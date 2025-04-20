@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using TrickyTriviaTrip.Api.ApiResponses;
+using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.GameLogic;
+using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.ViewModel
@@ -12,9 +13,14 @@ namespace TrickyTriviaTrip.ViewModel
     {
         // TODO: remove this (initial debug only)
         private readonly IQuestionQueue _questionQueue;
-        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue) : base(navigationService)
+        private readonly IQuestionRepository _questionRepository;
+        private readonly IRepository<AnswerOption> _answerOptionRepository;
+
+        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository, IRepository<AnswerOption> answerOptionRepository) : base(navigationService)
         {
             _questionQueue = questionQueue;
+            _questionRepository = questionRepository;
+            _answerOptionRepository = answerOptionRepository;
             Initialize();
         }
 
@@ -26,11 +32,26 @@ namespace TrickyTriviaTrip.ViewModel
             var questions = q._queue;
             foreach (var question in questions)
             {
-                TriviaApiQuestions.Add(question);
+                QuestionsFromQueue.Add(question.Question);
             }
+
+            var dbQuestions = await _questionRepository.GetAllAsync();
+            var dbAnswerOptions = await _answerOptionRepository.GetAllAsync();
+            foreach (var dbq in dbQuestions)
+            {
+                Questions.Add(dbq);
+            }
+            foreach (var ao in dbAnswerOptions)
+            {
+                AnswerOptions.Add(ao);
+            }
+
         }
 
         // TODO: remove this (initial debug only)
-        public ObservableCollection<TriviaApiQuestion> TriviaApiQuestions { get; set; } = new();
+        public ObservableCollection<Question> QuestionsFromQueue { get; set; } = new();
+        public ObservableCollection<Question> Questions { get; set; } = new();
+        public ObservableCollection<AnswerOption> AnswerOptions { get; set; } = new();
+
     }
 }

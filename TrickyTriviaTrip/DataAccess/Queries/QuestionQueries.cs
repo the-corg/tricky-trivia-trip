@@ -8,15 +8,16 @@ namespace TrickyTriviaTrip.DataAccess.Queries
     public interface IQuestionQueries
     {
         /// <summary>
-        /// Gets a question with its answer options from the database asynchronously
+        /// Gets a number of questions with answer options from the database asynchronously
         /// </summary>
-        /// <returns>A collection of questions with options</returns>
-        Task<IEnumerable<QuestionWithOptions>> GetQuestionsWithOptionsAsync();
+        /// <param name="count">Number of questions to get</param>
+        /// <returns>A collection of questions with their answer options</returns>
+        Task<IEnumerable<QuestionWithAnswers>> GetQuestionsWithAnswersAsync(int count);
     }
 
     public class QuestionQueries : IQuestionQueries
     {
-        public Task<IEnumerable<QuestionWithOptions>> GetQuestionsWithOptionsAsync()
+        public Task<IEnumerable<QuestionWithAnswers>> GetQuestionsWithAnswersAsync(int count)
         {
             throw new NotImplementedException();
         }

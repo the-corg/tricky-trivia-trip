@@ -24,13 +24,12 @@ namespace TrickyTriviaTrip.DataAccess
         public abstract Task AddAsync(T entity);
         public abstract Task UpdateAsync(T entity);
 
-        public virtual async Task DeleteAsync(int id)
+        public virtual async Task DeleteAsync(long id)
         {
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = $"DELETE FROM @TableName WHERE Id = @Id";
-            cmd.Parameters.Add(new SQLiteParameter("@TableName", TableName));
+            cmd.CommandText = $"DELETE FROM {TableName} WHERE Id = @Id";
             cmd.Parameters.Add(new SQLiteParameter("@Id", id));
 
             await cmd.ExecuteNonQueryAsync();
@@ -42,8 +41,7 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM @TableName";
-            cmd.Parameters.Add(new SQLiteParameter("@TableName", TableName));
+            cmd.CommandText = $"SELECT * FROM {TableName}";
 
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -54,13 +52,12 @@ namespace TrickyTriviaTrip.DataAccess
             return list;
         }
 
-        public virtual async Task<T?> GetByIdAsync(int id)
+        public virtual async Task<T?> GetByIdAsync(long id)
         {
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM @TableName WHERE Id = @Id";
-            cmd.Parameters.Add(new SQLiteParameter("@TableName", TableName));
+            cmd.CommandText = $"SELECT * FROM {TableName} WHERE Id = @Id";
             cmd.Parameters.Add(new SQLiteParameter("@Id", id));
 
             using var reader = await cmd.ExecuteReaderAsync();

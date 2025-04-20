@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="id">Id of the record</param>
         /// <returns>Either the <typeparamref name="T"/> object corresponding to the record, or null, if not found</returns>
-        Task<T?> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(long id);
 
         /// <summary>
         /// Gets all records from the <typeparamref name="T"/> database table
@@ -36,6 +36,6 @@
         /// Deletes a <typeparamref name="T"/> record in the database 
         /// </summary>
         /// <param name="id">The id of the record that should be deleted</param>
-        Task DeleteAsync(int id);
+        Task DeleteAsync(long id);
     }
 }

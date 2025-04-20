@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.Api.ApiResponses;
@@ -22,7 +21,7 @@ namespace TrickyTriviaTrip.GameLogic
         /// launches a task in a separate thread to load more
         /// </summary>
         /// <returns>Next question from the queue</returns>
-        QuestionWithOptions GetNextQuestion();
+        QuestionWithAnswers GetNextQuestion();
 
         /// <summary>
         /// Loads the initial 10 questions into the queue asynchronously
@@ -42,24 +41,22 @@ namespace TrickyTriviaTrip.GameLogic
 
 
         private readonly ITriviaApiClient _triviaApiClient;
-        private readonly IRepository<Question> _questionRepository;
-        private readonly IRepository<AnswerOption> _answerOptionRepository;
+        private readonly IQuestionRepository _questionRepository;
 
         // TODO: Change this to private and to Queue<QuestionWithOptions>
-        public readonly Queue<TriviaApiQuestion> _queue = new();
+        public readonly Queue<QuestionWithAnswers> _queue = new();
         private bool _isFetching = false;
 
-        public QuestionQueue(ITriviaApiClient triviaApiClient, IRepository<Question> questionRepository, IRepository<AnswerOption> answerOptionRepository)
+        public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository)
         {
             _triviaApiClient = triviaApiClient;
             _questionRepository = questionRepository;
-            _answerOptionRepository = answerOptionRepository;
         }
 
         #endregion
 
         #region Public methods and properties 
-        public QuestionWithOptions GetNextQuestion()
+        public QuestionWithAnswers GetNextQuestion()
         {
             throw new NotImplementedException();
         }
@@ -67,40 +64,83 @@ namespace TrickyTriviaTrip.GameLogic
         public async Task InitializeAsync()
         {
             await LoadQuestionsAsync(_initialLoadCount);
+            // TODO: If too few, fallback to DB
         }
 
         #endregion
 
 
         #region Private helper methods 
-        private async Task LoadQuestionsAsync(int count)
+
+        /// <summary>
+        /// Loads questions from the API, ignores those already existing in the database
+        /// </summary>
+        /// <param name="count">Number of questions to load</param>
+        /// <returns>The number of actually loaded new questions</returns>
+        private async Task<int> LoadQuestionsAsync(int count)
         {
             _isFetching = true;
+            int countAdded = 0;
 
             try
             {
                 var apiQuestions = await _triviaApiClient.FetchNewQuestionsAsync(count);
-                
 
-                foreach (var q in apiQuestions)
-                    _queue.Enqueue(q);
+                foreach (var apiQuestion in apiQuestions)
+                {
+                    // Compute hash of the question and check if it exists in the database
+                    var hash = ComputeHash(apiQuestion);
+                    bool exists = await _questionRepository.ExistsByHashAsync(hash);
+                    // Ignore existing questions
+                    if (exists)
+                        continue;
+
+                    // Transform the question from API-received object to Question and AnswerOptions
+                    var question = new Question()
+                    {
+                        Text = apiQuestion.Question,
+                        Difficulty = apiQuestion.Difficulty,
+                        Category = apiQuestion.Category,
+                        ContentHash = hash
+                    };
+
+                    var questionWithAnswers = new QuestionWithAnswers() { Question = question };
+
+                    questionWithAnswers.AnswerOptions.Add(
+                        new AnswerOption() { IsCorrect = true, Text = apiQuestion.CorrectAnswer });
+
+                    questionWithAnswers.AnswerOptions.AddRange(
+                        apiQuestion.IncorrectAnswers.Select(
+                            x => new AnswerOption() { IsCorrect = false, Text = x }));
+
+                    // Add the new question to the database in one transaction
+                    await _questionRepository.InsertWithAnswersAsync(questionWithAnswers);
+
+                    _queue.Enqueue(questionWithAnswers);
+                    countAdded++;
+                }
             }
             finally
             {
                 _isFetching = false;
             }
+            return countAdded;
         }
 
 
-        private string ComputeHash(TriviaApiQuestion apiModel)
+        /// <summary>
+        /// Computes SHA256 hash based on the question text + the texts of all of its answer options
+        /// </summary>
+        /// <param name="apiQuestion">Question, as received from the API</param>
+        /// <returns>Hash, as a Base64-encoded string</returns>
+        private string ComputeHash(TriviaApiQuestion apiQuestion)
         {
-            List<string> inputList = [apiModel.Difficulty, apiModel.Category, apiModel.Question];
-            Debug.WriteLine(inputList.Count);
-            inputList.AddRange(apiModel.IncorrectAnswers);
-            Debug.WriteLine(inputList.Count);
+            // Add the question text and all answer options to a list
+            List<string> inputList = [apiQuestion.Question, apiQuestion.CorrectAnswer];
+            inputList.AddRange(apiQuestion.IncorrectAnswers);
 
+            // Convert the list to a string
             string inputString = string.Join("|", inputList);
-            Debug.WriteLine(inputString);
 
             using var sha256 = SHA256.Create();
             return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(inputString)));
