@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <TabControl>
-        <TabItem Header="For Debug: API.LOADED">
+        <TabItem Header="Debug: Question Queue">
 
             <DataGrid IsReadOnly="True" ItemsSource="{Binding TriviaApiQuestions}"
              AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>

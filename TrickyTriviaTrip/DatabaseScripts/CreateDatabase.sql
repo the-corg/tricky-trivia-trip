@@ -1,6 +1,5 @@
 -- Initial database creation script
 
-
 CREATE TABLE Player (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     Name TEXT NOT NULL
@@ -8,7 +7,10 @@ CREATE TABLE Player (
 
 CREATE TABLE Question (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    Text TEXT NOT NULL
+    Text TEXT NOT NULL,
+    Difficulty TEXT NOT NULL,
+    Category TEXT NOT NULL,
+    ContentHash TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE AnswerOption (

@@ -30,8 +30,11 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = "INSERT INTO Question (Text) VALUES (@Text)";
+            cmd.CommandText = "INSERT INTO Question (Text, Difficulty, Category, ContentHash) VALUES (@Text, @Difficulty, @Category, @ContentHash)";
             cmd.Parameters.Add(new SQLiteParameter("@Text", entity.Text));
+            cmd.Parameters.Add(new SQLiteParameter("@Difficulty", entity.Difficulty));
+            cmd.Parameters.Add(new SQLiteParameter("@Category", entity.Category));
+            cmd.Parameters.Add(new SQLiteParameter("@ContentHash", entity.ContentHash));
 
             await cmd.ExecuteNonQueryAsync();
         }
@@ -41,8 +44,11 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = "UPDATE Question SET Text = @Text WHERE Id = @Id";
+            cmd.CommandText = "UPDATE Question SET Text = @Text, Difficulty = @Difficulty, Category = @Category, ContentHash = @ContentHash WHERE Id = @Id";
             cmd.Parameters.Add(new SQLiteParameter("@Text", entity.Text));
+            cmd.Parameters.Add(new SQLiteParameter("@Difficulty", entity.Difficulty));
+            cmd.Parameters.Add(new SQLiteParameter("@Category", entity.Category));
+            cmd.Parameters.Add(new SQLiteParameter("@ContentHash", entity.ContentHash));
             cmd.Parameters.Add(new SQLiteParameter("@Id", entity.Id));
 
             await cmd.ExecuteNonQueryAsync();
