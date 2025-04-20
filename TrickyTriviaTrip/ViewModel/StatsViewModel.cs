@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using TrickyTriviaTrip.Api;
+using TrickyTriviaTrip.Api.ApiResponses;
+using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Services;
-using static TrickyTriviaTrip.Api.TriviaApiClient;
 
 namespace TrickyTriviaTrip.ViewModel
 {
@@ -10,18 +10,20 @@ namespace TrickyTriviaTrip.ViewModel
     /// </summary>
     public class StatsViewModel : BaseViewModel
     {
-        // TODO: remove this here and from the constructor (initial debug only)
-        private readonly ITriviaApiClient _triviaApiClient;
-        public StatsViewModel(INavigationService navigationService, ITriviaApiClient triviaApiClient) : base(navigationService)
+        // TODO: remove this (initial debug only)
+        private readonly IQuestionQueue _questionQueue;
+        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue) : base(navigationService)
         {
-            _triviaApiClient = triviaApiClient;
+            _questionQueue = questionQueue;
             Initialize();
         }
 
         // TODO: remove this (initial debug only)
         private async void Initialize()
         {
-            var questions = await _triviaApiClient.FetchNewQuestionsAsync();
+            QuestionQueue q = (QuestionQueue) _questionQueue;
+            await q.InitializeAsync();
+            var questions = q._queue;
             foreach (var question in questions)
             {
                 TriviaApiQuestions.Add(question);

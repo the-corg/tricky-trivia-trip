@@ -3,6 +3,8 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.DataAccess;
+using TrickyTriviaTrip.DataAccess.Queries;
+using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Services;
 using TrickyTriviaTrip.ViewModel;
@@ -44,11 +46,18 @@ namespace TrickyTriviaTrip
             services.AddSingleton<IDatabaseInitializer, SqliteDatabaseInitializer>();
 
             // Repositories
-            services.AddTransient<IRepository<Player>, PlayerRepository>();
-            services.AddTransient<IRepository<Question>, QuestionRepository>();
-            services.AddTransient<IRepository<AnswerOption>, AnswerOptionRepository>();
-            services.AddTransient<IRepository<Score>, ScoreRepository>();
-            services.AddTransient<IRepository<AnswerAttempt>, AnswerAttemptRepository>();
+            services.AddSingleton<IRepository<Player>, PlayerRepository>();
+            services.AddSingleton<IRepository<Question>, QuestionRepository>();
+            services.AddSingleton<IRepository<AnswerOption>, AnswerOptionRepository>();
+            services.AddSingleton<IRepository<Score>, ScoreRepository>();
+            services.AddSingleton<IRepository<AnswerAttempt>, AnswerAttemptRepository>();
+
+            // Queries
+            services.AddSingleton<IQuestionQueries, QuestionQueries>();
+
+            // Game logic
+            services.AddSingleton<IPlayData, PlayData>();
+            services.AddSingleton<IQuestionQueue, QuestionQueue>();
 
             // Other
             services.AddTransient<IMessageService, MessageService>();

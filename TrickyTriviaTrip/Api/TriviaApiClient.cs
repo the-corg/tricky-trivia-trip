@@ -2,64 +2,57 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
-using TrickyTriviaTrip.DataAccess;
-using TrickyTriviaTrip.Model;
+using TrickyTriviaTrip.Api.ApiResponses;
+using TrickyTriviaTrip.Properties;
 
 namespace TrickyTriviaTrip.Api
 {
     // For the docstrings, see the interface
     public class TriviaApiClient : ITriviaApiClient
     {
+        #region Private fields and the constructor 
+
         private readonly HttpClient _httpClient;
         private string? _sessionToken;
 
+        // Ensures correct deserialization of snake_case keys from API response
+        private JsonSerializerOptions _serializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
 
-        public TriviaApiClient(HttpClient httpClient, IRepository<Question> questionRepository, IRepository<AnswerOption> answerOptionRepository)
+        public TriviaApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
+        #endregion
+
+        #region Public methods 
 
         public async Task<IEnumerable<TriviaApiQuestion>> FetchNewQuestionsAsync(int amount = 10)
         {
             await RequestTokenIfNullAsync();
+            // TODO: check that it's not null, fall back to DB
             
             // TODO: Delete this
             Debug.WriteLine($"Current token: {_sessionToken}");
 
-            var url = Properties.Settings.Default.TriviaApiBaseUrl + 
+            var url = Settings.Default.TriviaApiBaseUrl + 
                 "?amount=" + amount +
                 "&type=multiple" +
                 "&token" + _sessionToken;
 
-            // Ensures correct deserialization of snake_case keys from API response
-            var serializeOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-            };
-
-            var response = await _httpClient.GetFromJsonAsync<TriviaApiResponse>(url, serializeOptions);
+            var response = await _httpClient.GetFromJsonAsync<TriviaApiResponse>(url, _serializerOptions);
 
             if (response is null)
+                // TODO: Change to normal validation without exception (falls back to DB)
                 throw new Exception("Failed to get or deserialize Trivia API response");
 
             // TODO: Handle the response codes
 
-            // TODO: Fix this html -> string conversion (e.g., use the setters in the objects used for json deserialization)
-            foreach (var r in response.Results)
-            {
-                r.Question = System.Net.WebUtility.HtmlDecode(r.Question);
-                r.CorrectAnswer = System.Net.WebUtility.HtmlDecode(r.CorrectAnswer);
-                r.Category = System.Net.WebUtility.HtmlDecode(r.Category);
-                for (var i = 0; i < 3; i++)
-                {
-                    r.IncorrectAnswers[i] = System.Net.WebUtility.HtmlDecode(r.IncorrectAnswers[i]);
-                }
-            }
-
             return response.Results;
         }
-        // TODO: catch exceptions
+        // TODO: catch exceptions, including JSON deserialization exceptions due to required properties
+        #endregion
 
+        #region Private helper methods 
 
         // Requests a session token from Trivia API (if not requested earlier)
         private async Task RequestTokenIfNullAsync()
@@ -67,51 +60,15 @@ namespace TrickyTriviaTrip.Api
             if (_sessionToken is not null)
                 return;
 
-            var tokenResponse = await _httpClient.GetFromJsonAsync<TokenResponse>(Properties.Settings.Default.RetrieveTokenUrl);
+            var tokenResponse = await _httpClient.GetFromJsonAsync<TriviaApiTokenResponse>(
+                Settings.Default.RetrieveTokenUrl, _serializerOptions);
 
             if (tokenResponse?.ResponseCode != 0 || string.IsNullOrEmpty(tokenResponse.Token))
+                // TODO: Change to normal validation without exception (falls back to DB)
                 throw new Exception("Failed to get a session token from Trivia API");
 
             _sessionToken = tokenResponse.Token;
         }
-
-
-
-        /// <summary>
-        /// Structure of the API response to a session token request.
-        /// Used only for JSON deserialization
-        /// </summary>
-        private class TokenResponse
-        {
-            public int ResponseCode { get; set; }
-            public string ResponseMessage { get; set; }
-            public string? Token { get; set; }
-        }
-
-        /// <summary>
-        /// Structure of the API response to a request for questions.
-        /// Used only for JSON deserialization
-        /// </summary>
-        private class TriviaApiResponse
-        {
-            public int ResponseCode { get; set; }
-            public List<TriviaApiQuestion> Results { get; set; } = new();
-        }
-
-        /// <summary>
-        /// Structure of one question from the API response to a request for questions.
-        /// Used only for JSON deserialization
-        /// </summary>
-        public class TriviaApiQuestion
-        {
-            public string Type { get; set; }
-            public string Difficulty { get; set; }
-            public string Category { get; set; }
-            public string Question { get; set; }
-            public string CorrectAnswer { get; set; }
-            public List<string> IncorrectAnswers { get; set; } = new();
-        }
-
-
+        #endregion
     }
 }

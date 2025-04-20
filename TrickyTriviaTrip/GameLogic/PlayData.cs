@@ -8,7 +8,7 @@
 
     }
 
-    public class PlayData
+    public class PlayData : IPlayData
     {
     }
 }

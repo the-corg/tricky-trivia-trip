@@ -1,4 +1,11 @@
-﻿using TrickyTriviaTrip.Model;
+﻿using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
+using TrickyTriviaTrip.Api;
+using TrickyTriviaTrip.Api.ApiResponses;
+using TrickyTriviaTrip.DataAccess;
+using TrickyTriviaTrip.Model;
+using TrickyTriviaTrip.Properties;
 
 namespace TrickyTriviaTrip.GameLogic
 {
@@ -25,14 +32,79 @@ namespace TrickyTriviaTrip.GameLogic
 
     public class QuestionQueue : IQuestionQueue
     {
+        #region Private fields and the constructor 
+        // Load this number of questions at startup 
+        private readonly int _initialLoadCount = Settings.Default.InitialLoadCount;
+        // Load this number of questions when the threshold is reached
+        private readonly int _backgroundLoadCount = Settings.Default.BackgroundLoadCount;
+        // If the number of questions reaches this, load more
+        private readonly int _minBufferThreshold = Settings.Default.MinBufferThreshold;
+
+
+        private readonly ITriviaApiClient _triviaApiClient;
+        private readonly IRepository<Question> _questionRepository;
+        private readonly IRepository<AnswerOption> _answerOptionRepository;
+
+        // TODO: Change this to private and to Queue<QuestionWithOptions>
+        public readonly Queue<TriviaApiQuestion> _queue = new();
+        private bool _isFetching = false;
+
+        public QuestionQueue(ITriviaApiClient triviaApiClient, IRepository<Question> questionRepository, IRepository<AnswerOption> answerOptionRepository)
+        {
+            _triviaApiClient = triviaApiClient;
+            _questionRepository = questionRepository;
+            _answerOptionRepository = answerOptionRepository;
+        }
+
+        #endregion
+
+        #region Public methods and properties 
         public QuestionWithOptions GetNextQuestion()
         {
             throw new NotImplementedException();
         }
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            throw new NotImplementedException();
+            await LoadQuestionsAsync(_initialLoadCount);
         }
+
+        #endregion
+
+
+        #region Private helper methods 
+        private async Task LoadQuestionsAsync(int count)
+        {
+            _isFetching = true;
+
+            try
+            {
+                var apiQuestions = await _triviaApiClient.FetchNewQuestionsAsync(count);
+                
+
+                foreach (var q in apiQuestions)
+                    _queue.Enqueue(q);
+            }
+            finally
+            {
+                _isFetching = false;
+            }
+        }
+
+
+        private string ComputeHash(TriviaApiQuestion apiModel)
+        {
+            List<string> inputList = [apiModel.Difficulty, apiModel.Category, apiModel.Question];
+            Debug.WriteLine(inputList.Count);
+            inputList.AddRange(apiModel.IncorrectAnswers);
+            Debug.WriteLine(inputList.Count);
+
+            string inputString = string.Join("|", inputList);
+            Debug.WriteLine(inputString);
+
+            using var sha256 = SHA256.Create();
+            return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(inputString)));
+        }
+        #endregion
     }
 }

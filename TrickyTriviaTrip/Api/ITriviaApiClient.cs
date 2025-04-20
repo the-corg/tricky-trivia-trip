@@ -1,4 +1,4 @@
-﻿using static TrickyTriviaTrip.Api.TriviaApiClient;
+﻿using TrickyTriviaTrip.Api.ApiResponses;
 
 namespace TrickyTriviaTrip.Api
 {

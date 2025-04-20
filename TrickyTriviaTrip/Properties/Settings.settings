@@ -20,5 +20,14 @@
     <Setting Name="RetrieveTokenUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://opentdb.com/api_token.php?command=request</Value>
     </Setting>
+    <Setting Name="InitialLoadCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="BackgroundLoadCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="MinBufferThreshold" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

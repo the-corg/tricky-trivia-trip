@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using TrickyTriviaTrip.Properties;
 
 namespace TrickyTriviaTrip.DataAccess
 {
@@ -10,12 +11,12 @@ namespace TrickyTriviaTrip.DataAccess
 
         public DatabaseConfig()
         {
-            _databaseFileName = Properties.Settings.Default.DatabaseFileName;
+            _databaseFileName = Settings.Default.DatabaseFileName;
 
             // Path to folder AppData\Local\TrickyTriviaTrip
             _databaseFolderPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
-                Properties.Settings.Default.AppName);
+                Settings.Default.AppName);
 
             // Ensure folder exists
             Directory.CreateDirectory(_databaseFolderPath);
@@ -23,7 +24,7 @@ namespace TrickyTriviaTrip.DataAccess
 
         public string FullDatabasePath => Path.Combine(_databaseFolderPath, _databaseFileName);
 
-        public string ConnectionString => $"Data Source={FullDatabasePath};{Properties.Settings.Default.SqliteVersion}";
+        public string ConnectionString => $"Data Source={FullDatabasePath};{Settings.Default.SqliteVersion}";
 
     }
 }

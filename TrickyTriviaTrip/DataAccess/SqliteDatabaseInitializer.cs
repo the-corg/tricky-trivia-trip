@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using TrickyTriviaTrip.Properties;
 using TrickyTriviaTrip.Utilities;
 
 namespace TrickyTriviaTrip.DataAccess
@@ -21,7 +22,7 @@ namespace TrickyTriviaTrip.DataAccess
                 return;
 
             // Read database creation script from file (embedded as resource)
-            var dbCreationSql = await EmbeddedResource.ReadAsync(Properties.Settings.Default.CreateDatabaseScript);
+            var dbCreationSql = await EmbeddedResource.ReadAsync(Settings.Default.CreateDatabaseScript);
 
             // Get an open connection (will be automatically closed when disposed of on return)
             using var connection = await _connectionFactory.GetConnectionAsync();
