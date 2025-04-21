@@ -14,6 +14,19 @@ namespace TrickyTriviaTrip
             InitializeComponent();
         }
 
+
+        // Calls the view model's initializer.
+        // To decrease the app startup time, it's important to do
+        // asynchronous initialization here, after the UI is loaded 
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel mainViewModel)
+            {
+                await mainViewModel.InitializeAsync();
+            }
+        }
+
+
         #region Handling window state changes
         private void Window_StateChanged(object sender, EventArgs e)
         {

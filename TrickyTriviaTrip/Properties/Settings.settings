@@ -29,5 +29,8 @@
     <Setting Name="MinBufferThreshold" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">5</Value>
     </Setting>
+    <Setting Name="GameSessionQuestionsTotal" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

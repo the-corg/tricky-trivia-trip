@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:TrickyTriviaTrip.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <TabControl Style="{StaticResource TabControlWithButton}" Tag="Back to Menu" FontSize="22">
+    <TabControl Style="{StaticResource TabControlWithButton}" Tag="Back to Menu"
+                FontSize="{StaticResource StatsHeaderFontSize}">
         
         <TabItem Header="High Scores">
 

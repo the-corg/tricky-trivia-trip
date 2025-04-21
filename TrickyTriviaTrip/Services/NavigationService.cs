@@ -34,10 +34,8 @@ namespace TrickyTriviaTrip.Services
     {
         private readonly IServiceProvider _serviceProvider;
 
-        // Have to initialize these lazily to avoid circular dependency
-        private GameViewModel? _gameViewModel;
+        // Have to initialize this lazily to avoid circular dependency
         private MenuViewModel? _menuViewModel;
-        private StatsViewModel? _statsViewModel;
 
         private BaseViewModel? _currentViewModel;
 
@@ -61,19 +59,22 @@ namespace TrickyTriviaTrip.Services
 
         public event Action? CurrentViewModelChanged;
 
-        public void NavigateToGame()
-        {
-            CurrentViewModel = _gameViewModel ??= _serviceProvider.GetRequiredService<GameViewModel>();
-        }
-
         public void NavigateToMenu()
         {
+            // Always the same MenuViewModel
             CurrentViewModel = _menuViewModel ??= _serviceProvider.GetRequiredService<MenuViewModel>();
+        }
+
+        public void NavigateToGame()
+        {
+            // New GameViewModel every time 
+            CurrentViewModel = _serviceProvider.GetRequiredService<GameViewModel>();
         }
 
         public void NavigateToStats()
         {
-            CurrentViewModel = _statsViewModel ??= _serviceProvider.GetRequiredService<StatsViewModel>();
+            // New StatsViewModel every time 
+            CurrentViewModel = _serviceProvider.GetRequiredService<StatsViewModel>();
         }
 
     }

@@ -103,5 +103,14 @@ namespace TrickyTriviaTrip.Properties {
                 return ((int)(this["MinBufferThreshold"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int GameSessionQuestionsTotal {
+            get {
+                return ((int)(this["GameSessionQuestionsTotal"]));
+            }
+        }
     }
 }

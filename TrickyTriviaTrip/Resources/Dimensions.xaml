@@ -6,5 +6,11 @@
     
     <sys:Double x:Key="MenuPrimaryFontSize">36</sys:Double>
     <sys:Double x:Key="MenuSecondaryFontSize">24</sys:Double>
-    
+
+    <sys:Double x:Key="StatsHeaderFontSize">22</sys:Double>
+
+    <sys:Double x:Key="GameQuestionFontSize">30</sys:Double>
+    <sys:Double x:Key="GamePrimaryFontSize">28</sys:Double>
+    <sys:Double x:Key="GameSecondaryFontSize">22</sys:Double>
+
 </ResourceDictionary>

@@ -30,7 +30,6 @@ namespace TrickyTriviaTrip.ViewModel
         private async void Initialize()
         {
             QuestionQueue q = (QuestionQueue) _questionQueue;
-            await q.InitializeAsync();
             var questions = q._queue;
             foreach (var question in questions)
             {

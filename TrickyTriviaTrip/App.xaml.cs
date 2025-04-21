@@ -32,9 +32,9 @@ namespace TrickyTriviaTrip
 
             // View Models
             services.AddSingleton<MainViewModel>();
-            services.AddSingleton<GameViewModel>();
             services.AddSingleton<MenuViewModel>();
-            services.AddSingleton<StatsViewModel>();
+            services.AddTransient<GameViewModel>();
+            services.AddTransient<StatsViewModel>();
 
             // API
             services.AddSingleton<HttpClient>();
@@ -66,14 +66,10 @@ namespace TrickyTriviaTrip
         }
         #endregion
 
-        #region OnStartup (initialize everything and show Main Window)
-        protected override async void OnStartup(StartupEventArgs e)
+        #region OnStartup (show MainWindow)
+        protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
-            // Initialize the database if it doesn't exist
-            var dbInitializer = _serviceProvider.GetRequiredService<IDatabaseInitializer>();
-            await dbInitializer.InitializeIfMissingAsync();
 
             // Show the main window
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
