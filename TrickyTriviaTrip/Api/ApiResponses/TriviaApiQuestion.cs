@@ -9,13 +9,19 @@ namespace TrickyTriviaTrip.Api.ApiResponses
     /// </summary>
     public class TriviaApiQuestion
     {
+        private string _difficulty = "";
         private string _category = "";
         private string _question = "";
         private string _correctAnswer = "";
         private List<string> _incorrectAnswers = new();
 
         public required string Type { get; set; }
-        public required string Difficulty { get; set; }
+        public required string Difficulty
+        {
+            get => _difficulty;
+            // Converts the first character of difficulty to uppercase ("easy" -> "Easy" etc.)
+            set => _difficulty = value.Trim()[0].ToString().ToUpper() + value.Trim().Substring(1);
+        }
 
         public required string Category
         {

@@ -1,4 +1,7 @@
-﻿using TrickyTriviaTrip.GameLogic;
+﻿using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
+using System.Runtime.CompilerServices;
+using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Properties;
 using TrickyTriviaTrip.Services;
@@ -23,8 +26,8 @@ namespace TrickyTriviaTrip.ViewModel
         private int _score = 0;
 
         private Question? _question;
-        private List<AnswerOption> _answerOptions = new();
-        private AnswerOption? _selectedAnswer;
+        private List<ObservableAnswerOption> _answerOptions = new();
+        private ObservableAnswerOption? _selectedAnswer;
 
         public GameViewModel(INavigationService navigationService, IMessageService messageService, IQuestionQueue questionQueue) : base(navigationService)
         {
@@ -92,60 +95,79 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// The answer selected by the user
         /// </summary>
-        public AnswerOption? SelectedAnswer
+        public ObservableAnswerOption? SelectedAnswer
         {
             get => _selectedAnswer;
             set
             {
-                if (_selectedAnswer == value) 
+                if (_selectedAnswer == value)
                     return;
+
+                // Have to do this early to make OnCanExecuteChanged for commands update the UI correctly
+                if (value is not null) 
+                    value.IsSelected = true;
+
                 _selectedAnswer = value;
+
                 OnPropertyChanged();
                 Answer1Command.OnCanExecuteChanged();
                 Answer2Command.OnCanExecuteChanged();
                 Answer3Command.OnCanExecuteChanged();
                 Answer4Command.OnCanExecuteChanged();
                 NextQuestionCommand.OnCanExecuteChanged();
+
                 if (value is null)
                     return;
+
+                // Here the new value is not null, i.e., an answer was selected
+
+                _selectedAnswer!.AnswerOption.Text = "⇨" + _selectedAnswer.AnswerOption.Text + "⇦";
+                OnPropertyChanged(nameof(AnswerOption1));
+                OnPropertyChanged(nameof(AnswerOption2));
+                OnPropertyChanged(nameof(AnswerOption3));
+                OnPropertyChanged(nameof(AnswerOption4));
+                AnswerOption1.OnPropertyChanged(nameof(AnswerOption));
+                AnswerOption2.OnPropertyChanged(nameof(AnswerOption));
+                AnswerOption3.OnPropertyChanged(nameof(AnswerOption));
+                AnswerOption4.OnPropertyChanged(nameof(AnswerOption));
+
                 _questionsAnsweredTotal++;
-                if (value.IsCorrect)
-                {
-                    _questionsAnsweredCorrectly++;
 
-                    var difficulty = Question?.Difficulty.ToLower();
-                    if (difficulty == "easy")
-                        Score += 5;
-                    else if (Question?.Difficulty.ToLower() == "medium")
-                        Score += 10;
-                    else
-                        Score += 15;
-                }
+                if (!value.AnswerOption.IsCorrect)
+                    return;
 
-                
+                // Here the selected answer is correct
 
+                _questionsAnsweredCorrectly++;
+
+                if (Question?.Difficulty == "Easy")
+                    Score += 5;
+                else if (Question?.Difficulty == "Medium")
+                    Score += 10;
+                else
+                    Score += 15;
             }
         }
 
         /// <summary>
         /// The first answer option
         /// </summary>
-        public AnswerOption AnswerOption1 => _answerOptions[0];
+        public ObservableAnswerOption? AnswerOption1 => _answerOptions.ElementAtOrDefault(0);
 
         /// <summary>
         /// The second answer option
         /// </summary>
-        public AnswerOption AnswerOption2 => _answerOptions[1];
+        public ObservableAnswerOption? AnswerOption2 => _answerOptions.ElementAtOrDefault(1);
 
         /// <summary>
         /// The third answer option
         /// </summary>
-        public AnswerOption AnswerOption3 => _answerOptions[2];
+        public ObservableAnswerOption? AnswerOption3 => _answerOptions.ElementAtOrDefault(2);
 
         /// <summary>
         /// The fourth answer option
         /// </summary>
-        public AnswerOption AnswerOption4 => _answerOptions[3];
+        public ObservableAnswerOption? AnswerOption4 => _answerOptions.ElementAtOrDefault(3);
 
         /// <summary>
         /// Shows whether the user has selected an answer already (for binding to the view)
@@ -192,9 +214,11 @@ namespace TrickyTriviaTrip.ViewModel
             // Get the next question from the queue
             var questionWithAnswers = _questionQueue.GetNextQuestion();
             _question = questionWithAnswers.Question;
-            
-            // Shuffle the list of answers randomly
-            _answerOptions = questionWithAnswers.AnswerOptions.OrderBy(_ => randomNumberGenerator.Next()).ToList();
+
+            // Pack each AnswerOption into ObservableAnswerOption and then shuffle the list randomly
+            _answerOptions = questionWithAnswers.AnswerOptions.
+                Select(x => new ObservableAnswerOption() { AnswerOption = x }).
+                OrderBy(_ => randomNumberGenerator.Next()).ToList();
 
             // Reset the selected answer and send property changed events for all relevant properties
             SelectedAnswer = null;
@@ -206,6 +230,29 @@ namespace TrickyTriviaTrip.ViewModel
             OnPropertyChanged(nameof(CurrentQuestionNumber));
         }
 
+        #endregion
+
+        #region Helper class for binding to answer buttons 
+        public class ObservableAnswerOption : INotifyPropertyChanged
+        {
+            private bool _isSelected;
+            public required AnswerOption AnswerOption { get; set; }
+            public bool IsSelected
+            {
+                get => _isSelected;
+                set
+                { 
+                    _isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+            public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
         #endregion
     }
 }

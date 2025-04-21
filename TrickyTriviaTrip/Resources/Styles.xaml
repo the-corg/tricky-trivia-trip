@@ -54,12 +54,13 @@
         <Setter Property="Margin" Value="5"/>
         <Setter Property="Foreground" Value="{StaticResource Gold}"/>
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="ToolTipService.InitialShowDelay" Value="500"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ButtonBase">
-                    <Border Background="{TemplateBinding Background}" BorderThickness="0">
+                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding Foreground}" CornerRadius="12">
                         <TextBlock Focusable="False" Text="{TemplateBinding Content}" TextWrapping="Wrap" TextAlignment="Center"
                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                     </Border>
@@ -84,7 +85,7 @@
         <Setter Property="FontWeight" Value="Light"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontSize" Value="{StaticResource GameQuestionFontSize}"/>
-        <Setter Property="Margin" Value="0 8"/>
+        <Setter Property="Margin" Value="0 0 0 6"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="TextAlignment" Value="Center"/>
     </Style>
@@ -96,6 +97,7 @@
     </Style>
 
     <Style TargetType="Button" x:Key="NextQuestionButton" BasedOn="{StaticResource MenuButton}">
+        <Setter Property="Margin" Value="0 6"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Visibility" Value="Hidden"/>
@@ -106,19 +108,41 @@
     <Style TargetType="Button" x:Key="GameAnswerButton" BasedOn="{StaticResource MenuButton}">
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="{StaticResource GamePrimaryFontSize}"/>
-        <Setter Property="Margin" Value="0 8"/>
+        <Setter Property="Margin" Value="0 6"/>
         <Style.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
+                    <!-- <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
+                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="False"/> -->
+                    <Condition Binding="{Binding IsSelected}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <!-- <Setter Property="Foreground" Value="{StaticResource WrongAnswer}"/> -->
+                <Setter Property="BorderThickness" Value="3"/>
+                <Setter Property="Margin" Value="0"/>
+            </MultiDataTrigger>
+            <!-- <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
-                    <Condition Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="False"/>
+                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="True"/>
+                    <Condition Binding="{Binding IsSelected}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource CorrectAnswer}"/>
+                <Setter Property="BorderThickness" Value="3"/>
+                <Setter Property="Margin" Value="0"/>
+            </MultiDataTrigger> -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
+                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="False"/>
+                    <!--  <Condition Binding="{Binding IsSelected}" Value="False"/> -->
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Foreground" Value="{StaticResource WrongAnswer}"/>
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
-                    <Condition Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="True"/>
+                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="True"/>
+                    <!-- <Condition Binding="{Binding IsSelected}" Value="False"/> -->
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Foreground" Value="{StaticResource CorrectAnswer}"/>
             </MultiDataTrigger>
