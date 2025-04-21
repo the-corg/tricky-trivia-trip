@@ -24,6 +24,7 @@
         <GradientStop Color="#228b22" Offset="0.5" />
         <GradientStop Color="#115411" Offset="1.0" />
     </LinearGradientBrush>
+    
 
     <!-- Kelly green and its friends
     <SolidColorBrush Color="#0f2504" x:Key="1_VeryDark"/>

@@ -18,6 +18,8 @@ namespace TrickyTriviaTrip.ViewModel
 
         public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository, IRepository<AnswerOption> answerOptionRepository) : base(navigationService)
         {
+            BackCommand = new DelegateCommand(execute => _navigationService.NavigateToMenu());
+
             _questionQueue = questionQueue;
             _questionRepository = questionRepository;
             _answerOptionRepository = answerOptionRepository;
@@ -52,6 +54,12 @@ namespace TrickyTriviaTrip.ViewModel
         public ObservableCollection<Question> QuestionsFromQueue { get; set; } = new();
         public ObservableCollection<Question> Questions { get; set; } = new();
         public ObservableCollection<AnswerOption> AnswerOptions { get; set; } = new();
+
+
+        /// <summary>
+        /// Command for the Back to Menu button
+        /// </summary>
+        public DelegateCommand BackCommand { get; }
 
     }
 }

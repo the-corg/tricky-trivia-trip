@@ -79,4 +79,71 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Tab Control with a button in the header -->
+    <Style TargetType="TabItem">
+        <Setter Property="Foreground" Value="{StaticResource 1_VeryDark}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid>
+                        <Border x:Name="Border" Margin="0 0 -8 0" Background="{StaticResource 5_MediumLight}" BorderBrush="{StaticResource 2_Dark}" BorderThickness="3 3 3 0" CornerRadius="12 12 0 0" >
+                            <ContentPresenter SnapsToDevicePixels="True" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="8 2 8 2" RecognizesAccessKey="True"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource 3_MediumDark}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource 3_MediumDark}" />
+                            <Setter Property="Panel.ZIndex" Value="20" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Panel.ZIndex" Value="10" />
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource 2_Dark}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource 3_MediumDark}" />
+                            <Setter Property="Foreground" Value="{StaticResource 7_VeryLight}"/>
+                            <Setter TargetName="Border" Property="BorderThickness" Value="2 2 2 0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="Button" x:Key="TabControlBackButton" BasedOn="{StaticResource MenuButton}">
+        <Setter Property="Margin" Value="8 0"/>
+    </Style>
+    <Style x:Key="TabControlWithButton" TargetType="TabControl">
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="{StaticResource GreenGradient}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid ClipToBounds="true" KeyboardNavigation.TabNavigation="Local" Background="{StaticResource 2_Dark}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Panel.ZIndex="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TabPanel Margin="5 1 4 0" IsItemsHost="true" KeyboardNavigation.TabIndex="1" Background="{StaticResource 2_Dark}"/>
+                            <Button Grid.Column="1" Command="{Binding DataContext.BackCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" 
+                                    Style="{StaticResource TabControlBackButton}" Content="{TemplateBinding Tag}"/>
+                        </Grid>
+                        <Border Grid.Row="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" KeyboardNavigation.DirectionalNavigation="Contained" 
+                                KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                            <ContentPresenter x:Name="PART_SelectedContentHost" SnapsToDevicePixels="True" 
+                                              ContentSource="SelectedContent" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
