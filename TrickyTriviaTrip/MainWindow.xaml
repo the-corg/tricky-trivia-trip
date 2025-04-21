@@ -8,7 +8,7 @@
         xmlns:viewModel="clr-namespace:TrickyTriviaTrip.ViewModel"
         mc:Ignorable="d" 
         Title="Tricky Trivia Trip" Height="576" Width="1024"
-        MinHeight="400" MinWidth="800"
+        MinHeight="500" MinWidth="800"
         WindowStartupLocation="CenterScreen"
         StateChanged="Window_StateChanged"
         FontSize="24" FontFamily="Segoe UI"

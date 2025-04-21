@@ -18,7 +18,8 @@
 
     <SolidColorBrush Color="#5F83ba7f" x:Key="SemiTransparent"/>
 
-    <SolidColorBrush Color="#6e6edc" x:Key="Answer"/>
+    <SolidColorBrush Color="#b80000" x:Key="WrongAnswer"/>
+    <SolidColorBrush Color="#70ff00" x:Key="CorrectAnswer"/>
 
     <!-- Green gradient for background -->
     <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1" x:Key="GreenGradient">

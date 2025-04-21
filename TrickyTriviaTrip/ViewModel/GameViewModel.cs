@@ -97,8 +97,15 @@ namespace TrickyTriviaTrip.ViewModel
             get => _selectedAnswer;
             set
             {
+                if (_selectedAnswer == value) 
+                    return;
                 _selectedAnswer = value;
                 OnPropertyChanged();
+                Answer1Command.OnCanExecuteChanged();
+                Answer2Command.OnCanExecuteChanged();
+                Answer3Command.OnCanExecuteChanged();
+                Answer4Command.OnCanExecuteChanged();
+                NextQuestionCommand.OnCanExecuteChanged();
                 if (value is null)
                     return;
                 _questionsAnsweredTotal++;
@@ -182,21 +189,15 @@ namespace TrickyTriviaTrip.ViewModel
         /// </summary>
         private void NextQuestion()
         {
+            // Get the next question from the queue
             var questionWithAnswers = _questionQueue.GetNextQuestion();
             _question = questionWithAnswers.Question;
             
-            // Shuffle the list randomly
+            // Shuffle the list of answers randomly
             _answerOptions = questionWithAnswers.AnswerOptions.OrderBy(_ => randomNumberGenerator.Next()).ToList();
 
+            // Reset the selected answer and send property changed events for all relevant properties
             SelectedAnswer = null;
-
-
-            // TODO: REMOVE (debug)
-            //_answerOptions[3].Text = "Very long answer option asd sdflkj wlkj 345kljh lkjh 34kljh lkj3h 45kljh klj3h 45lkjh3 4k5ljh 3kl4jh5 kjh 345";
-            //_answerOptions[2].Text = "Very long answer option asd sdflkj wlkj 345kljh lkjh 34kljh lkj3h 45kljh klj3h 45lkjh3 4k5ljh 3kl4jh5 kjh 345";
-            //_question.Text = "Very long question text sfd asdf a sdf sdfsadf asd sdflkj wlkj 345kljh lkjh 34kljh lkj3h 45kljh klj3h 45lkjh3 4k5ljh 3kl4jh5 kjh 345";
-            ////////
-
             OnPropertyChanged(nameof(Question));
             OnPropertyChanged(nameof(AnswerOption1));
             OnPropertyChanged(nameof(AnswerOption2));

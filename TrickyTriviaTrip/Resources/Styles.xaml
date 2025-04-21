@@ -60,7 +60,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ButtonBase">
                     <Border Background="{TemplateBinding Background}" BorderThickness="0">
-                        <TextBlock Focusable="False" Text="{TemplateBinding Content}" TextWrapping="Wrap"
+                        <TextBlock Focusable="False" Text="{TemplateBinding Content}" TextWrapping="Wrap" TextAlignment="Center"
                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                     </Border>
                 </ControlTemplate>
@@ -86,6 +86,7 @@
         <Setter Property="FontSize" Value="{StaticResource GameQuestionFontSize}"/>
         <Setter Property="Margin" Value="0 8"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextAlignment" Value="Center"/>
     </Style>
     <Style TargetType="TextBlock" x:Key="GameTextSecondary" BasedOn="{StaticResource GameQuestionText}">
         <Setter Property="Foreground" Value="{StaticResource 6_Light}"/>
@@ -94,11 +95,34 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
+    <Style TargetType="Button" x:Key="NextQuestionButton" BasedOn="{StaticResource MenuButton}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Visibility" Value="Hidden"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style TargetType="Button" x:Key="GameAnswerButton" BasedOn="{StaticResource MenuButton}">
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="{StaticResource GamePrimaryFontSize}"/>
-        <Setter Property="Foreground" Value="{StaticResource Gold}"/>
         <Setter Property="Margin" Value="0 8"/>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
+                    <Condition Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="False"/>
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource WrongAnswer}"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
+                    <Condition Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource CorrectAnswer}"/>
+            </MultiDataTrigger>
+        </Style.Triggers>
     </Style>
 
 

@@ -47,6 +47,7 @@
                 </StackPanel>
             </Grid>
 
+            <!-- Question and answers -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -70,16 +71,14 @@
                     <Style TargetType="Button" BasedOn="{StaticResource GameAnswerButton}"/>
                 </Grid.Resources>
 
-
-
-
                 <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Question.Text}" Style="{StaticResource GameQuestionText}"/>
-                <Button Grid.Row="3" Grid.Column="2" Content="{Binding AnswerOption1.Text}" Command="{Binding Answer1Command}"/>
-                <Button Grid.Row="4" Grid.Column="2" Content="{Binding AnswerOption2.Text}" Command="{Binding Answer2Command}"/>
-                <Button Grid.Row="5" Grid.Column="2" Content="{Binding AnswerOption3.Text}" Command="{Binding Answer3Command}"/>
-                <Button Grid.Row="6" Grid.Column="2" Content="{Binding AnswerOption4.Text}" Command="{Binding Answer4Command}"/>
+                <Button Grid.Row="3" Grid.Column="2" Content="{Binding AnswerOption1.Text}" Command="{Binding Answer1Command}" Tag="{Binding AnswerOption1.IsCorrect}"/>
+                <Button Grid.Row="4" Grid.Column="2" Content="{Binding AnswerOption2.Text}" Command="{Binding Answer2Command}" Tag="{Binding AnswerOption2.IsCorrect}"/>
+                <Button Grid.Row="5" Grid.Column="2" Content="{Binding AnswerOption3.Text}" Command="{Binding Answer3Command}" Tag="{Binding AnswerOption3.IsCorrect}"/>
+                <Button Grid.Row="6" Grid.Column="2" Content="{Binding AnswerOption4.Text}" Command="{Binding Answer4Command}" Tag="{Binding AnswerOption4.IsCorrect}"/>
 
-                <Button Grid.Row="7" Grid.Column="2" Content="Next Question ⇨" Margin="0 8" Style="{StaticResource MenuButton}"/>
+                <Button Grid.Row="7" Grid.Column="2" Content="Next Question ⇨" Margin="0 8" 
+                        Command="{Binding NextQuestionCommand}" Style="{StaticResource NextQuestionButton}"/>
 
             </Grid>
         </Grid>
