@@ -95,10 +95,10 @@
 
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Question.Text}" 
                            Style="{StaticResource GameQuestionText}"/>
-                <Button Grid.Row="2" Grid.Column="1" DataContext="{Binding AnswerOption1}" Content="{Binding AnswerOption.Text}" Command="{Binding DataContext.Answer1Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                <Button Grid.Row="3" Grid.Column="1" DataContext="{Binding AnswerOption2}" Content="{Binding AnswerOption.Text}" Command="{Binding DataContext.Answer2Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                <Button Grid.Row="4" Grid.Column="1" DataContext="{Binding AnswerOption3}" Content="{Binding AnswerOption.Text}" Command="{Binding DataContext.Answer3Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                <Button Grid.Row="5" Grid.Column="1" DataContext="{Binding AnswerOption4}" Content="{Binding AnswerOption.Text}" Command="{Binding DataContext.Answer4Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                <Button Grid.Row="2" Grid.Column="1" DataContext="{Binding AnswerOption1}" Content="{Binding Text}" Command="{Binding DataContext.Answer1Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                <Button Grid.Row="3" Grid.Column="1" DataContext="{Binding AnswerOption2}" Content="{Binding Text}" Command="{Binding DataContext.Answer2Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                <Button Grid.Row="4" Grid.Column="1" DataContext="{Binding AnswerOption3}" Content="{Binding Text}" Command="{Binding DataContext.Answer3Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                <Button Grid.Row="5" Grid.Column="1" DataContext="{Binding AnswerOption4}" Content="{Binding Text}" Command="{Binding DataContext.Answer4Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
 
                 <Button Grid.Row="6" Grid.Column="1" Content="⇨ Next Question ⇨" 
                         Command="{Binding NextQuestionCommand}" Style="{StaticResource NextQuestionButton}"/>

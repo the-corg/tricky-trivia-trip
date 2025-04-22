@@ -16,8 +16,13 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly IQuestionRepository _questionRepository;
         private readonly IRepository<AnswerOption> _answerOptionRepository;
 
-        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository, IRepository<AnswerOption> answerOptionRepository) : base(navigationService)
+
+        private readonly INavigationService _navigationService;
+
+        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository, IRepository<AnswerOption> answerOptionRepository)
         {
+            _navigationService = navigationService;
+
             BackCommand = new DelegateCommand(execute => _navigationService.NavigateToMenu());
 
             _questionQueue = questionQueue;

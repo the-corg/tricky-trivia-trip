@@ -9,11 +9,13 @@ namespace TrickyTriviaTrip.ViewModel
     /// </summary>
     public class MainViewModel : BaseViewModel
     {
+        private readonly INavigationService _navigationService;
         private readonly IDatabaseInitializer _databaseInitializer;
         private readonly IQuestionQueue _questionQueue;
 
-        public MainViewModel(INavigationService navigationService, IDatabaseInitializer databaseInitializer, IQuestionQueue questionQueue) : base(navigationService)
+        public MainViewModel(INavigationService navigationService, IDatabaseInitializer databaseInitializer, IQuestionQueue questionQueue)
         { 
+            _navigationService = navigationService;
             _databaseInitializer = databaseInitializer;
             _questionQueue = questionQueue;
 

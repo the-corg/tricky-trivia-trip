@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.ViewModel
 {
@@ -11,11 +10,8 @@ namespace TrickyTriviaTrip.ViewModel
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected readonly INavigationService _navigationService;
-
-        protected BaseViewModel(INavigationService navigationService)
+        protected BaseViewModel()
         {
-            _navigationService = navigationService;
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

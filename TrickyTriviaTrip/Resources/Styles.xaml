@@ -112,37 +112,22 @@
         <Style.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <!-- <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
-                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="False"/> -->
                     <Condition Binding="{Binding IsSelected}" Value="True"/>
                 </MultiDataTrigger.Conditions>
-                <!-- <Setter Property="Foreground" Value="{StaticResource WrongAnswer}"/> -->
                 <Setter Property="BorderThickness" Value="3"/>
-                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Margin" Value="0 3"/>
             </MultiDataTrigger>
-            <!-- <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
-                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="True"/>
-                    <Condition Binding="{Binding IsSelected}" Value="True"/>
-                </MultiDataTrigger.Conditions>
-                <Setter Property="Foreground" Value="{StaticResource CorrectAnswer}"/>
-                <Setter Property="BorderThickness" Value="3"/>
-                <Setter Property="Margin" Value="0"/>
-            </MultiDataTrigger> -->
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
-                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="False"/>
-                    <!--  <Condition Binding="{Binding IsSelected}" Value="False"/> -->
+                    <Condition Binding="{Binding IsCorrect}" Value="False"/>
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Foreground" Value="{StaticResource WrongAnswer}"/>
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False"/>
-                    <Condition Binding="{Binding AnswerOption.IsCorrect}" Value="True"/>
-                    <!-- <Condition Binding="{Binding IsSelected}" Value="False"/> -->
+                    <Condition Binding="{Binding IsCorrect}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Foreground" Value="{StaticResource CorrectAnswer}"/>
             </MultiDataTrigger>

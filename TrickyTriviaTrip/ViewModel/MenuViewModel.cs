@@ -7,9 +7,12 @@ namespace TrickyTriviaTrip.ViewModel
     /// </summary>
     public class MenuViewModel : BaseViewModel
     {
+        private readonly INavigationService _navigationService;
 
-        public MenuViewModel(INavigationService navigationService) : base(navigationService)
+        public MenuViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
+
             StartGameCommand = new DelegateCommand(execute => _navigationService.NavigateToGame());
             ViewStatsCommand = new DelegateCommand(execute => _navigationService.NavigateToStats());
             ExitGameCommand = new DelegateCommand(execute => System.Windows.Application.Current.Shutdown());
