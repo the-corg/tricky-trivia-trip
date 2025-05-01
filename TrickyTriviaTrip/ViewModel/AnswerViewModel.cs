@@ -2,8 +2,13 @@
 
 namespace TrickyTriviaTrip.ViewModel
 {
+    /// <summary>
+    /// View model for a single answer option
+    /// </summary>
     public class AnswerViewModel : BaseViewModel
     {
+        #region Private fields and the constructor
+
         private AnswerOption _model;
         private bool _isSelected;
 
@@ -11,6 +16,10 @@ namespace TrickyTriviaTrip.ViewModel
         {
             _model = model;
         }
+        #endregion
+
+
+        #region Public properties
 
         /// <summary>
         /// Text of the answer option
@@ -45,6 +54,7 @@ namespace TrickyTriviaTrip.ViewModel
                 OnPropertyChanged();
             }
         }
+        #endregion
 
     }
 }

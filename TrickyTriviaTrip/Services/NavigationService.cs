@@ -32,6 +32,7 @@ namespace TrickyTriviaTrip.Services
 
     public class NavigationService : INavigationService
     {
+        #region Private fields and the constructor
         private readonly IServiceProvider _serviceProvider;
 
         // Have to initialize this lazily to avoid circular dependency
@@ -43,6 +44,9 @@ namespace TrickyTriviaTrip.Services
         {
             _serviceProvider = serviceProvider;
         }
+        #endregion
+
+        #region Public properties and events
 
         public BaseViewModel? CurrentViewModel
         {
@@ -58,6 +62,11 @@ namespace TrickyTriviaTrip.Services
         }
 
         public event Action? CurrentViewModelChanged;
+
+        #endregion
+
+
+        #region Public navigation methods
 
         public void NavigateToMenu()
         {
@@ -76,6 +85,7 @@ namespace TrickyTriviaTrip.Services
             // New StatsViewModel every time 
             CurrentViewModel = _serviceProvider.GetRequiredService<StatsViewModel>();
         }
+        #endregion
 
     }
 }

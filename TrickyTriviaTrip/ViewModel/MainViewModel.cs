@@ -9,6 +9,8 @@ namespace TrickyTriviaTrip.ViewModel
     /// </summary>
     public class MainViewModel : BaseViewModel
     {
+        #region Private fields and the constructor
+
         private readonly INavigationService _navigationService;
         private readonly IDatabaseInitializer _databaseInitializer;
         private readonly IQuestionQueue _questionQueue;
@@ -22,11 +24,9 @@ namespace TrickyTriviaTrip.ViewModel
             _navigationService.CurrentViewModelChanged += OnCurrentViewModelChanged;
             _navigationService.NavigateToMenu();
         }
+        #endregion
 
-        /// <summary>
-        /// The view model of the current view to be shown in MainWindow's ContentControl
-        /// </summary>
-        public BaseViewModel? CurrentViewModel => _navigationService.CurrentViewModel;
+        #region The async initializer
 
         /// <summary>
         /// Initializes the database if it doesn't exist.<br/>
@@ -38,10 +38,25 @@ namespace TrickyTriviaTrip.ViewModel
 
             await _questionQueue.InitializeAsync();
         }
+        #endregion
+
+        #region Public properties
+
+        /// <summary>
+        /// The view model of the current view to be shown in MainWindow's ContentControl
+        /// </summary>
+        public BaseViewModel? CurrentViewModel => _navigationService.CurrentViewModel;
+
+        #endregion
+
+
+        #region Private methods 
 
         private void OnCurrentViewModelChanged()
         {
             OnPropertyChanged(nameof(CurrentViewModel));
         }
+
+        #endregion
     }
 }

@@ -7,6 +7,7 @@ namespace TrickyTriviaTrip.ViewModel
     /// </summary>
     public class MenuViewModel : BaseViewModel
     {
+        #region Private fields and the constructor
         private readonly INavigationService _navigationService;
 
         public MenuViewModel(INavigationService navigationService)
@@ -17,6 +18,10 @@ namespace TrickyTriviaTrip.ViewModel
             ViewStatsCommand = new DelegateCommand(execute => _navigationService.NavigateToStats());
             ExitGameCommand = new DelegateCommand(execute => System.Windows.Application.Current.Shutdown());
         }
+        #endregion
+
+
+        #region Public properties
 
         /// <summary>
         /// The name of the current player
@@ -35,6 +40,8 @@ namespace TrickyTriviaTrip.ViewModel
         /// Command for the Exit Game button
         /// </summary>
         public DelegateCommand ExitGameCommand { get; }
+
+        #endregion
 
     }
 }

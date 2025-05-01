@@ -10,6 +10,8 @@ namespace TrickyTriviaTrip.ViewModel
     /// </summary>
     public class GameViewModel : BaseViewModel
     {
+        #region Private fields
+
         // The number of questions in a game session
         private readonly int _gameSessionQuestionsTotal = Settings.Default.GameSessionQuestionsTotal;
 
@@ -26,6 +28,10 @@ namespace TrickyTriviaTrip.ViewModel
         private Question? _question;
         private List<AnswerViewModel> _answerOptions = new();
         private AnswerViewModel? _selectedAnswer;
+
+        #endregion
+
+        #region Constructor
 
         public GameViewModel(INavigationService navigationService, IMessageService messageService, IQuestionQueue questionQueue)
         {
@@ -52,6 +58,7 @@ namespace TrickyTriviaTrip.ViewModel
             Answer4Command = new DelegateCommand(
                 execute => SelectedAnswer = _answerOptions.ElementAtOrDefault(3), canExecute => SelectedAnswer is null);
         }
+        #endregion
 
         #region Commands 
 

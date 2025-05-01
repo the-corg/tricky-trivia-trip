@@ -27,7 +27,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" 
                             Orientation="Horizontal">
                     <TextBlock Text="Score: " Margin="8 0 0 0" Foreground="{StaticResource 4_Medium}"/>
@@ -69,7 +69,7 @@
                     <TextBlock Text="{Binding Question.Difficulty}"/>
                 </StackPanel>
             </Grid>
-            
+
 
             <!-- Question and answers -->
             <Grid Grid.Row="2">

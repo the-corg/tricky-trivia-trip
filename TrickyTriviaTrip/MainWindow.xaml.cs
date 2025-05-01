@@ -5,11 +5,15 @@ using TrickyTriviaTrip.ViewModel;
 namespace TrickyTriviaTrip
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// MVVM-friendly code-behind for MainWindow.xaml.
+    /// For the most part, it's strictly view-related code.
+    /// Additionally, one DataContext method is called, to handle startup
+    /// (initialize data asynchronously after the UI is loaded) to avoid
+    /// creating extra complexity of attached behaviors for silly reasons.
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(MainViewModel mainViewModel)
+        public MainWindow()
         {
             InitializeComponent();
         }
@@ -17,7 +21,7 @@ namespace TrickyTriviaTrip
 
         // Calls the view model's initializer.
         // To decrease the app startup time, it's important to do
-        // asynchronous initialization here, after the UI is loaded 
+        // asynchronous initialization only after the UI is loaded 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is MainViewModel mainViewModel)

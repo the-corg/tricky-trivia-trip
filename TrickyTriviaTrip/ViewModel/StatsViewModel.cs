@@ -11,6 +11,8 @@ namespace TrickyTriviaTrip.ViewModel
     /// </summary>
     public class StatsViewModel : BaseViewModel
     {
+        #region Private fields and the constructor
+
         // TODO: remove this (initial debug only)
         private readonly IQuestionQueue _questionQueue;
         private readonly IQuestionRepository _questionRepository;
@@ -30,6 +32,8 @@ namespace TrickyTriviaTrip.ViewModel
             _answerOptionRepository = answerOptionRepository;
             Initialize();
         }
+
+        #endregion
 
         // TODO: remove this (initial debug only)
         private async void Initialize()
@@ -54,6 +58,8 @@ namespace TrickyTriviaTrip.ViewModel
 
         }
 
+        #region Public properties
+
         // TODO: remove this (initial debug only)
         public ObservableCollection<Question> QuestionsFromQueue { get; set; } = new();
         public ObservableCollection<Question> Questions { get; set; } = new();
@@ -64,6 +70,8 @@ namespace TrickyTriviaTrip.ViewModel
         /// Command for the Back to Menu button
         /// </summary>
         public DelegateCommand BackCommand { get; }
+
+        #endregion
 
     }
 }

@@ -16,6 +16,8 @@ namespace TrickyTriviaTrip
     /// </summary>
     public partial class App : Application
     {
+        #region Constructor and private fields 
+
         private readonly ServiceProvider _serviceProvider;
 
         public App()
@@ -24,6 +26,7 @@ namespace TrickyTriviaTrip
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();
         }
+        #endregion
 
         #region Configure services for dependency injection
         private void ConfigureServices(ServiceCollection services)

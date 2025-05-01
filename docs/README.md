@@ -2,7 +2,7 @@
 
 A simple Trivia Game that fetches trivia questions from Open Trivia DB via Trivia API.
 
-The game will store player scores and answer history in an SQLite database using ADO.NET. I chose SQLite for this project because it is lightweight, easy to set up, and doesn't require a separate database server installation. This makes it convenient for running the demo without additional setup.
+The game will store player scores and answer history in an SQLite database using ADO.NET. I chose SQLite for this project because it is lightweight, easy to set up, and doesn't require a separate database server installation. This makes it convenient for running the game without additional setup.
 
 The database access logic uses ADO.NET, so switching from SQLite to Microsoft SQL Server, PostgreSQL, or MySQL would be easy enough.
 

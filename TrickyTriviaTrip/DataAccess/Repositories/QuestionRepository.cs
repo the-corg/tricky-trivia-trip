@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using TrickyTriviaTrip.Model;
 
 namespace TrickyTriviaTrip.DataAccess

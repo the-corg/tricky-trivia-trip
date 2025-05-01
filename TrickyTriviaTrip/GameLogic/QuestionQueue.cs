@@ -56,6 +56,7 @@ namespace TrickyTriviaTrip.GameLogic
 
         #endregion
 
+
         #region Public methods and properties 
         public QuestionWithAnswers GetNextQuestion()
         {
