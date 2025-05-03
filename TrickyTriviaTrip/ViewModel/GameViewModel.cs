@@ -1,4 +1,5 @@
-﻿using TrickyTriviaTrip.GameLogic;
+﻿using System.Collections.ObjectModel;
+using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Properties;
 using TrickyTriviaTrip.Services;
@@ -26,7 +27,6 @@ namespace TrickyTriviaTrip.ViewModel
         private int _score = 0;
 
         private Question? _question;
-        private List<AnswerViewModel> _answerOptions = new();
         private AnswerViewModel? _selectedAnswer;
 
         #endregion
@@ -49,14 +49,7 @@ namespace TrickyTriviaTrip.ViewModel
                 if (_messageService.ShowConfirmation("End this game and return to the menu?"))
                     _navigationService.NavigateToMenu();
             });
-            Answer1Command = new DelegateCommand(
-                execute => SelectedAnswer = _answerOptions.ElementAtOrDefault(0), canExecute => SelectedAnswer is null);
-            Answer2Command = new DelegateCommand(
-                execute => SelectedAnswer = _answerOptions.ElementAtOrDefault(1), canExecute => SelectedAnswer is null);
-            Answer3Command = new DelegateCommand(
-                execute => SelectedAnswer = _answerOptions.ElementAtOrDefault(2), canExecute => SelectedAnswer is null);
-            Answer4Command = new DelegateCommand(
-                execute => SelectedAnswer = _answerOptions.ElementAtOrDefault(3), canExecute => SelectedAnswer is null);
+            
         }
         #endregion
 
@@ -72,23 +65,6 @@ namespace TrickyTriviaTrip.ViewModel
         /// </summary>
         public DelegateCommand NextQuestionCommand { get; }
 
-        /// <summary>
-        /// Command for the Answer1 button
-        /// </summary>
-        public DelegateCommand Answer1Command { get; }
-        /// <summary>
-        /// Command for the Answer2 button
-        /// </summary>
-        public DelegateCommand Answer2Command { get; }
-        /// <summary>
-        /// Command for the Answer3 button
-        /// </summary>
-        public DelegateCommand Answer3Command { get; }
-        /// <summary>
-        /// Command for the Answer4 button
-        /// </summary>
-        public DelegateCommand Answer4Command { get; }
-
         #endregion
 
         #region Public properties 
@@ -97,6 +73,11 @@ namespace TrickyTriviaTrip.ViewModel
         /// The question
         /// </summary>
         public Question? Question => _question;
+
+        /// <summary>
+        /// All answer options for the current question
+        /// </summary>
+        public ObservableCollection<AnswerViewModel> Answers { get; } = new();
 
         /// <summary>
         /// The answer selected by the user
@@ -130,43 +111,21 @@ namespace TrickyTriviaTrip.ViewModel
                         else
                             Score += 15;
 
+                        // TODO: Better do this without changing the text
                         _selectedAnswer!.Text = "✔️⇨ " + _selectedAnswer.Text + " ⇦✔️";
                     }
                     else
                     {
+                        // TODO: Better do this without changing the text
                         _selectedAnswer!.Text = "❌⇨ " + _selectedAnswer.Text + " ⇦❌";
                     }
                 }
 
                 OnPropertyChanged();
-                Answer1Command.OnCanExecuteChanged();
-                Answer2Command.OnCanExecuteChanged();
-                Answer3Command.OnCanExecuteChanged();
-                Answer4Command.OnCanExecuteChanged();
                 NextQuestionCommand.OnCanExecuteChanged();
 
             }
         }
-
-        /// <summary>
-        /// The first answer option
-        /// </summary>
-        public AnswerViewModel? AnswerOption1 => _answerOptions.ElementAtOrDefault(0);
-
-        /// <summary>
-        /// The second answer option
-        /// </summary>
-        public AnswerViewModel? AnswerOption2 => _answerOptions.ElementAtOrDefault(1);
-
-        /// <summary>
-        /// The third answer option
-        /// </summary>
-        public AnswerViewModel? AnswerOption3 => _answerOptions.ElementAtOrDefault(2);
-
-        /// <summary>
-        /// The fourth answer option
-        /// </summary>
-        public AnswerViewModel? AnswerOption4 => _answerOptions.ElementAtOrDefault(3);
 
         /// <summary>
         /// Shows whether the user has selected an answer already (for binding to the view)
@@ -214,18 +173,19 @@ namespace TrickyTriviaTrip.ViewModel
             var questionWithAnswers = _questionQueue.GetNextQuestion();
             _question = questionWithAnswers.Question;
 
-            // Pack each AnswerOption into ObservableAnswerOption and then shuffle the list randomly
-            _answerOptions = questionWithAnswers.AnswerOptions.
+            // Pack each AnswerOption into AnswerViewModel and then shuffle the list randomly
+            var answerOptions = questionWithAnswers.AnswerOptions.
                 Select(x => new AnswerViewModel(x)).
-                OrderBy(_ => randomNumberGenerator.Next()).ToList();
+                OrderBy(_ => randomNumberGenerator.Next());
+
+            // Load the answers into the ObservableCollection
+            Answers.Clear();
+            foreach (var answer in answerOptions)
+                Answers.Add(answer);
 
             // Reset the selected answer and send property changed events for all relevant properties
             SelectedAnswer = null;
             OnPropertyChanged(nameof(Question));
-            OnPropertyChanged(nameof(AnswerOption1));
-            OnPropertyChanged(nameof(AnswerOption2));
-            OnPropertyChanged(nameof(AnswerOption3));
-            OnPropertyChanged(nameof(AnswerOption4));
             OnPropertyChanged(nameof(CurrentQuestionNumber));
         }
 

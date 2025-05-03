@@ -104,7 +104,27 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
+    <!-- Listbox styles -->
+    <Style TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="{StaticResource GamePrimaryFontSize}"/>
+    </Style>
+
+    <Style TargetType="ListBoxItem">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Margin" Value="0 6"/>
+    </Style>
+
+    <Style TargetType="ScrollBar">
+        <Setter Property="Opacity" Value="0.3"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+<!-- TODO: Remove this
     <Style TargetType="Button" x:Key="GameAnswerButton" BasedOn="{StaticResource MenuButton}">
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="{StaticResource GamePrimaryFontSize}"/>
@@ -133,7 +153,7 @@
             </MultiDataTrigger>
         </Style.Triggers>
     </Style>
-
+-->
 
     <!-- Tab Control with a button in the header -->
     <Style TargetType="TabItem">

@@ -8,102 +8,105 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{StaticResource GreenGradient}">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource GameTextSecondary}"/>
+        </Grid.Resources>
+
+        <!-- First line -->
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" 
+                            Orientation="Horizontal">
+                <TextBlock Text="Score: " Margin="8 0 0 0" Foreground="{StaticResource 4_Medium}"/>
+                <TextBlock Text="{Binding Score}"/>
+            </StackPanel>
+
+            <StackPanel Grid.ColumnSpan="3" VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Text="Question " Foreground="{StaticResource 4_Medium}"/>
+                <TextBlock Text="{Binding CurrentQuestionNumber}"/>
+                <TextBlock Text=" out of " Foreground="{StaticResource 4_Medium}"/>
+                <TextBlock Text="{Binding GameSessionQuestionsTotal}" Foreground="{StaticResource 4_Medium}"/>
+            </StackPanel>
+
+            <Button Grid.Column="2" Content="Exit to Menu" Margin="8 4"
+                        Style="{StaticResource MenuButton}" 
+                        FontSize="{StaticResource GameSecondaryFontSize}"
+                        Command="{Binding ExitToMenuCommand}"/>
+        </Grid>
+        <!-- Second line -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Text="Category: " Foreground="{StaticResource 4_Medium}"/>
+                <TextBlock Text="{Binding Question.Category}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="3" VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Text="Difficulty: " Foreground="{StaticResource 4_Medium}"/>
+                <TextBlock Text="{Binding Question.Difficulty}"/>
+            </StackPanel>
+        </Grid>
+
+
+        <!-- Question and answers -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="14*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Grid.Resources>
-                <Style TargetType="TextBlock" BasedOn="{StaticResource GameTextSecondary}"/>
-            </Grid.Resources>
-
-            <!-- Top line -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" 
-                            Orientation="Horizontal">
-                    <TextBlock Text="Score: " Margin="8 0 0 0" Foreground="{StaticResource 4_Medium}"/>
-                    <TextBlock Text="{Binding Score}"/>
-                </StackPanel>
-
-                <StackPanel Grid.ColumnSpan="3" VerticalAlignment="Center" 
-                            HorizontalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock Text="Question " Foreground="{StaticResource 4_Medium}"/>
-                    <TextBlock Text="{Binding CurrentQuestionNumber}"/>
-                    <TextBlock Text=" out of " Foreground="{StaticResource 4_Medium}"/>
-                    <TextBlock Text="{Binding GameSessionQuestionsTotal}" Foreground="{StaticResource 4_Medium}"/>
-                </StackPanel>
-
-                <Button Grid.Column="2" Content="Exit to Menu" Margin="8 4"
-                        Style="{StaticResource MenuButton}" 
-                        FontSize="{StaticResource GameSecondaryFontSize}"
-                        Command="{Binding ExitToMenuCommand}"/>
-            </Grid>
-            <!-- Second line -->
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" 
-                            HorizontalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock Text="Category: " Foreground="{StaticResource 4_Medium}"/>
-                    <TextBlock Text="{Binding Question.Category}"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="3" VerticalAlignment="Center" 
-                            HorizontalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock Text="Difficulty: " Foreground="{StaticResource 4_Medium}"/>
-                    <TextBlock Text="{Binding Question.Difficulty}"/>
-                </StackPanel>
-            </Grid>
-
-
-            <!-- Question and answers -->
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="14*"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-
-                <Grid.Resources>
-                    <Style TargetType="Button" BasedOn="{StaticResource GameAnswerButton}"/>
-                </Grid.Resources>
-
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Question.Text}" 
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Question.Text}" 
                            Style="{StaticResource GameQuestionText}"/>
-                <Button Grid.Row="2" Grid.Column="1" DataContext="{Binding AnswerOption1}" Content="{Binding Text}" Command="{Binding DataContext.Answer1Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                <Button Grid.Row="3" Grid.Column="1" DataContext="{Binding AnswerOption2}" Content="{Binding Text}" Command="{Binding DataContext.Answer2Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                <Button Grid.Row="4" Grid.Column="1" DataContext="{Binding AnswerOption3}" Content="{Binding Text}" Command="{Binding DataContext.Answer3Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                <Button Grid.Row="5" Grid.Column="1" DataContext="{Binding AnswerOption4}" Content="{Binding Text}" Command="{Binding DataContext.Answer4Command, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+            <ListBox Grid.Row="2" Grid.Column="1" Padding="0" Background="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding Answers}" SelectedItem="{Binding SelectedAnswer}"
+                     DisplayMemberPath="Text">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="1"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
 
-                <Button Grid.Row="6" Grid.Column="1" Content="⇨ Next Question ⇨" 
+            <Button Grid.Row="3" Grid.Column="1" Content="⇨ Next Question ⇨" 
                         Command="{Binding NextQuestionCommand}" Style="{StaticResource NextQuestionButton}"/>
 
-            </Grid>
         </Grid>
-    </ScrollViewer>
+    </Grid>
 </UserControl>
