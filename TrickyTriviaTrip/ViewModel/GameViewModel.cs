@@ -95,7 +95,6 @@ namespace TrickyTriviaTrip.ViewModel
                 if (_selectedAnswer is not null)
                 {
                     // Case when this answer was selected by the user
-
                     _selectedAnswer.IsSelected = true;
 
                     _questionsAnsweredTotal++;
@@ -110,27 +109,19 @@ namespace TrickyTriviaTrip.ViewModel
                             Score += 10;
                         else
                             Score += 15;
-
-                        // TODO: Better do this without changing the text
-                        _selectedAnswer!.Text = "✔️⇨ " + _selectedAnswer.Text + " ⇦✔️";
-                    }
-                    else
-                    {
-                        // TODO: Better do this without changing the text
-                        _selectedAnswer!.Text = "❌⇨ " + _selectedAnswer.Text + " ⇦❌";
                     }
                 }
 
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsNoAnswerSelected));
                 NextQuestionCommand.OnCanExecuteChanged();
-
             }
         }
 
         /// <summary>
-        /// Shows whether the user has selected an answer already (for binding to the view)
+        /// Shows whether the user has not selected an answer already (for binding to the view)
         /// </summary>
-        public bool IsAnswerSelected => SelectedAnswer is not null;
+        public bool IsNoAnswerSelected => SelectedAnswer is null;
 
         /// <summary>
         /// The number of questions in a game session (for binding to the view)
@@ -176,7 +167,7 @@ namespace TrickyTriviaTrip.ViewModel
             // Pack each AnswerOption into AnswerViewModel and then shuffle the list randomly
             var answerOptions = questionWithAnswers.AnswerOptions.
                 Select(x => new AnswerViewModel(x)).
-                OrderBy(_ => randomNumberGenerator.Next());
+                OrderBy(_ => randomNumberGenerator.Next()).ToList();
 
             // Load the answers into the ObservableCollection
             Answers.Clear();

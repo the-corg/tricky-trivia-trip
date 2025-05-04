@@ -24,18 +24,17 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// Text of the answer option
         /// </summary>
-        public string Text
-        {
-            get => _model.Text;
-            set
-            {
-                if (value == _model.Text)
-                    return;
+        public string Text => _model.Text;
 
-                _model.Text = value;
-                OnPropertyChanged();
-            }
-        }
+        /// <summary>
+        /// Is shown to the left of the answer text after an answer option is selected
+        /// </summary>
+        public string LeftCorrectnessDecorator => IsSelected ? (IsCorrect ? "✔️⇨ " : "❌⇨ ") : "";
+
+        /// <summary>
+        /// Is shown to the right of the answer text after an answer option is selected
+        /// </summary>
+        public string RightCorrectnessDecorator => IsSelected ? (IsCorrect ? " ⇦✔️" : " ⇦❌") : "";
 
         /// <summary>
         /// Shows whether the answer option is correct
@@ -52,6 +51,8 @@ namespace TrickyTriviaTrip.ViewModel
             {
                 _isSelected = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(LeftCorrectnessDecorator));
+                OnPropertyChanged(nameof(RightCorrectnessDecorator));
             }
         }
         #endregion

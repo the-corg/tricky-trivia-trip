@@ -88,20 +88,13 @@
             <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Question.Text}" 
                            Style="{StaticResource GameQuestionText}"/>
             <ListBox Grid.Row="2" Grid.Column="1" Padding="0" Background="Transparent" BorderThickness="0"
-                     ItemsSource="{Binding Answers}" SelectedItem="{Binding SelectedAnswer}"
-                     DisplayMemberPath="Text">
+                     ItemsSource="{Binding Answers}" SelectedItem="{Binding SelectedAnswer, Mode=TwoWay}"
+                     IsEnabled="{Binding IsNoAnswerSelected}" >
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="1"/>
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="VerticalAlignment" Value="Stretch"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
             </ListBox>
 
             <Button Grid.Row="3" Grid.Column="1" Content="⇨ Next Question ⇨" 

@@ -27,31 +27,5 @@
         <GradientStop Color="#228b22" Offset="0.5" />
         <GradientStop Color="#115411" Offset="1.0" />
     </LinearGradientBrush>
-    
-
-    <!-- Kelly green and its friends
-    <SolidColorBrush Color="#0f2504" x:Key="1_VeryDark"/>
-    <SolidColorBrush Color="#265d0b" x:Key="2_Dark"/>
-    <SolidColorBrush Color="#358210" x:Key="3_MediumDark"/>
-    <SolidColorBrush Color="#4cbb17" x:Key="4_Medium"/>
-    <SolidColorBrush Color="#6fc845" x:Key="5_MediumLight"/>
-    <SolidColorBrush Color="#a5dd8b" x:Key="6_Light"/>
-    <SolidColorBrush Color="#dbf1d0" x:Key="7_VeryLight"/>
-    
-    <SolidColorBrush Color="#FDFBD4" x:Key="Cream"/>
-    <SolidColorBrush Color="#636B2F" x:Key="OliveGreen"/>
-    <SolidColorBrush Color="#ADEBB3" x:Key="MintGreen"/>
-    -->
-
-    <!-- Initial Green 
-    <SolidColorBrush Color="#083008" x:Key="1_VeryDark"/>
-    <SolidColorBrush Color="#137013" x:Key="2_Dark"/>
-    <SolidColorBrush Color="#569956" x:Key="3_MediumDark"/>
-    <SolidColorBrush Color="#78ad78" x:Key="4_Medium"/>
-    <SolidColorBrush Color="#9ac29a" x:Key="5_MediumLight"/>
-    <SolidColorBrush Color="#bcd6bc" x:Key="6_Light"/>
-    <SolidColorBrush Color="#ddebdd" x:Key="7_VeryLight"/>
-    -->
-        
 
 </ResourceDictionary>
