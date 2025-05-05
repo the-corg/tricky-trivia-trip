@@ -18,7 +18,7 @@
 
     <SolidColorBrush Color="#5F83ba7f" x:Key="SemiTransparent"/>
 
-    <SolidColorBrush Color="#b80000" x:Key="WrongAnswer"/>
+    <SolidColorBrush Color="#af0000" x:Key="WrongAnswer"/>
     <SolidColorBrush Color="#70ff00" x:Key="CorrectAnswer"/>
 
     <!-- Green gradient for background -->

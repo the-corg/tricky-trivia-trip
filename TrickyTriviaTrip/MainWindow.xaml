@@ -8,12 +8,13 @@
         xmlns:viewModel="clr-namespace:TrickyTriviaTrip.ViewModel"
         mc:Ignorable="d" 
         Title="Tricky Trivia Trip" Height="576" Width="1024"
-        MinHeight="500" MinWidth="800"
         WindowStartupLocation="CenterScreen"
         StateChanged="Window_StateChanged"
         FontSize="24" FontFamily="Segoe UI"
         SnapsToDevicePixels="True"
         Loaded="MainWindow_Loaded">
+
+    <!-- MinHeight="500" MinWidth="800" -->
 
     <WindowChrome.WindowChrome>
         <!-- Nonzero GlassFrameThickness provides a dropshadow for the window -->
