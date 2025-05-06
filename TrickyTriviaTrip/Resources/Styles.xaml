@@ -108,6 +108,7 @@
     <!-- Listbox styles -->
     <Style TargetType="ListBox">
         <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
         <Setter Property="Foreground" Value="{StaticResource Gold}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontSize" Value="{StaticResource GamePrimaryFontSize}"/>
@@ -120,11 +121,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBox">
-                    <Border Name="Border" BorderThickness="0" Background="Transparent">
-                        <ScrollViewer Margin="0" Focusable="false">
-                            <StackPanel Margin="2" IsItemsHost="True"/>
-                        </ScrollViewer>
-                    </Border>
+                    <ScrollViewer Margin="0" Focusable="false">
+                        <StackPanel IsItemsHost="True" IsEnabled="{Binding IsNoAnswerSelected}"/>
+                    </ScrollViewer>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -135,6 +134,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Margin" Value="0 6"/>
+        <Setter Property="Padding" Value="2 0"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
@@ -149,11 +149,11 @@
                         <Border x:Name="ItemBorder" Grid.Column="1" Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
                                 Padding="{TemplateBinding Padding}" Margin="{TemplateBinding Margin}" CornerRadius="20"
-                                MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                MaxWidth="{Binding ViewportWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}">
                             <DockPanel>
-                                <TextBlock DockPanel.Dock="Left" Text="{Binding LeftCorrectnessDecorator}" VerticalAlignment="Center"/>
-                                <TextBlock DockPanel.Dock="Right" Text="{Binding RightCorrectnessDecorator}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding Text}" TextAlignment="Center" TextWrapping="Wrap"/>
+                                <TextBlock DockPanel.Dock="Left" Text="{Binding LeftCorrectnessDecorator}" VerticalAlignment="Center" Margin="0 -2 0 0"/>
+                                <TextBlock DockPanel.Dock="Right" Text="{Binding RightCorrectnessDecorator}" VerticalAlignment="Center" Margin="0 -2 0 0"/>
+                                <TextBlock Text="{Binding Text}" TextAlignment="Center" TextWrapping="Wrap" Margin="0 -2 0 0"/>
                             </DockPanel>
                         </Border>
                     </Grid>

@@ -119,27 +119,27 @@ namespace TrickyTriviaTrip.ViewModel
         }
 
         /// <summary>
-        /// Shows whether the user has not selected an answer already (for binding to the view)
+        /// Shows whether the user has not selected an answer already
         /// </summary>
         public bool IsNoAnswerSelected => SelectedAnswer is null;
 
         /// <summary>
-        /// The number of questions in a game session (for binding to the view)
+        /// The number of questions in a game session
         /// </summary>
         public int GameSessionQuestionsTotal => _gameSessionQuestionsTotal;
 
         /// <summary>
-        /// The number of the current question in the game session (for binding to the view)
+        /// The number of the current question in the game session
         /// </summary>
         public int CurrentQuestionNumber => _questionsAnsweredTotal + 1;
 
         /// <summary>
-        /// The number of questions answered correctly (for binding to the view)
+        /// The number of questions answered correctly
         /// </summary>
         public int QuestionsAnsweredCorrectly => _questionsAnsweredCorrectly;
 
         /// <summary>
-        /// The current score (for binding to the view)
+        /// The current score
         /// </summary>
         public int Score
         {

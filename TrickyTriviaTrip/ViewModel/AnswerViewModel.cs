@@ -24,7 +24,7 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// Text of the answer option
         /// </summary>
-        public string Text => _model.Text + "... and make the answer longer for debugging purposes";
+        public string Text => _model.Text;
 
         /// <summary>
         /// Is shown to the left of the answer text after an answer option is selected

@@ -71,6 +71,28 @@
 
 
         <!-- Question and answers -->
+
+        <!-- Invisible grid to calculate ListBox's MaxHeight -->
+        <Grid Grid.Row="2" Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="14*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <!-- Row for Question text -->
+                <RowDefinition Height="Auto"/>
+                <!-- Row for NextQuestion button -->
+                <RowDefinition Height="Auto"/>
+                <!-- Row with the maximum available vertical space, to bind MaxHeight to -->
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="1" Text="{Binding Question.Text}" Style="{StaticResource GameQuestionText}"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="⇨ Next Question ⇨" Style="{StaticResource MenuButton}" Margin="0 6"/>
+            <Grid x:Name="SpaceLeft" Grid.Row="2" Grid.Column="1"/>
+        </Grid>
+
+        <!-- Actual grid with two resizing rows and content in the middle-->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -86,10 +108,11 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Question.Text}" 
-                           Style="{StaticResource GameQuestionText}"/>
-            <ListBox Grid.Row="2" Grid.Column="1" Padding="0" Background="Transparent" BorderThickness="0"
-                     ItemsSource="{Binding Answers}" SelectedItem="{Binding SelectedAnswer, Mode=TwoWay}"
-                     IsEnabled="{Binding IsNoAnswerSelected}" >
+                       Style="{StaticResource GameQuestionText}"/>
+
+            <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Answers}" 
+                     SelectedItem="{Binding SelectedAnswer, Mode=TwoWay}" 
+                     MaxHeight="{Binding ActualHeight, ElementName=SpaceLeft}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="1"/>
@@ -97,8 +120,9 @@
                 </ListBox.ItemsPanel>
             </ListBox>
 
-            <Button Grid.Row="3" Grid.Column="1" Content="⇨ Next Question ⇨" 
-                        Command="{Binding NextQuestionCommand}" Style="{StaticResource NextQuestionButton}"/>
+            <Button Grid.Row="3" Grid.Column="1"  Content="⇨ Next Question ⇨" 
+                    Command="{Binding NextQuestionCommand}" 
+                    Style="{StaticResource NextQuestionButton}"/>
 
         </Grid>
     </Grid>
