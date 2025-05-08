@@ -1,4 +1,5 @@
-﻿using TrickyTriviaTrip.DataAccess;
+﻿using System.Data.Common;
+using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Services;
 
@@ -14,12 +15,15 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly INavigationService _navigationService;
         private readonly IDatabaseInitializer _databaseInitializer;
         private readonly IQuestionQueue _questionQueue;
+        private readonly IMessageService _messageService;
 
-        public MainViewModel(INavigationService navigationService, IDatabaseInitializer databaseInitializer, IQuestionQueue questionQueue)
+        public MainViewModel(INavigationService navigationService, IDatabaseInitializer databaseInitializer, 
+            IQuestionQueue questionQueue, IMessageService messageService)
         { 
             _navigationService = navigationService;
             _databaseInitializer = databaseInitializer;
             _questionQueue = questionQueue;
+            _messageService = messageService;
 
             _navigationService.CurrentViewModelChanged += OnCurrentViewModelChanged;
             _navigationService.NavigateToMenu();
@@ -34,9 +38,22 @@ namespace TrickyTriviaTrip.ViewModel
         /// </summary>
         public async Task InitializeAsync()
         {
-            await _databaseInitializer.InitializeIfMissingAsync();
+            try
+            {
+                await _databaseInitializer.InitializeIfMissingAsync();
 
-            await _questionQueue.InitializeAsync();
+                await _questionQueue.InitializeAsync();
+            }
+            catch (DbException exception)
+            {
+                _messageService.ShowMessage($"Database error:\n\n{exception.ToString()}");
+                // TODO: Add logging
+            }
+            catch (Exception exception)
+            {
+                _messageService.ShowMessage($"Unexpected error:\n\n{exception.ToString()}");
+                // TODO: Add logging
+            }
         }
         #endregion
 

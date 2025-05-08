@@ -209,7 +209,7 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.6" BeginTime="0:0:1.5"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.6" BeginTime="0:0:1.2"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>

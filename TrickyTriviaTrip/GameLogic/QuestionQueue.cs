@@ -1,11 +1,14 @@
-﻿using System.Diagnostics;
+﻿using System.Data.Common;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.Api.ApiResponses;
 using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Properties;
+using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.GameLogic
 {
@@ -45,15 +48,17 @@ namespace TrickyTriviaTrip.GameLogic
 
         private readonly ITriviaApiClient _triviaApiClient;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IMessageService _messageService;
 
         // TODO: Change this to private
         public readonly Queue<QuestionWithAnswers> _queue = new();
         private bool _isFetching = false;
 
-        public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository)
+        public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository, IMessageService messageService)
         {
             _triviaApiClient = triviaApiClient;
             _questionRepository = questionRepository;
+            _messageService = messageService;
         }
 
         #endregion
@@ -74,16 +79,42 @@ namespace TrickyTriviaTrip.GameLogic
 
                 // This happens sometimes when the user clicks Start Game immediately
                 // or if either the internet connection or Trivia API is down.
-                // (using the database as the faster option)
+
+                // Using the database as the faster option
                 await UrgentFetchAsync(_databaseLoadCount);
 
-                // TODO: Deal with the case when the web API (or the internet connection) is down
-                // and the database doesn't have any questions yet
-                // Maybe show message box about this, and while it's on the screen, the API
-                // has a chance to provide more questions. Otherwise, playing the game is impossible.
+                // Still no questions in the queue
+                if (_queue.Count == 0)
+                {
+                    Debug.WriteLine("Still no questions in the queue.");
+
+                    // Last drastic attempt to get at least one question from the API
+
+                    // Show message from a background thread to let the API request run
+                    // while the user is reading the message 
+                    new Thread(() => {
+                        _messageService.ShowMessage("Error! The database contains no questions or is corrupt.\nPlease wait a few seconds while we attempt to get a question from Trivia API...");
+                    }).Start();
+
+                    await Task.Delay(5001); // API Rate Limit
+                    await LoadQuestionsAsync(1);
+                }
             }
 
-            var question = _queue.Dequeue();
+            // Get one question from the Queue
+            QuestionWithAnswers question;
+            try
+            {
+                question = _queue.Dequeue();
+            }
+            catch (InvalidOperationException exception)
+            {
+                Debug.WriteLine(exception.ToString());
+
+                _messageService.ShowMessage("Error! No questions available. Exiting...");
+                Application.Current.Shutdown();
+                throw;
+            }
 
             // Background refill if too few questions left
             if (_queue.Count <= _minBufferThreshold && !_isFetching)
@@ -106,10 +137,12 @@ namespace TrickyTriviaTrip.GameLogic
         /// <param name="count">Number of questions to load</param>
         private async Task LoadQuestionsAsync(int count)
         {
+            Debug.WriteLine($"Count requested: {count}\nCurrent thread: {Thread.CurrentThread.ManagedThreadId}");
+
             await LoadQuestionsFromApiAsync(count);
 
             // If too few questions were loaded
-            // (for example, the web API is down or doesn't have any more questions),
+            // (for example, Trivia API is down or doesn't have any more questions),
             // load some questions from the database
             if (_queue.Count <= _minBufferThreshold)
             {
@@ -139,7 +172,7 @@ namespace TrickyTriviaTrip.GameLogic
 
                     // Ignore existing questions
                     if (exists)
-                        continue; 
+                        continue;
 
                     // Transform the question from API-received object to Question and AnswerOptions
                     var question = new Question()
@@ -164,6 +197,16 @@ namespace TrickyTriviaTrip.GameLogic
 
                     _queue.Enqueue(questionWithAnswers);
                 }
+            }
+            catch (DbException exception)
+            {
+                _messageService.ShowMessage($"Database error:\n\n{exception.ToString()}");
+                // TODO: Add logging
+            }
+            catch (Exception exception)
+            {
+                _messageService.ShowMessage($"Unexpected error:\n\n{exception.ToString()}");
+                // TODO: Add logging
             }
             finally
             {
@@ -192,17 +235,32 @@ namespace TrickyTriviaTrip.GameLogic
         }
 
         /// <summary>
-        /// Gets a number of questios from the database and adds them to the queue
+        /// Gets a number of questions from the database and adds them to the queue
         /// </summary>
         /// <param name="count">Number of questions to get</param>
         private async Task UrgentFetchAsync(int count)
         {
             // Fetch a few questions from the database
-            Debug.WriteLine("Loading questions from the database");
-            var questionsWithAnswers = await _questionRepository.GetWithAnswersAsync(count);
 
-            foreach (var q in questionsWithAnswers)
-                _queue.Enqueue(q);
+            Debug.WriteLine("Loading questions from the database");
+
+            try
+            {
+                var questionsWithAnswers = await _questionRepository.GetWithAnswersAsync(count);
+
+                foreach (var q in questionsWithAnswers)
+                    _queue.Enqueue(q);
+            }
+            catch (DbException exception)
+            {
+                _messageService.ShowMessage($"Database error:\n\n{exception.ToString()}");
+                // TODO: Add logging
+            }
+            catch (Exception exception)
+            {
+                _messageService.ShowMessage($"Unexpected error:\n\n{exception.ToString()}");
+                // TODO: Add logging
+            }
         }
         #endregion
     }
