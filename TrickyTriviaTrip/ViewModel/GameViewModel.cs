@@ -195,10 +195,10 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// Loads the next question from the queue
         /// </summary>
-        private void NextQuestion()
+        private async void NextQuestion()
         {
             // Get the next question from the queue
-            var questionWithAnswers = _questionQueue.GetNextQuestion();
+            var questionWithAnswers = await _questionQueue.GetNextQuestionAsync();
             _question = questionWithAnswers.Question;
 
             // Pack each AnswerOption into AnswerViewModel and then shuffle the list randomly

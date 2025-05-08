@@ -112,5 +112,14 @@ namespace TrickyTriviaTrip.Properties {
                 return ((int)(this["GameSessionQuestionsTotal"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int DatabaseLoadCount {
+            get {
+                return ((int)(this["DatabaseLoadCount"]));
+            }
+        }
     }
 }

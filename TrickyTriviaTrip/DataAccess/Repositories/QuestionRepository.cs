@@ -23,6 +23,13 @@ namespace TrickyTriviaTrip.DataAccess
         /// <param name="questionWithAnswers">Question to be inserted, together with its answer options</param>
         Task InsertWithAnswersAsync(QuestionWithAnswers questionWithAnswers);
 
+        /// <summary>
+        /// Gets a collection of random questions with answer options from the database asynchronously
+        /// </summary>
+        /// <param name="count">Number of questions to get</param>
+        /// <returns>A collection of questions with their answer options</returns>
+        Task<IEnumerable<QuestionWithAnswers>> GetWithAnswersAsync(int count);
+
     }
 
 
@@ -35,8 +42,11 @@ namespace TrickyTriviaTrip.DataAccess
         private int? _ordinalCategory;
         private int? _ordinalContentHash;
 
-        public QuestionRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
+        private readonly IAnswerOptionRepository _answerOptionRepository;
+
+        public QuestionRepository(IDbConnectionFactory connectionFactory, IAnswerOptionRepository answerOptionRepository) : base(connectionFactory)
         {
+            _answerOptionRepository = answerOptionRepository;
         }
 
         protected override string TableName => "Question";
@@ -76,6 +86,7 @@ namespace TrickyTriviaTrip.DataAccess
 
         #region Public methods specific to Question (IQuestionRepository) 
 
+        // For the docstrings, see the interface
         public async Task<bool> ExistsByHashAsync(string contentHash)
         {
             using var connection = await _connectionFactory.GetConnectionAsync();
@@ -130,6 +141,44 @@ namespace TrickyTriviaTrip.DataAccess
                 // TODO: Change re-throwing to a message (no need to crash here)
                 throw;
             }
+
+        }
+
+
+        public async Task<IEnumerable<QuestionWithAnswers>> GetWithAnswersAsync(int count)
+        {
+            var resultList = new List<QuestionWithAnswers>();
+            var listOfQuestions = new List<Question>();
+
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            // First get the questions
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT * FROM Question ORDER BY RANDOM() LIMIT @Count";
+            cmd.Parameters.Add(new SQLiteParameter("@Count", count));
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                listOfQuestions.Add(MapToEntity(reader));
+            }
+
+            // Get all answer options and pack them together with each question
+            foreach (var question in listOfQuestions)
+            {
+                var answerOptions = await _answerOptionRepository.GetByQuestionIdAsync(question.Id);
+
+                if (answerOptions.Count != 4)
+                {
+                    // TODO: Add an error to the log here
+                    // Something happened to the database so that this question doesn't have its 4 answers stored in the DB
+                    continue;
+                }
+
+                resultList.Add(new QuestionWithAnswers() { Question = question, AnswerOptions = answerOptions });
+            }
+
+            return resultList;
 
         }
 

@@ -16,12 +16,12 @@ namespace TrickyTriviaTrip.ViewModel
         // TODO: remove this (initial debug only)
         private readonly IQuestionQueue _questionQueue;
         private readonly IQuestionRepository _questionRepository;
-        private readonly IRepository<AnswerOption> _answerOptionRepository;
+        private readonly IAnswerOptionRepository _answerOptionRepository;
 
 
         private readonly INavigationService _navigationService;
 
-        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository, IRepository<AnswerOption> answerOptionRepository)
+        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository, IAnswerOptionRepository answerOptionRepository)
         {
             _navigationService = navigationService;
 

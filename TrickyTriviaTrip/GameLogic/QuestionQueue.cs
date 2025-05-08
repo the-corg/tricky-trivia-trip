@@ -17,15 +17,15 @@ namespace TrickyTriviaTrip.GameLogic
     public interface IQuestionQueue
     {
         /// <summary>
-        /// Dequeues the next question.
-        /// If less than 5 questions are left afterwards,
+        /// Dequeues the next question. If less than
+        /// Settings.Default.MinBufferThreshold questions are left afterwards,
         /// launches a task in a separate thread to load more
         /// </summary>
         /// <returns>Next question from the queue</returns>
-        QuestionWithAnswers GetNextQuestion();
+        Task<QuestionWithAnswers> GetNextQuestionAsync();
 
         /// <summary>
-        /// Loads the initial 10 questions into the queue asynchronously
+        /// Loads the initial InitialLoadCount questions into the queue asynchronously
         /// </summary>
         Task InitializeAsync();
     }
@@ -39,6 +39,8 @@ namespace TrickyTriviaTrip.GameLogic
         private readonly int _backgroundLoadCount = Settings.Default.BackgroundLoadCount;
         // If the number of questions reaches this, load more
         private readonly int _minBufferThreshold = Settings.Default.MinBufferThreshold;
+        // In case of having to fall back to DB questions, load this number from the DB
+        private readonly int _databaseLoadCount = Settings.Default.DatabaseLoadCount;
 
 
         private readonly ITriviaApiClient _triviaApiClient;
@@ -58,14 +60,27 @@ namespace TrickyTriviaTrip.GameLogic
 
 
         #region Public methods and properties 
-        public QuestionWithAnswers GetNextQuestion()
+
+        public async Task InitializeAsync()
+        {
+            await LoadQuestionsAsync(_initialLoadCount);
+        }
+
+        public async Task<QuestionWithAnswers> GetNextQuestionAsync()
         {
             if (_queue.Count == 0)
             {
-                // This shouldn't ever happen.
-                // The user will have to wait.
+                Debug.WriteLine("No next question in the queue.");
+
+                // This happens sometimes when the user clicks Start Game immediately
+                // or if either the internet connection or Trivia API is down.
                 // (using the database as the faster option)
-                UrgentFetch();
+                await UrgentFetchAsync(_databaseLoadCount);
+
+                // TODO: Deal with the case when the web API (or the internet connection) is down
+                // and the database doesn't have any questions yet
+                // Maybe show message box about this, and while it's on the screen, the API
+                // has a chance to provide more questions. Otherwise, playing the game is impossible.
             }
 
             var question = _queue.Dequeue();
@@ -79,29 +94,38 @@ namespace TrickyTriviaTrip.GameLogic
             return question;
         }
 
-        public async Task InitializeAsync()
-        {
-            await LoadQuestionsAsync(_initialLoadCount);
-            // TODO: If too few, fallback to DB
-        }
-
         #endregion
 
 
         #region Private helper methods 
 
         /// <summary>
+        /// Loads questions from the API, falls back to the database
+        /// if too few questions were loaded
+        /// </summary>
+        /// <param name="count">Number of questions to load</param>
+        private async Task LoadQuestionsAsync(int count)
+        {
+            await LoadQuestionsFromApiAsync(count);
+
+            // If too few questions were loaded
+            // (for example, the web API is down or doesn't have any more questions),
+            // load some questions from the database
+            if (_queue.Count <= _minBufferThreshold)
+            {
+                Debug.WriteLine("Not enough questions obtained from API");
+                await UrgentFetchAsync(_databaseLoadCount);
+            }
+        }
+
+
+        /// <summary>
         /// Loads questions from the API, ignores those already existing in the database
         /// </summary>
         /// <param name="count">Number of questions to load</param>
-        /// <returns>The number of actually loaded new questions</returns>
-        private async Task<int> LoadQuestionsAsync(int count)
+        private async Task LoadQuestionsFromApiAsync(int count)
         {
-            // TODO: remove this
-            Debug.WriteLine($"\nCount requested: {count}\nCurrent thread: {Thread.CurrentThread.ManagedThreadId}");
-
             _isFetching = true;
-            int countAdded = 0;
 
             try
             {
@@ -139,14 +163,13 @@ namespace TrickyTriviaTrip.GameLogic
                     await _questionRepository.InsertWithAnswersAsync(questionWithAnswers);
 
                     _queue.Enqueue(questionWithAnswers);
-                    countAdded++;
                 }
             }
             finally
             {
                 _isFetching = false;
             }
-            return countAdded;
+            return;
         }
 
 
@@ -168,10 +191,18 @@ namespace TrickyTriviaTrip.GameLogic
             return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(inputString)));
         }
 
-        private async void UrgentFetch()
+        /// <summary>
+        /// Gets a number of questios from the database and adds them to the queue
+        /// </summary>
+        /// <param name="count">Number of questions to get</param>
+        private async Task UrgentFetchAsync(int count)
         {
             // Fetch a few questions from the database
-            throw new NotImplementedException();
+            Debug.WriteLine("Loading questions from the database");
+            var questionsWithAnswers = await _questionRepository.GetWithAnswersAsync(count);
+
+            foreach (var q in questionsWithAnswers)
+                _queue.Enqueue(q);
         }
         #endregion
     }
