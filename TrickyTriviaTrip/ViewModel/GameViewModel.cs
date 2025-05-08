@@ -3,6 +3,7 @@ using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Properties;
 using TrickyTriviaTrip.Services;
+using TrickyTriviaTrip.Utilities;
 
 namespace TrickyTriviaTrip.ViewModel
 {
@@ -25,6 +26,7 @@ namespace TrickyTriviaTrip.ViewModel
         private int _questionsAnsweredTotal = 0;
         private int _questionsAnsweredCorrectly = 0;
         private int _score = 0;
+        private bool _canCelebrate;
 
         private Question? _question;
         private AnswerViewModel? _selectedAnswer;
@@ -109,6 +111,15 @@ namespace TrickyTriviaTrip.ViewModel
                             Score += 10;
                         else
                             Score += 15;
+
+                        OnPropertyChanged(nameof(SuccessEmojiLine));
+                        OnPropertyChanged(nameof(SuccessTextLine));
+
+                        // The setter fires PropertyChanged, and the animation starts
+                        CanCelebrate = true;
+
+                        // That's it. Enough celebrating
+                        CanCelebrate = false; 
                     }
                 }
 
@@ -150,6 +161,32 @@ namespace TrickyTriviaTrip.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// Shows whether celebration of success would be appropriate at the moment
+        /// </summary>
+        public bool CanCelebrate
+        {
+            get => _canCelebrate;
+            set
+            {
+                if (_canCelebrate == value)
+                    return;
+
+                _canCelebrate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Provides a string of success emojis
+        /// </summary>
+        public string SuccessEmojiLine => SuccessMessages.Emoji;
+
+        /// <summary>
+        /// Provides a success message
+        /// </summary>
+        public string SuccessTextLine => SuccessMessages.Text;
 
         #endregion
 

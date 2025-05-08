@@ -125,5 +125,16 @@
                     Style="{StaticResource NextQuestionButton}"/>
 
         </Grid>
+
+        <!-- Success message -->
+        <Border Opacity="0" Grid.RowSpan="3" Style="{StaticResource SuccessMessageBorder}">
+            <Viewbox Stretch="Uniform">
+                <StackPanel>
+                    <TextBlock Text="{Binding SuccessEmojiLine}" Style="{StaticResource SuccessMessageTextBlock}"/>
+                    <TextBlock Text="{Binding SuccessTextLine}" Foreground="White" Style="{StaticResource SuccessMessageTextBlock}"/>
+                </StackPanel>
+            </Viewbox>
+        </Border>
+
     </Grid>
 </UserControl>
