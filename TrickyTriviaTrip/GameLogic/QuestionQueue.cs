@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
@@ -49,16 +48,19 @@ namespace TrickyTriviaTrip.GameLogic
         private readonly ITriviaApiClient _triviaApiClient;
         private readonly IQuestionRepository _questionRepository;
         private readonly IMessageService _messageService;
+        private readonly ILoggingService _loggingService;
 
         // TODO: Change this to private
         public readonly Queue<QuestionWithAnswers> _queue = new();
         private bool _isFetching = false;
 
-        public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository, IMessageService messageService)
+        public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository, IMessageService messageService,
+            ILoggingService loggingService)
         {
             _triviaApiClient = triviaApiClient;
             _questionRepository = questionRepository;
             _messageService = messageService;
+            _loggingService = loggingService;
         }
 
         #endregion
@@ -75,7 +77,7 @@ namespace TrickyTriviaTrip.GameLogic
         {
             if (_queue.Count == 0)
             {
-                Debug.WriteLine("No next question in the queue.");
+                _loggingService.LogWarning("No questions in the queue. Requesting questions from the database...");
 
                 // This happens sometimes when the user clicks Start Game immediately
                 // or if either the internet connection or Trivia API is down.
@@ -86,17 +88,19 @@ namespace TrickyTriviaTrip.GameLogic
                 // Still no questions in the queue
                 if (_queue.Count == 0)
                 {
-                    Debug.WriteLine("Still no questions in the queue.");
+                    _loggingService.LogError("Failed to get questions from the database. Last attempt to get at least one question from the API...");
 
                     // Last drastic attempt to get at least one question from the API
 
                     // Show message from a background thread to let the API request run
                     // while the user is reading the message 
                     new Thread(() => {
+                        _loggingService.LogInfo($"Showing a message to the user from a background thread. Thread: {Environment.CurrentManagedThreadId}");
                         _messageService.ShowMessage("Error! The database contains no questions or is corrupt.\nPlease wait a few seconds while we attempt to get a question from Trivia API...");
                     }).Start();
 
                     await Task.Delay(5001); // API Rate Limit
+                    _loggingService.LogInfo("The API rate limit delay ended. Now asking the API for one quesion...");
                     await LoadQuestionsAsync(1);
                 }
             }
@@ -109,7 +113,7 @@ namespace TrickyTriviaTrip.GameLogic
             }
             catch (InvalidOperationException exception)
             {
-                Debug.WriteLine(exception.ToString());
+                _loggingService.LogError("Error dequeueing a question (probably no questions in the queue, will have to exit):\n" + exception.ToString());
 
                 _messageService.ShowMessage("Error! No questions available. Exiting...");
                 Application.Current.Shutdown();
@@ -137,7 +141,7 @@ namespace TrickyTriviaTrip.GameLogic
         /// <param name="count">Number of questions to load</param>
         private async Task LoadQuestionsAsync(int count)
         {
-            Debug.WriteLine($"Count requested: {count}\nCurrent thread: {Thread.CurrentThread.ManagedThreadId}");
+            _loggingService.LogInfo($"{count} new questions requested. Currently {_queue.Count} questions in the queue. Current thread: {Environment.CurrentManagedThreadId}");
 
             await LoadQuestionsFromApiAsync(count);
 
@@ -146,8 +150,9 @@ namespace TrickyTriviaTrip.GameLogic
             // load some questions from the database
             if (_queue.Count <= _minBufferThreshold)
             {
-                Debug.WriteLine("Not enough questions obtained from API");
+                _loggingService.LogWarning($"Not enough questions after API request, will request from the DB. Currently {_queue.Count} questions in the queue. Current thread: {Environment.CurrentManagedThreadId}");
                 await UrgentFetchAsync(_databaseLoadCount);
+                _loggingService.LogInfo($"After the database query, there are {_queue.Count} questions in the queue.");
             }
         }
 
@@ -159,6 +164,7 @@ namespace TrickyTriviaTrip.GameLogic
         private async Task LoadQuestionsFromApiAsync(int count)
         {
             _isFetching = true;
+            int discardedCount = 0;
 
             try
             {
@@ -172,7 +178,10 @@ namespace TrickyTriviaTrip.GameLogic
 
                     // Ignore existing questions
                     if (exists)
+                    {
+                        discardedCount++;
                         continue;
+                    }
 
                     // Transform the question from API-received object to Question and AnswerOptions
                     var question = new Question()
@@ -197,16 +206,23 @@ namespace TrickyTriviaTrip.GameLogic
 
                     _queue.Enqueue(questionWithAnswers);
                 }
+
+                if (_loggingService.ShouldLogInfo)
+                {
+                    // Unnecessary DB query here. Won't execute in production with Info-level logging off
+                    var questionsInDb = await _questionRepository.GetAllAsync();
+                    _loggingService.LogInfo($"Obtained {apiQuestions.Count()} questions from the API, {discardedCount} of which were discarded as already existing in the DB.\nThere are {questionsInDb.Count()} questions stored in the database now.");   
+                }
             }
             catch (DbException exception)
             {
-                _messageService.ShowMessage($"Database error:\n\n{exception.ToString()}");
-                // TODO: Add logging
+                _loggingService.LogError("Database error while checking existence by hash or while adding new questions:\n" + exception.ToString());
+                _messageService.ShowMessage("Database error:\n" + exception.Message);
             }
             catch (Exception exception)
             {
-                _messageService.ShowMessage($"Unexpected error:\n\n{exception.ToString()}");
-                // TODO: Add logging
+                _loggingService.LogError("Error while loading new questions from the API:\n" + exception.ToString());
+                _messageService.ShowMessage("Error:\n" + exception.Message);
             }
             finally
             {
@@ -240,10 +256,6 @@ namespace TrickyTriviaTrip.GameLogic
         /// <param name="count">Number of questions to get</param>
         private async Task UrgentFetchAsync(int count)
         {
-            // Fetch a few questions from the database
-
-            Debug.WriteLine("Loading questions from the database");
-
             try
             {
                 var questionsWithAnswers = await _questionRepository.GetWithAnswersAsync(count);
@@ -253,13 +265,13 @@ namespace TrickyTriviaTrip.GameLogic
             }
             catch (DbException exception)
             {
-                _messageService.ShowMessage($"Database error:\n\n{exception.ToString()}");
-                // TODO: Add logging
+                _loggingService.LogError("Database error while fetching questions from the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Database error:\n" + exception.Message);
             }
             catch (Exception exception)
             {
-                _messageService.ShowMessage($"Unexpected error:\n\n{exception.ToString()}");
-                // TODO: Add logging
+                _loggingService.LogError("Error while fetching questions from the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Error:\n" + exception.Message);
             }
         }
         #endregion

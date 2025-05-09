@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using TrickyTriviaTrip.Api.ApiResponses;
 using TrickyTriviaTrip.Properties;
+using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.Api
 {
@@ -13,14 +13,16 @@ namespace TrickyTriviaTrip.Api
         #region Private fields and the constructor 
 
         private readonly HttpClient _httpClient;
+        private readonly ILoggingService _loggingService;
         private string? _sessionToken;
 
         // Ensures correct deserialization of snake_case keys from API response
         private JsonSerializerOptions _serializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
 
-        public TriviaApiClient(HttpClient httpClient)
+        public TriviaApiClient(HttpClient httpClient, ILoggingService loggingService)
         {
             _httpClient = httpClient;
+            _loggingService = loggingService;
         }
         #endregion
 
@@ -35,11 +37,11 @@ namespace TrickyTriviaTrip.Api
                 await RequestTokenIfNullAsync();
                 if (_sessionToken is null)
                 {
-                    Debug.WriteLine("Failed to get a session token from Trivia API");
+                    _loggingService.LogError($"Failed to get a session token from Trivia API. Returning without new questions. Current thread: {Environment.CurrentManagedThreadId}");
                     return Enumerable.Empty<TriviaApiQuestion>();
                 }
 
-                Debug.WriteLine($"Current token: {_sessionToken}");
+                _loggingService.LogInfo($"Current thread: {Environment.CurrentManagedThreadId}. Requesting {amount} new questions from the API with session token {_sessionToken}");
 
                 var url = Settings.Default.TriviaApiBaseUrl +
                     "?amount=" + amount +
@@ -50,7 +52,7 @@ namespace TrickyTriviaTrip.Api
 
                 if (response is null)
                 {
-                    Debug.WriteLine("Failed to get or deserialize Trivia API response");
+                    _loggingService.LogError($"Failed to get or deserialize Trivia API response. Returning without new questions. Current thread: {Environment.CurrentManagedThreadId}");
                     return Enumerable.Empty<TriviaApiQuestion>();
                 }
 
@@ -63,8 +65,7 @@ namespace TrickyTriviaTrip.Api
             }
             catch (Exception exception)
             {
-                Debug.WriteLine($"Trivia API error. Response code: {response?.ResponseCode}. Exception:\n"+ exception.ToString());
-                // Something went wrong with the API request, but that's not a big problem
+                _loggingService.LogError($"Trivia API error when requesting new questions. Current thread: {Environment.CurrentManagedThreadId}. Response code: {response?.ResponseCode}. Exception:\n"+ exception.ToString());
                 return Enumerable.Empty<TriviaApiQuestion>();
             }
 
@@ -83,12 +84,17 @@ namespace TrickyTriviaTrip.Api
             if (_sessionToken is not null)
                 return;
 
+            _loggingService.LogInfo($"Current thread: {Environment.CurrentManagedThreadId}. Requesting a new session token from Trivia API...");
             var tokenResponse = await _httpClient.GetFromJsonAsync<TriviaApiTokenResponse>(
                 Settings.Default.RetrieveTokenUrl, _serializerOptions);
 
             if (tokenResponse?.ResponseCode != 0 || string.IsNullOrEmpty(tokenResponse.Token))
+            {
+                _loggingService.LogError($"Error getting a new session token from Trivia API. Current thread: {Environment.CurrentManagedThreadId}. Response code: {tokenResponse?.ResponseCode}");
                 return;
+            }
 
+            _loggingService.LogInfo($"Current thread: {Environment.CurrentManagedThreadId}. Obtained new session token: {tokenResponse.Token}");
             _sessionToken = tokenResponse.Token;
         }
 
@@ -122,7 +128,7 @@ namespace TrickyTriviaTrip.Api
                     break;
             }
 
-            Debug.WriteLine($"Unsuccessful API request. Code {responseCode}: " + reason);
+            _loggingService.LogError($"Unsuccessful API request. Current thread: {Environment.CurrentManagedThreadId}. Code {responseCode}: " + reason);
 
             if (responseCode == 3 || responseCode == 4)
             {

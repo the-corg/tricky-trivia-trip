@@ -12,7 +12,8 @@ namespace TrickyTriviaTrip.Services
     public interface ILoggingService : IDisposable
     {
         /// <summary>
-        /// Determines whether Info-level messages should be logged 
+        /// Determines whether Info-level messages should be logged.
+        /// Recommended to keep false in production 
         /// </summary>
         bool ShouldLogInfo { get; set; }
 
@@ -78,7 +79,7 @@ namespace TrickyTriviaTrip.Services
 
         #region Public methods and properties
 
-        public bool ShouldLogInfo { get; set; } = true;
+        public bool ShouldLogInfo { get; set; } = true; // TODO: set this to false before release
 
         public void LogInfo(string message) { if (ShouldLogInfo) Log("[i] " + message); }
         public void LogWarning(string message) { Log("[?!] " + message); }
@@ -134,7 +135,7 @@ namespace TrickyTriviaTrip.Services
             }
             catch (Exception exception)
             {
-                LogWarning("Error during cleanup of old logs: " + exception.ToString());
+                LogWarning("Error during cleanup of old logs. Thread: " + Environment.CurrentManagedThreadId + "\n" + exception.ToString());
             }
         }
 

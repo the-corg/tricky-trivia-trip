@@ -3,7 +3,6 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.DataAccess;
-using TrickyTriviaTrip.DataAccess.Queries;
 using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Services;
@@ -84,9 +83,6 @@ namespace TrickyTriviaTrip
             services.AddSingleton<IRepository<Score>, ScoreRepository>();
             services.AddSingleton<IRepository<AnswerAttempt>, AnswerAttemptRepository>();
 
-            // Queries
-            services.AddSingleton<IQuestionQueries, QuestionQueries>();
-
             // Game logic
             services.AddSingleton<IPlayData, PlayData>();
             services.AddSingleton<IQuestionQueue, QuestionQueue>();
@@ -95,7 +91,6 @@ namespace TrickyTriviaTrip
             services.AddTransient<IMessageService, MessageService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ILoggingService, LoggingService>();
-
         }
         #endregion
 

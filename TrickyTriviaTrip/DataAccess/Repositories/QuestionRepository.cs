@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SQLite;
 using TrickyTriviaTrip.Model;
+using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.DataAccess
 {
@@ -43,10 +44,13 @@ namespace TrickyTriviaTrip.DataAccess
         private int? _ordinalContentHash;
 
         private readonly IAnswerOptionRepository _answerOptionRepository;
+        private readonly ILoggingService _loggingService;
 
-        public QuestionRepository(IDbConnectionFactory connectionFactory, IAnswerOptionRepository answerOptionRepository) : base(connectionFactory)
+        public QuestionRepository(IDbConnectionFactory connectionFactory, IAnswerOptionRepository answerOptionRepository, 
+            ILoggingService loggingService) : base(connectionFactory)
         {
             _answerOptionRepository = answerOptionRepository;
+            _loggingService = loggingService;
         }
 
         protected override string TableName => "Question";
@@ -137,8 +141,8 @@ namespace TrickyTriviaTrip.DataAccess
             }
             catch (Exception)
             {
+                _loggingService.LogError("Error during transaction of inserting a question and its answer options.\nRolling back the transaction and rethrowing the exception...");
                 await transaction.RollbackAsync();
-                // TODO: Change re-throwing to a message (no need to crash here)
                 throw;
             }
 
@@ -170,8 +174,8 @@ namespace TrickyTriviaTrip.DataAccess
 
                 if (answerOptions.Count != 4)
                 {
-                    // TODO: Add an error to the log here
                     // Something happened to the database so that this question doesn't have its 4 answers stored in the DB
+                    _loggingService.LogError($"Error getting answer options for question #{question.Id} with text:\n{question.Text}\nExpected 4 answer options, got {answerOptions.Count} instead. Skipping the question.");
                     continue;
                 }
 
@@ -179,7 +183,6 @@ namespace TrickyTriviaTrip.DataAccess
             }
 
             return resultList;
-
         }
 
         #endregion
