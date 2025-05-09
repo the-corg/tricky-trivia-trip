@@ -65,11 +65,12 @@ namespace TrickyTriviaTrip
             // Other
             services.AddTransient<IMessageService, MessageService>();
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<ILoggingService, LoggingService>();
 
         }
         #endregion
 
-        #region OnStartup (show MainWindow)
+        #region OnStartup and OnExit
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -78,6 +79,14 @@ namespace TrickyTriviaTrip
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.DataContext = _serviceProvider.GetRequiredService<MainViewModel>();
             mainWindow?.Show();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            // Will dispose of all disposables among services (e.g., ILoggingService)
+            _serviceProvider.Dispose();
+
+            base.OnExit(e);
         }
         #endregion
     }

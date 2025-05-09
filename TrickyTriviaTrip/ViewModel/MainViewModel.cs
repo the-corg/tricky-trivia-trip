@@ -16,14 +16,16 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly IDatabaseInitializer _databaseInitializer;
         private readonly IQuestionQueue _questionQueue;
         private readonly IMessageService _messageService;
+        private readonly ILoggingService _loggingService;
 
         public MainViewModel(INavigationService navigationService, IDatabaseInitializer databaseInitializer, 
-            IQuestionQueue questionQueue, IMessageService messageService)
+            IQuestionQueue questionQueue, IMessageService messageService, ILoggingService loggingService)
         { 
             _navigationService = navigationService;
             _databaseInitializer = databaseInitializer;
             _questionQueue = questionQueue;
             _messageService = messageService;
+            _loggingService = loggingService;
 
             _navigationService.CurrentViewModelChanged += OnCurrentViewModelChanged;
             _navigationService.NavigateToMenu();
@@ -46,13 +48,13 @@ namespace TrickyTriviaTrip.ViewModel
             }
             catch (DbException exception)
             {
-                _messageService.ShowMessage($"Database error:\n\n{exception.ToString()}");
-                // TODO: Add logging
+                _loggingService.LogError("Database error during initialization:\n" + exception.ToString());
+                _messageService.ShowMessage("Database error:\n" + exception.Message);
             }
             catch (Exception exception)
             {
-                _messageService.ShowMessage($"Unexpected error:\n\n{exception.ToString()}");
-                // TODO: Add logging
+                _loggingService.LogError("Error during initialization:\n" + exception.ToString());
+                _messageService.ShowMessage("Error:\n" + exception.Message);
             }
         }
         #endregion

@@ -121,5 +121,14 @@ namespace TrickyTriviaTrip.Properties {
                 return ((int)(this["DatabaseLoadCount"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int DaysToKeepLogs {
+            get {
+                return ((int)(this["DaysToKeepLogs"]));
+            }
+        }
     }
 }
