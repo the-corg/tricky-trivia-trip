@@ -22,6 +22,8 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly INavigationService _navigationService;
         private readonly IMessageService _messageService;
         private readonly IQuestionQueue _questionQueue;
+        private readonly ILoggingService _loggingService;
+        private readonly IPlayData _playData;
 
         private int _questionsAnsweredTotal = 0;
         private int _questionsAnsweredCorrectly = 0;
@@ -35,11 +37,16 @@ namespace TrickyTriviaTrip.ViewModel
 
         #region Constructor
 
-        public GameViewModel(INavigationService navigationService, IMessageService messageService, IQuestionQueue questionQueue)
+        public GameViewModel(INavigationService navigationService, IMessageService messageService,
+            IQuestionQueue questionQueue, ILoggingService loggingService, IPlayData playData)
         {
             _navigationService = navigationService;
             _messageService = messageService;
             _questionQueue = questionQueue;
+            _loggingService = loggingService;
+            _playData = playData;
+
+            _loggingService.LogInfo($"Starting a new game. Player: {_playData.CurrentPlayer.Name}");
 
             // Load the first question 
             NextQuestion();

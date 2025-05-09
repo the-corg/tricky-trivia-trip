@@ -1,4 +1,5 @@
-﻿using TrickyTriviaTrip.Services;
+﻿using TrickyTriviaTrip.GameLogic;
+using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.ViewModel
 {
@@ -9,10 +10,12 @@ namespace TrickyTriviaTrip.ViewModel
     {
         #region Private fields and the constructor
         private readonly INavigationService _navigationService;
+        private readonly IPlayData _playData;
 
-        public MenuViewModel(INavigationService navigationService)
+        public MenuViewModel(INavigationService navigationService, IPlayData playData)
         {
             _navigationService = navigationService;
+            _playData = playData;
 
             StartGameCommand = new DelegateCommand(execute => _navigationService.NavigateToGame());
             ViewStatsCommand = new DelegateCommand(execute => _navigationService.NavigateToStats());
@@ -26,7 +29,7 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// The name of the current player
         /// </summary>
-        public string? PlayerName => Environment.UserName;
+        public string? PlayerName => _playData.CurrentPlayer.Name;
 
         /// <summary>
         /// Command for the Start Game button

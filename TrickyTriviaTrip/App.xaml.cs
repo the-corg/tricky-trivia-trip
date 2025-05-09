@@ -19,14 +19,43 @@ namespace TrickyTriviaTrip
         #region Constructor and private fields 
 
         private readonly ServiceProvider _serviceProvider;
+        private readonly ILoggingService _loggingService;
 
         public App()
         {
             ServiceCollection services = new();
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();
+
+            _loggingService = _serviceProvider.GetRequiredService<ILoggingService>();
+            ConfigureExceptionHandling();
+        }
+
+        #endregion
+
+        #region Global exception handling
+        private void ConfigureExceptionHandling()
+        {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                if (e.ExceptionObject is Exception exception)
+                    _loggingService.LogError("Unhandled exception (AppDomain):\n" + exception.ToString());
+            };
+
+            DispatcherUnhandledException += (s, e) =>
+            {
+                _loggingService.LogError("Unhandled exception (Dispatcher):\n" + e.Exception.ToString());
+                //e.Handled = true;
+            };
+
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                _loggingService.LogError("Unobserved exception (TaskScheduler):\n" + e.Exception.ToString());
+                e.SetObserved();
+            };
         }
         #endregion
+
 
         #region Configure services for dependency injection
         private void ConfigureServices(ServiceCollection services)
