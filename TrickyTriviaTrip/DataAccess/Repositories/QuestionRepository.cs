@@ -27,11 +27,14 @@ namespace TrickyTriviaTrip.DataAccess
         Task<QuestionWithAnswers?> InsertWithAnswersAsync(QuestionWithAnswers questionWithAnswers);
 
         /// <summary>
-        /// Gets a collection of random questions with answer options from the database asynchronously
+        /// Returns a collection of questions with answer options that 
+        /// either a specific player or all players have answered the least
         /// </summary>
         /// <param name="count">Number of questions to get</param>
-        /// <returns>A collection of questions with their answer options</returns>
-        Task<IEnumerable<QuestionWithAnswers>> GetWithAnswersAsync(int count);
+        /// <param name="player">A specific player</param>
+        /// <returns>Collection of questions with answer options that either a specific player 
+        /// or all players (if player is null) have answered the least</returns>
+        Task<IEnumerable<QuestionWithAnswers>> GetLeastAnsweredWithAnswersAsync(int count, Player? player = null);
 
     }
 
@@ -158,16 +161,36 @@ namespace TrickyTriviaTrip.DataAccess
 
         }
 
-        public async Task<IEnumerable<QuestionWithAnswers>> GetWithAnswersAsync(int count)
+        public async Task<IEnumerable<QuestionWithAnswers>> GetLeastAnsweredWithAnswersAsync(int count, Player? player = null)
         {
             var resultList = new List<QuestionWithAnswers>();
             var listOfQuestions = new List<Question>();
 
+            // Several parts because one is optional depending on whether player == null
+            string commandPart1 = @"SELECT q.*
+                                    FROM Question q
+                                    LEFT JOIN AnswerAttempt a ON q.Id = a.QuestionId ";
+            string commandPart2 = @"AND a.PlayerId = @PlayerId "; // Optional part referring to the player
+            string commandPart3 = @"GROUP BY q.Id
+                                    ORDER BY COUNT(a.Id) ASC 
+                                    LIMIT @Count";
+
             using var connection = await _connectionFactory.GetConnectionAsync();
 
-            // First get the questions
+            // Command to get the questions
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM Question ORDER BY RANDOM() LIMIT @Count";
+            if (player is not null)
+            {
+                // Full query for a specific player with an additional parameter
+                cmd.CommandText = commandPart1 + commandPart2 + commandPart3;
+                cmd.Parameters.Add(new SQLiteParameter("@PlayerId", player.Id));
+            }
+            else
+            {
+                // Basic query that counts all players
+                cmd.CommandText = commandPart1 + commandPart3;
+            }
+            // Parameter for both cases
             cmd.Parameters.Add(new SQLiteParameter("@Count", count));
 
             using var reader = await cmd.ExecuteReaderAsync();

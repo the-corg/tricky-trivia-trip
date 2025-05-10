@@ -46,6 +46,7 @@ namespace TrickyTriviaTrip.GameLogic
 
         private readonly ITriviaApiClient _triviaApiClient;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IPlayData _playData;
         private readonly IMessageService _messageService;
         private readonly ILoggingService _loggingService;
 
@@ -53,11 +54,12 @@ namespace TrickyTriviaTrip.GameLogic
         public readonly Queue<QuestionWithAnswers> _queue = new();
         private bool _isFetching = false;
 
-        public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository, IMessageService messageService,
-            ILoggingService loggingService)
+        public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository, IPlayData playData,
+            IMessageService messageService, ILoggingService loggingService)
         {
             _triviaApiClient = triviaApiClient;
             _questionRepository = questionRepository;
+            _playData = playData;
             _messageService = messageService;
             _loggingService = loggingService;
         }
@@ -258,7 +260,7 @@ namespace TrickyTriviaTrip.GameLogic
         {
             try
             {
-                var questionsWithAnswers = await _questionRepository.GetWithAnswersAsync(count);
+                var questionsWithAnswers = await _questionRepository.GetLeastAnsweredWithAnswersAsync(count, _playData.CurrentPlayer);
 
                 foreach (var q in questionsWithAnswers)
                     _queue.Enqueue(q);
