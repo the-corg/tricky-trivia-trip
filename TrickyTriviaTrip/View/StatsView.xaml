@@ -36,6 +36,21 @@
                       AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
 
         </TabItem>
+        <TabItem Header="Debug: DB.Player">
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding Players}"
+                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+
+        </TabItem>
+        <TabItem Header="Debug: DB.AnswerAttempt">
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding AnswerAttempts}"
+                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+
+        </TabItem>
+        <TabItem Header="Debug: DB.Score">
+            <DataGrid IsReadOnly="True" ItemsSource="{Binding Scores}"
+                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+
+        </TabItem>
     </TabControl>
 
 </UserControl>

@@ -55,6 +55,12 @@ namespace TrickyTriviaTrip.ViewModel
                 OnPropertyChanged(nameof(RightCorrectnessDecorator));
             }
         }
+
+        /// <summary>
+        /// The original answer option object 
+        /// </summary>
+        public AnswerOption Model => _model;
+
         #endregion
 
     }

@@ -81,7 +81,18 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// The question
         /// </summary>
-        public Question? Question => _question;
+        public Question? Question
+        {
+            get => _question;
+            set
+            {
+                if (_question == value)
+                    return;
+
+                _question = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// All answer options for the current question
@@ -144,6 +155,12 @@ namespace TrickyTriviaTrip.ViewModel
         }
 
         /// <summary>
+        /// Text of the button that either leads to the next question
+        /// or finishes the game session
+        /// </summary>
+        public string NextQuestionButtonText => (CurrentQuestionNumber <= 9) ? "⇨ Next Question ⇨" : "Finish Game Session";
+
+        /// <summary>
         /// Shows whether celebration of success would be appropriate at the moment
         /// </summary>
         public bool CanCelebrate
@@ -178,9 +195,15 @@ namespace TrickyTriviaTrip.ViewModel
         /// </summary>
         private async void NextQuestion()
         {
+            SelectedAnswer = null;
+            Question = null;
+            Answers.Clear();
+
+            // TODO: delete this
+            // await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+
             // Get the next question from the queue
             var questionWithAnswers = await _questionQueue.GetNextQuestionAsync();
-            _question = questionWithAnswers.Question;
 
             // Pack each AnswerOption into AnswerViewModel and then shuffle the list randomly
             var answerOptions = questionWithAnswers.AnswerOptions.
@@ -188,14 +211,18 @@ namespace TrickyTriviaTrip.ViewModel
                 OrderBy(_ => randomNumberGenerator.Next()).ToList();
 
             // Load the answers into the ObservableCollection
-            Answers.Clear();
-            foreach (var answer in answerOptions)
-                Answers.Add(answer);
+            // (Use dispatcher because if GetNextQuestionAsync didn't succeed synchronously,
+            // the current thread could be not the UI thread anymore)
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (var answer in answerOptions)
+                    Answers.Add(answer);
+            });
 
-            // Reset the selected answer and send property changed events for all relevant properties
-            SelectedAnswer = null;
-            OnPropertyChanged(nameof(Question));
+            Question = questionWithAnswers.Question;
+
             OnPropertyChanged(nameof(CurrentQuestionNumber));
+            OnPropertyChanged(nameof(NextQuestionButtonText));
         }
 
         /// <summary>
@@ -204,7 +231,6 @@ namespace TrickyTriviaTrip.ViewModel
         /// <param name="answer">The answer selected by the player</param>
         private async void HandlePlayerAnswer(AnswerViewModel answer)
         {
-
             answer.IsSelected = true;
 
             _questionsAnsweredTotal++;
@@ -229,6 +255,8 @@ namespace TrickyTriviaTrip.ViewModel
                 // That's it. Enough celebrating
                 CanCelebrate = false;
             }
+
+            await _playData.RecordAnswer(answer.Model);
         }
 
         #endregion

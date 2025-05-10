@@ -19,10 +19,12 @@ namespace TrickyTriviaTrip.DataAccess
         Task<bool> ExistsByHashAsync(string contentHash);
 
         /// <summary>
-        /// Inserts Question and all its AnswerOptions into the database in one transaction
+        /// Inserts Question and all its AnswerOptions into the database in one transaction,
+        /// then returns the inserted question and its answers (with all their Ids)
         /// </summary>
         /// <param name="questionWithAnswers">Question to be inserted, together with its answer options</param>
-        Task InsertWithAnswersAsync(QuestionWithAnswers questionWithAnswers);
+        /// <returns>Either the question with its answer options, or null, if something went wrong</returns>
+        Task<QuestionWithAnswers?> InsertWithAnswersAsync(QuestionWithAnswers questionWithAnswers);
 
         /// <summary>
         /// Gets a collection of random questions with answer options from the database asynchronously
@@ -46,7 +48,7 @@ namespace TrickyTriviaTrip.DataAccess
         private readonly IAnswerOptionRepository _answerOptionRepository;
         private readonly ILoggingService _loggingService;
 
-        public QuestionRepository(IDbConnectionFactory connectionFactory, IAnswerOptionRepository answerOptionRepository, 
+        public QuestionRepository(IDbConnectionFactory connectionFactory, IAnswerOptionRepository answerOptionRepository,
             ILoggingService loggingService) : base(connectionFactory)
         {
             _answerOptionRepository = answerOptionRepository;
@@ -104,7 +106,7 @@ namespace TrickyTriviaTrip.DataAccess
             return Convert.ToInt32(result) > 0;
         }
 
-        public async Task InsertWithAnswersAsync(QuestionWithAnswers questionWithAnswers)
+        public async Task<QuestionWithAnswers?> InsertWithAnswersAsync(QuestionWithAnswers questionWithAnswers)
         {
             using var connection = await _connectionFactory.GetConnectionAsync();
             using var transaction = connection.BeginTransaction();
@@ -126,28 +128,35 @@ namespace TrickyTriviaTrip.DataAccess
                 questionWithAnswers.Question.Id = questionId;
 
                 // Insert all answer options
-                foreach (var answerOption in questionWithAnswers.AnswerOptions)
+                for (int i = 0; i < questionWithAnswers.AnswerOptions.Count; i++)
                 {
+                    questionWithAnswers.AnswerOptions[i].QuestionId = questionId;
+
                     using var answerCmd = connection.CreateCommand();
                     answerCmd.CommandText = "INSERT INTO AnswerOption (QuestionId, Text, IsCorrect) VALUES (@QuestionId, @Text, @IsCorrect)";
                     answerCmd.Parameters.Add(new SQLiteParameter("@QuestionId", questionId));
-                    answerCmd.Parameters.Add(new SQLiteParameter("@Text", answerOption.Text));
-                    answerCmd.Parameters.Add(new SQLiteParameter("@IsCorrect", answerOption.IsCorrect));
+                    answerCmd.Parameters.Add(new SQLiteParameter("@Text", questionWithAnswers.AnswerOptions[i].Text));
+                    answerCmd.Parameters.Add(new SQLiteParameter("@IsCorrect", questionWithAnswers.AnswerOptions[i].IsCorrect));
 
                     await answerCmd.ExecuteNonQueryAsync();
+
+                    // Get and assign id of the inserted answer option
+                    var answerId = ((SQLiteConnection)connection).LastInsertRowId;
+                    questionWithAnswers.AnswerOptions[i].Id = answerId;
                 }
 
                 await transaction.CommitAsync();
+
+                return questionWithAnswers;
             }
             catch (Exception)
             {
-                _loggingService.LogError("Error during transaction of inserting a question and its answer options.\nRolling back the transaction and rethrowing the exception...");
+                _loggingService.LogError("Error during transaction of inserting a question and its answer options.\nRolling back the transaction...");
                 await transaction.RollbackAsync();
-                throw;
+                return null;
             }
 
         }
-
 
         public async Task<IEnumerable<QuestionWithAnswers>> GetWithAnswersAsync(int count)
         {

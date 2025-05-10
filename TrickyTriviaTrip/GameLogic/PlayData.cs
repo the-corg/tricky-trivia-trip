@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿using System.Data.Common;
 using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Services;
@@ -11,14 +11,20 @@ namespace TrickyTriviaTrip.GameLogic
     public interface IPlayData
     {
         /// <summary>
+        /// Initializes the player asynchronously
+        /// </summary>
+        Task InitializeAsync();
+
+        /// <summary>
         /// The currently active player
         /// </summary>
         public Player? CurrentPlayer { get; set; }
 
         /// <summary>
-        /// Initializes the player asynchronously
+        /// Records an answer attempt in the database
         /// </summary>
-        Task InitializeAsync();
+        /// <param name="answerOption">Answer option selected by the player</param>
+        Task RecordAnswer(AnswerOption answerOption);
     }
 
     public class PlayData : IPlayData
@@ -51,6 +57,30 @@ namespace TrickyTriviaTrip.GameLogic
 
         public Player? CurrentPlayer { get; set; }
 
+        public async Task RecordAnswer(AnswerOption answerOption)
+        {
+            _loggingService.LogInfo($"Current thread: {Environment.CurrentManagedThreadId}. Recording the answer in the DB: Id: {answerOption.Id}, QuestionId: {answerOption.QuestionId}");
+
+            try
+            {
+                await _answerAttemptRepository.AddAsync(new AnswerAttempt()
+                {
+                    PlayerId = CurrentPlayer!.Id,
+                    QuestionId = answerOption.QuestionId,
+                    AnswerOptionId = answerOption.Id
+                });
+            }
+            catch (DbException exception)
+            {
+                _loggingService.LogError("Database error while inserting answer \"" + answerOption.Text + "\"into the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Database error:\n" + exception.Message);
+            }
+            catch (Exception exception)
+            {
+                _loggingService.LogError("Error while inserting answer \"" + answerOption.Text + "\"into the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Error:\n" + exception.Message);
+            }
+        }
         #endregion
 
 
@@ -105,7 +135,7 @@ namespace TrickyTriviaTrip.GameLogic
             var message = "Fatal Database Error: Failed to add new player to the database. The database is likely to be corrupt. Exiting...";
             _loggingService.LogError(message);
             _messageService.ShowMessage(message);
-            Application.Current.Shutdown();
+            App.Current.Shutdown();
             throw new Exception(message);
         }
         #endregion

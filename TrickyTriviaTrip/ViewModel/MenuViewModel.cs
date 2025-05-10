@@ -24,7 +24,7 @@ namespace TrickyTriviaTrip.ViewModel
             _messageService = messageService;
 
             ViewStatsCommand = new DelegateCommand(execute => _navigationService.NavigateToStats());
-            ExitGameCommand = new DelegateCommand(execute => System.Windows.Application.Current.Shutdown());
+            ExitGameCommand = new DelegateCommand(execute => App.Current.Shutdown());
             StartGameCommand = new DelegateCommand(execute => _navigationService.NavigateToGame(), canExecute => _playData.CurrentPlayer is not null);
         }
         #endregion

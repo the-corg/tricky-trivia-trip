@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.Api.ApiResponses;
 using TrickyTriviaTrip.DataAccess;
@@ -116,7 +115,7 @@ namespace TrickyTriviaTrip.GameLogic
                 _loggingService.LogError("Error dequeueing a question (probably no questions in the queue, will have to exit):\n" + exception.ToString());
 
                 _messageService.ShowMessage("Error! No questions available. Exiting...");
-                Application.Current.Shutdown();
+                App.Current.Shutdown();
                 throw;
             }
 
@@ -202,9 +201,10 @@ namespace TrickyTriviaTrip.GameLogic
                             x => new AnswerOption() { IsCorrect = false, Text = x }));
 
                     // Add the new question to the database in one transaction
-                    await _questionRepository.InsertWithAnswersAsync(questionWithAnswers);
+                    var addedQuestion = await _questionRepository.InsertWithAnswersAsync(questionWithAnswers);
 
-                    _queue.Enqueue(questionWithAnswers);
+                    if (addedQuestion is not null)
+                        _queue.Enqueue(addedQuestion);
                 }
 
                 if (_loggingService.ShouldLogInfo)

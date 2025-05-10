@@ -120,7 +120,7 @@
                 </ListBox.ItemsPanel>
             </ListBox>
 
-            <Button Grid.Row="3" Grid.Column="1"  Content="⇨ Next Question ⇨" 
+            <Button Grid.Row="3" Grid.Column="1"  Content="{Binding NextQuestionButtonText}" 
                     Command="{Binding NextQuestionCommand}" 
                     Style="{StaticResource NextQuestionButton}"/>
 

@@ -28,10 +28,9 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = "INSERT INTO Score (PlayerId, Value, Timestamp) VALUES (@PlayerId, @Value, @Timestamp)";
+            cmd.CommandText = "INSERT INTO Score (PlayerId, Value) VALUES (@PlayerId, @Value)";
             cmd.Parameters.Add(new SQLiteParameter("@PlayerId", entity.PlayerId));
             cmd.Parameters.Add(new SQLiteParameter("@Value", entity.Value));
-            cmd.Parameters.Add(new SQLiteParameter("@Timestamp", entity.Timestamp));
 
             await cmd.ExecuteNonQueryAsync();
         }

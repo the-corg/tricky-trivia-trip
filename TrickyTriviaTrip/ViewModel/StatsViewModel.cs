@@ -17,11 +17,16 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly IQuestionQueue _questionQueue;
         private readonly IQuestionRepository _questionRepository;
         private readonly IAnswerOptionRepository _answerOptionRepository;
+        private readonly IPlayerRepository _playerRepository;
+        private readonly IRepository<AnswerAttempt> _anwerAttemptRepository;
+        private readonly IRepository<Score> _scoreRepository;
 
 
         private readonly INavigationService _navigationService;
 
-        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository, IAnswerOptionRepository answerOptionRepository)
+        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository,
+            IAnswerOptionRepository answerOptionRepository, IPlayerRepository playerRepository,
+            IRepository<AnswerAttempt> anwerAttemptRepository, IRepository<Score> scoreRepository)
         {
             _navigationService = navigationService;
 
@@ -30,6 +35,9 @@ namespace TrickyTriviaTrip.ViewModel
             _questionQueue = questionQueue;
             _questionRepository = questionRepository;
             _answerOptionRepository = answerOptionRepository;
+            _playerRepository = playerRepository;
+            _scoreRepository = scoreRepository;
+            _anwerAttemptRepository = anwerAttemptRepository;
             Initialize();
         }
 
@@ -47,14 +55,19 @@ namespace TrickyTriviaTrip.ViewModel
 
             var dbQuestions = await _questionRepository.GetAllAsync();
             var dbAnswerOptions = await _answerOptionRepository.GetAllAsync();
-            foreach (var dbq in dbQuestions)
-            {
-                Questions.Add(dbq);
-            }
-            foreach (var ao in dbAnswerOptions)
-            {
-                AnswerOptions.Add(ao);
-            }
+            var dbPlayers = await _playerRepository.GetAllAsync();
+            var dbAnswerAttempts = await _anwerAttemptRepository.GetAllAsync();
+            var dbScores = await _scoreRepository.GetAllAsync();
+            foreach (var x in dbQuestions)
+                Questions.Add(x);
+            foreach (var x in dbAnswerOptions)
+                AnswerOptions.Add(x);
+            foreach (var x in dbPlayers)
+                Players.Add(x);
+            foreach (var x in dbAnswerAttempts)
+                AnswerAttempts.Add(x);
+            foreach (var x in dbScores)
+                Scores.Add(x);
 
         }
 
@@ -64,6 +77,9 @@ namespace TrickyTriviaTrip.ViewModel
         public ObservableCollection<Question> QuestionsFromQueue { get; set; } = new();
         public ObservableCollection<Question> Questions { get; set; } = new();
         public ObservableCollection<AnswerOption> AnswerOptions { get; set; } = new();
+        public ObservableCollection<Player> Players { get; set; } = new();
+        public ObservableCollection<AnswerAttempt> AnswerAttempts { get; set; } = new();
+        public ObservableCollection<Score> Scores { get; set; } = new();
 
 
         /// <summary>
