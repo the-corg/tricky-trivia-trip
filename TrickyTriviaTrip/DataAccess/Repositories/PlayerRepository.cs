@@ -7,7 +7,24 @@ namespace TrickyTriviaTrip.DataAccess
     /// <summary>
     /// Provides basic database operations for Player
     /// </summary>
-    public class PlayerRepository : BaseRepository<Player>
+    public interface IPlayerRepository : IRepository<Player>
+    {
+        /// <summary>
+        /// Gets a player by name
+        /// </summary>
+        /// <param name="name">Name of the player</param>
+        /// <returns>Either the required Player object, or null, if not found</returns>
+        Task<Player?> GetByNameAsync(string name);
+
+        /// <summary>
+        /// Gets the player with the largest Id
+        /// </summary>
+        /// <returns>Either the required Player object, or null, if no players exist</returns>
+        Task<Player?> GetWithMaxIdAsync();
+    }
+
+
+    public class PlayerRepository : BaseRepository<Player>, IPlayerRepository
     {
         // Ordinal positions of table columns, lazily loaded in MapToEntity
         private int? _ordinalId;
@@ -43,6 +60,32 @@ namespace TrickyTriviaTrip.DataAccess
             cmd.Parameters.Add(new SQLiteParameter("@Id", entity.Id));
 
             await cmd.ExecuteNonQueryAsync();
+        }
+        #endregion
+
+        #region Public methods specific to Player (IPlayerRepository)
+
+        public async Task<Player?> GetByNameAsync(string name)
+        {
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM Player WHERE Name = @Name";
+            cmd.Parameters.Add(new SQLiteParameter("@Name", name));
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapToEntity(reader) : null;
+        }
+
+        public async Task<Player?> GetWithMaxIdAsync()
+        {
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM Player ORDER BY Id DESC LIMIT 1";
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapToEntity(reader) : null;
         }
         #endregion
 

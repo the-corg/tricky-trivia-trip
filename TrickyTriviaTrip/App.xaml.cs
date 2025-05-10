@@ -77,7 +77,7 @@ namespace TrickyTriviaTrip
             services.AddSingleton<IDatabaseInitializer, SqliteDatabaseInitializer>();
 
             // Repositories
-            services.AddSingleton<IRepository<Player>, PlayerRepository>();
+            services.AddSingleton<IPlayerRepository, PlayerRepository>();
             services.AddSingleton<IQuestionRepository, QuestionRepository>();
             services.AddSingleton<IAnswerOptionRepository, AnswerOptionRepository>();
             services.AddSingleton<IRepository<Score>, ScoreRepository>();

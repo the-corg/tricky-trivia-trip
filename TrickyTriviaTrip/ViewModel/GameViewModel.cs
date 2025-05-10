@@ -19,11 +19,11 @@ namespace TrickyTriviaTrip.ViewModel
 
         private readonly Random randomNumberGenerator = new();
 
-        private readonly INavigationService _navigationService;
-        private readonly IMessageService _messageService;
         private readonly IQuestionQueue _questionQueue;
-        private readonly ILoggingService _loggingService;
         private readonly IPlayData _playData;
+        private readonly INavigationService _navigationService;
+        private readonly ILoggingService _loggingService;
+        private readonly IMessageService _messageService;
 
         private int _questionsAnsweredTotal = 0;
         private int _questionsAnsweredCorrectly = 0;
@@ -37,16 +37,16 @@ namespace TrickyTriviaTrip.ViewModel
 
         #region Constructor
 
-        public GameViewModel(INavigationService navigationService, IMessageService messageService,
-            IQuestionQueue questionQueue, ILoggingService loggingService, IPlayData playData)
+        public GameViewModel(IQuestionQueue questionQueue, IPlayData playData,
+            INavigationService navigationService, ILoggingService loggingService, IMessageService messageService)
         {
-            _navigationService = navigationService;
-            _messageService = messageService;
             _questionQueue = questionQueue;
-            _loggingService = loggingService;
             _playData = playData;
+            _navigationService = navigationService;
+            _loggingService = loggingService;
+            _messageService = messageService;
 
-            _loggingService.LogInfo($"Starting a new game. Player: {_playData.CurrentPlayer.Name}");
+            _loggingService.LogInfo($"Starting a new game. Player: {_playData.CurrentPlayer?.Name}");
 
             // Load the first question 
             NextQuestion();
@@ -102,33 +102,7 @@ namespace TrickyTriviaTrip.ViewModel
                 _selectedAnswer = value;
 
                 if (_selectedAnswer is not null)
-                {
-                    // Case when this answer was selected by the user
-                    _selectedAnswer.IsSelected = true;
-
-                    _questionsAnsweredTotal++;
-
-                    if (_selectedAnswer.IsCorrect)
-                    {
-                        _questionsAnsweredCorrectly++;
-
-                        if (Question?.Difficulty == "Easy")
-                            Score += 5;
-                        else if (Question?.Difficulty == "Medium")
-                            Score += 10;
-                        else
-                            Score += 15;
-
-                        OnPropertyChanged(nameof(SuccessEmojiLine));
-                        OnPropertyChanged(nameof(SuccessTextLine));
-
-                        // The setter fires PropertyChanged, and the animation starts
-                        CanCelebrate = true;
-
-                        // That's it. Enough celebrating
-                        CanCelebrate = false; 
-                    }
-                }
+                    HandlePlayerAnswer(_selectedAnswer);
 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsNoAnswerSelected));
@@ -222,6 +196,39 @@ namespace TrickyTriviaTrip.ViewModel
             SelectedAnswer = null;
             OnPropertyChanged(nameof(Question));
             OnPropertyChanged(nameof(CurrentQuestionNumber));
+        }
+
+        /// <summary>
+        /// Handles everything after the player selects an answer
+        /// </summary>
+        /// <param name="answer">The answer selected by the player</param>
+        private async void HandlePlayerAnswer(AnswerViewModel answer)
+        {
+
+            answer.IsSelected = true;
+
+            _questionsAnsweredTotal++;
+
+            if (answer.IsCorrect)
+            {
+                _questionsAnsweredCorrectly++;
+
+                if (Question?.Difficulty == "Easy")
+                    Score += 5;
+                else if (Question?.Difficulty == "Medium")
+                    Score += 10;
+                else
+                    Score += 15;
+
+                OnPropertyChanged(nameof(SuccessEmojiLine));
+                OnPropertyChanged(nameof(SuccessTextLine));
+
+                // The setter fires PropertyChanged, and the animation starts
+                CanCelebrate = true;
+
+                // That's it. Enough celebrating
+                CanCelebrate = false;
+            }
         }
 
         #endregion

@@ -15,15 +15,17 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly INavigationService _navigationService;
         private readonly IDatabaseInitializer _databaseInitializer;
         private readonly IQuestionQueue _questionQueue;
+        private readonly IPlayData _playData;
         private readonly IMessageService _messageService;
         private readonly ILoggingService _loggingService;
 
         public MainViewModel(INavigationService navigationService, IDatabaseInitializer databaseInitializer, 
-            IQuestionQueue questionQueue, IMessageService messageService, ILoggingService loggingService)
+            IQuestionQueue questionQueue, IPlayData playData, IMessageService messageService, ILoggingService loggingService)
         { 
             _navigationService = navigationService;
             _databaseInitializer = databaseInitializer;
             _questionQueue = questionQueue;
+            _playData = playData;
             _messageService = messageService;
             _loggingService = loggingService;
 
@@ -43,7 +45,6 @@ namespace TrickyTriviaTrip.ViewModel
             try
             {
                 await _databaseInitializer.InitializeIfMissingAsync();
-
                 await _questionQueue.InitializeAsync();
             }
             catch (DbException exception)
