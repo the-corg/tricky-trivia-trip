@@ -14,9 +14,6 @@ namespace TrickyTriviaTrip.ViewModel
     {
         #region Private fields
 
-        // The number of questions in a game session
-        private readonly int _gameSessionQuestionsTotal = Settings.Default.GameSessionQuestionsTotal;
-
         private readonly Random randomNumberGenerator = new();
 
         private readonly IQuestionQueue _questionQueue;
@@ -25,9 +22,6 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly ILoggingService _loggingService;
         private readonly IMessageService _messageService;
 
-        private int _questionsAnsweredTotal = 0;
-        private int _questionsAnsweredCorrectly = 0;
-        private int _score = 0;
         private bool _canCelebrate;
 
         private Question? _question;
@@ -48,15 +42,29 @@ namespace TrickyTriviaTrip.ViewModel
 
             _loggingService.LogInfo($"Starting a new game. Player: {_playData.CurrentPlayer?.Name}");
 
+            _playData.Score = 0;
+            _playData.QuestionsAnswered = 0;
+            _playData.QuestionsAnsweredCorrectly = 0;
+
             // Load the first question 
             NextQuestion();
 
             // Setup commands
             NextQuestionCommand = new DelegateCommand(execute => NextQuestion(), canExecute => SelectedAnswer is not null);
-            ExitToMenuCommand = new DelegateCommand(execute =>
+            ExitToMenuCommand = new DelegateCommand(async execute =>
             {
-                if (_messageService.ShowConfirmation("End this game and return to the menu?"))
+                if (CurrentQuestionNumber > GameSessionQuestionsTotal)
+                {
+                    // Finish the game session normally
+                    NextQuestion();
+                    return;
+                }
+                if (_messageService.ShowConfirmation($"You have answered {_playData.QuestionsAnswered} questions out of {GameSessionQuestionsTotal}.\n\nYou could still improve your score of {Score}.\n\nEnd this game early?"))
+                {
+                    _loggingService.LogInfo($"Current thread: {Environment.CurrentManagedThreadId}. Game session finished per player request after answering {_playData.QuestionsAnswered} questions. Score: {Score}");
                     _navigationService.NavigateToMenu();
+                    await _playData.RecordScore();
+                }
             });
             
         }
@@ -129,27 +137,27 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// The number of questions in a game session
         /// </summary>
-        public int GameSessionQuestionsTotal => _gameSessionQuestionsTotal;
+        public int GameSessionQuestionsTotal => Settings.Default.GameSessionQuestionsTotal;
 
         /// <summary>
         /// The number of the current question in the game session
         /// </summary>
-        public int CurrentQuestionNumber => _questionsAnsweredTotal + 1;
+        public int CurrentQuestionNumber => _playData.QuestionsAnswered + 1;
 
         /// <summary>
         /// The number of questions answered correctly
         /// </summary>
-        public int QuestionsAnsweredCorrectly => _questionsAnsweredCorrectly;
+        public int QuestionsAnsweredCorrectly => _playData.QuestionsAnsweredCorrectly;
 
         /// <summary>
         /// The current score
         /// </summary>
         public int Score
         {
-            get => _score;
+            get => _playData.Score;
             set
             {
-                _score = value;
+                _playData.Score = value;
                 OnPropertyChanged();
             }
         }
@@ -158,7 +166,7 @@ namespace TrickyTriviaTrip.ViewModel
         /// Text of the button that either leads to the next question
         /// or finishes the game session
         /// </summary>
-        public string NextQuestionButtonText => (CurrentQuestionNumber <= 9) ? "⇨ Next Question ⇨" : "Finish Game Session";
+        public string NextQuestionButtonText => (CurrentQuestionNumber < GameSessionQuestionsTotal) ? "⇨ Next Question ⇨" : "Finish Game Session";
 
         /// <summary>
         /// Shows whether celebration of success would be appropriate at the moment
@@ -195,12 +203,17 @@ namespace TrickyTriviaTrip.ViewModel
         /// </summary>
         private async void NextQuestion()
         {
+            if (CurrentQuestionNumber > GameSessionQuestionsTotal)
+            {
+                // Finish the game session 
+                _loggingService.LogInfo($"Current thread: {Environment.CurrentManagedThreadId}. Game session finished after answering {_playData.QuestionsAnswered} questions. Score: {Score}");
+                _navigationService.NavigateToMenu();
+                return;
+            }
+
             SelectedAnswer = null;
             Question = null;
             Answers.Clear();
-
-            // TODO: delete this
-            // await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
 
             // Get the next question from the queue
             var questionWithAnswers = await _questionQueue.GetNextQuestionAsync();
@@ -233,11 +246,11 @@ namespace TrickyTriviaTrip.ViewModel
         {
             answer.IsSelected = true;
 
-            _questionsAnsweredTotal++;
+            _playData.QuestionsAnswered++;
 
             if (answer.IsCorrect)
             {
-                _questionsAnsweredCorrectly++;
+                _playData.QuestionsAnsweredCorrectly++;
 
                 if (Question?.Difficulty == "Easy")
                     Score += 5;
@@ -257,6 +270,11 @@ namespace TrickyTriviaTrip.ViewModel
             }
 
             await _playData.RecordAnswer(answer.Model);
+            if (_playData.QuestionsAnswered >= GameSessionQuestionsTotal)
+            {
+                // That was the last question in the session, record the score
+                await _playData.RecordScore();
+            }
         }
 
         #endregion

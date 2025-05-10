@@ -25,6 +25,26 @@ namespace TrickyTriviaTrip.GameLogic
         /// </summary>
         /// <param name="answerOption">Answer option selected by the player</param>
         Task RecordAnswer(AnswerOption answerOption);
+
+        /// <summary>
+        /// Records the final score for a game session in the database
+        /// </summary>
+        Task RecordScore();
+
+        /// <summary>
+        /// The most recent score
+        /// </summary>
+        int Score { get; set; }
+        
+        /// <summary>
+        /// The most recent number of answered questions within one game session
+        /// </summary>
+        int QuestionsAnswered { get; set; }
+
+        /// <summary>
+        /// The most recent number of correctly answered questions within one game session
+        /// </summary>
+        int QuestionsAnsweredCorrectly { get; set; }
     }
 
     public class PlayData : IPlayData
@@ -56,6 +76,9 @@ namespace TrickyTriviaTrip.GameLogic
         }
 
         public Player? CurrentPlayer { get; set; }
+        public int Score { get; set; }
+        public int QuestionsAnswered { get; set; }
+        public int QuestionsAnsweredCorrectly { get; set; }
 
         public async Task RecordAnswer(AnswerOption answerOption)
         {
@@ -78,6 +101,30 @@ namespace TrickyTriviaTrip.GameLogic
             catch (Exception exception)
             {
                 _loggingService.LogError("Error while inserting answer \"" + answerOption.Text + "\"into the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Error:\n" + exception.Message);
+            }
+        }
+
+        public async Task RecordScore()
+        {
+            _loggingService.LogInfo($"Current thread: {Environment.CurrentManagedThreadId}. Recording the score in the DB: {Score}");
+
+            try
+            {
+                await _scoreRepository.AddAsync(new Score()
+                {
+                    Value = Score,
+                    PlayerId = CurrentPlayer!.Id
+                });
+            }
+            catch (DbException exception)
+            {
+                _loggingService.LogError("Database error while recording score in the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Database error:\n" + exception.Message);
+            }
+            catch (Exception exception)
+            {
+                _loggingService.LogError("Error while recording score in the database:\n" + exception.ToString());
                 _messageService.ShowMessage("Error:\n" + exception.Message);
             }
         }

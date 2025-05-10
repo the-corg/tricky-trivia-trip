@@ -35,7 +35,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Welcome," Style="{StaticResource MenuTextPrimary}"/>
+            <TextBlock Text="{Binding GreetingText}" Style="{StaticResource MenuTextPrimary}"/>
             <Button Grid.Column="1" Content="{Binding PlayerName}" Margin="0" 
                     Style="{StaticResource MenuButton}" HorizontalContentAlignment="Left"
                     ToolTip="Change player or add new player"/>
@@ -46,12 +46,12 @@
         </Grid>
 
         <!-- Empty line or Your score is: XX -->
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="Your score is: 24" Style="{StaticResource MenuTextSecondary}"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ScoreText}" Style="{StaticResource MenuTextSecondary}"/>
 
         <!-- Empty line or You answered X/10 questions correctly -->
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="You answered 10/10 questions correctly" Style="{StaticResource MenuTextSecondary}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CorrectAnswersText}" Style="{StaticResource MenuTextSecondary}"/>
 
-        <!-- Start Game or Start New Game -->
+        <!-- Start Game -->
         <Button Grid.Row="4" Grid.Column="1" Content="Start Game" Style="{StaticResource MenuButton}"
                 Command="{Binding StartGameCommand}"/>
 

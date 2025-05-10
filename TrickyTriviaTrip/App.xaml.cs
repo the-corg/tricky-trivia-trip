@@ -63,7 +63,7 @@ namespace TrickyTriviaTrip
 
             // View Models
             services.AddSingleton<MainViewModel>();
-            services.AddSingleton<MenuViewModel>();
+            services.AddTransient<MenuViewModel>();
             services.AddTransient<GameViewModel>();
             services.AddTransient<StatsViewModel>();
 

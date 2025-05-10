@@ -47,6 +47,21 @@ namespace TrickyTriviaTrip.ViewModel
         }
 
         /// <summary>
+        /// Greeting to the player
+        /// </summary>
+        public string GreetingText => (_playData.QuestionsAnswered == 0) ? "Welcome," : (_playData.Score == 0) ? "Hi again," : "Good job,";
+
+        /// <summary>
+        /// Line about the recent score, if any
+        /// </summary>
+        public string ScoreText => (_playData.QuestionsAnswered == 0) ? "" : $"Your score is: {_playData.Score}";
+
+        /// <summary>
+        /// Line about the number of correct answers, if there was a recent game session
+        /// </summary>
+        public string CorrectAnswersText => (_playData.QuestionsAnswered == 0) ? "" : $"You answered {_playData.QuestionsAnsweredCorrectly}/{_playData.QuestionsAnswered} questions correctly";
+
+        /// <summary>
         /// Command for the Start Game button
         /// </summary>
         public DelegateCommand StartGameCommand { get; }
