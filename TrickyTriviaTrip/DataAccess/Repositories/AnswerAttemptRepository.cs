@@ -7,7 +7,17 @@ namespace TrickyTriviaTrip.DataAccess
     /// <summary>
     /// Provides basic database operations for AnswerAttempt
     /// </summary>
-    public class AnswerAttemptRepository : BaseRepository<AnswerAttempt>
+    public interface IAnswerAttemptRepository : IRepository<AnswerAttempt>
+    {
+        /// <summary>
+        /// Gets the answer attempt with the largest Id
+        /// </summary>
+        /// <returns>Either the required AnswerAttempt object, or null, if no answer attempts exist</returns>
+        Task<AnswerAttempt?> GetWithMaxIdAsync();
+    }
+
+
+    public class AnswerAttemptRepository : BaseRepository<AnswerAttempt>, IAnswerAttemptRepository
     {
         // Ordinal positions of table columns, lazily loaded in MapToEntity
         private int? _ordinalId;
@@ -53,6 +63,22 @@ namespace TrickyTriviaTrip.DataAccess
             await cmd.ExecuteNonQueryAsync();
         }
         #endregion
+
+
+        #region Public methods specific to AnswerAttempt (IAnswerAttemptRepository)
+
+        public async Task<AnswerAttempt?> GetWithMaxIdAsync()
+        {
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM AnswerAttempt ORDER BY Id DESC LIMIT 1";
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapToEntity(reader) : null;
+        }
+        #endregion
+
 
         protected override AnswerAttempt MapToEntity(IDataReader reader)
         {

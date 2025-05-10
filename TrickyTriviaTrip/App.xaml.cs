@@ -81,7 +81,7 @@ namespace TrickyTriviaTrip
             services.AddSingleton<IQuestionRepository, QuestionRepository>();
             services.AddSingleton<IAnswerOptionRepository, AnswerOptionRepository>();
             services.AddSingleton<IRepository<Score>, ScoreRepository>();
-            services.AddSingleton<IRepository<AnswerAttempt>, AnswerAttemptRepository>();
+            services.AddSingleton<IAnswerAttemptRepository, AnswerAttemptRepository>();
 
             // Game logic
             services.AddSingleton<IPlayData, PlayData>();

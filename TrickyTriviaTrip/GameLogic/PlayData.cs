@@ -33,12 +33,12 @@ namespace TrickyTriviaTrip.GameLogic
 
         private readonly IPlayerRepository _playerRepository;
         private readonly IRepository<Score> _scoreRepository;
-        private readonly IRepository<AnswerAttempt> _answerAttemptRepository;
+        private readonly IAnswerAttemptRepository _answerAttemptRepository;
         private readonly ILoggingService _loggingService;
         private readonly IMessageService _messageService;
 
         public PlayData(IPlayerRepository playerRepository, IRepository<Score> scoreRepository, 
-            IRepository<AnswerAttempt> answerAttemptRepository, ILoggingService loggingService, IMessageService messageService)
+            IAnswerAttemptRepository answerAttemptRepository, ILoggingService loggingService, IMessageService messageService)
         {
             _playerRepository = playerRepository;
             _scoreRepository = scoreRepository;
@@ -88,18 +88,28 @@ namespace TrickyTriviaTrip.GameLogic
 
         /// <summary>
         /// Returns the player that made the last answer attempt.<br/>
-        /// Failing that, the player with the largest Id. (The last one added to the DB).<br/>
-        /// Failing that, just creates a new player based on the OS username.
+        /// Failing that, the player with the largest Id (the last one added to the DB).<br/>
+        /// Failing that, just creates a new player based on the OS username
         /// </summary>
         /// <returns>The last active player (or a new player)</returns>
         private async Task<Player> GetLastActivePlayerAsync()
         {
-            // TODO:
-            // 1. Check the database - if there are AnswerAttempts, take PlayerId from the last answer attempt,
-            // find the player in the DB and return it
-            // 2. If Player not found by Id, log the error.
+            _loggingService.LogInfo("Looking for the last active player...");
 
+            // Find the answer attempt with the largest Id - the last answer attempt added to the database
+            var lastAnswerAttempt = await _answerAttemptRepository.GetWithMaxIdAsync();
 
+            if (lastAnswerAttempt is not null)
+            {
+                var playerWhoAnsweredLast = await _playerRepository.GetByIdAsync(lastAnswerAttempt.PlayerId);
+                if (playerWhoAnsweredLast is not null)
+                    return playerWhoAnsweredLast;
+                else
+                    _loggingService.LogError($"The player with id {lastAnswerAttempt.PlayerId}, who made the last answer, does not exist in the database.");
+            }
+
+            // Fail #1. No answer attempts in the database (or the player who made the last attempt doesn't exist)
+            _loggingService.LogWarning("There are no answer attempts in the database. Looking for the last player added to the database...");
 
             // Find the player with the largest Id - the last player added to the database
             var lastActivePlayer = await _playerRepository.GetWithMaxIdAsync();
