@@ -38,6 +38,7 @@ namespace TrickyTriviaTrip.ViewModel
 
         /// <summary>
         /// Initializes the database if it doesn't exist.<br/>
+        /// Initializes the current player.<br\>
         /// Initializes the question queue, loading some questions 
         /// </summary>
         public async Task InitializeAsync()
@@ -45,6 +46,10 @@ namespace TrickyTriviaTrip.ViewModel
             try
             {
                 await _databaseInitializer.InitializeIfMissingAsync();
+                await _playData.InitializeAsync();
+                if (CurrentViewModel is MenuViewModel menuViewModel)
+                    menuViewModel.UpdatePlayerName();
+
                 await _questionQueue.InitializeAsync();
             }
             catch (DbException exception)

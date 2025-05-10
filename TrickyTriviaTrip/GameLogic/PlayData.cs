@@ -18,7 +18,7 @@ namespace TrickyTriviaTrip.GameLogic
         /// <summary>
         /// Initializes the player asynchronously
         /// </summary>
-        Task InitializePlayerAsync();
+        Task InitializeAsync();
     }
 
     public class PlayData : IPlayData
@@ -44,7 +44,7 @@ namespace TrickyTriviaTrip.GameLogic
 
 
         #region Public methods and properties 
-        public async Task InitializePlayerAsync()
+        public async Task InitializeAsync()
         {
             CurrentPlayer = await GetLastActivePlayerAsync();
         }

@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using TrickyTriviaTrip.GameLogic;
+﻿using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.ViewModel
@@ -16,10 +15,6 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly ILoggingService _loggingService;
         private readonly IMessageService _messageService;
 
-        private readonly Task _playerInitializationTask;
-
-        private bool _isStartGameClicked;
-
         public MenuViewModel(IPlayData playData, INavigationService navigationService,
             ILoggingService loggingService, IMessageService messageService)
         {
@@ -28,31 +23,28 @@ namespace TrickyTriviaTrip.ViewModel
             _loggingService = loggingService;
             _messageService = messageService;
 
-            _playerInitializationTask = Task.Run(InitializePlayer);
-
             ViewStatsCommand = new DelegateCommand(execute => _navigationService.NavigateToStats());
             ExitGameCommand = new DelegateCommand(execute => System.Windows.Application.Current.Shutdown());
-            StartGameCommand = new DelegateCommand(async execute => 
-            { 
-                _isStartGameClicked = true;
-                StartGameCommand?.OnCanExecuteChanged();
-                if (!_playerInitializationTask.IsCompleted) 
-                { 
-                    _loggingService.LogWarning($"Start Game clicked but Player not yet initialized. Current thread: {Environment.CurrentManagedThreadId}. Waiting...");
-                    await _playerInitializationTask;
-                } 
-                _navigationService.NavigateToGame();
-            }, canExecute => !_isStartGameClicked);
+            StartGameCommand = new DelegateCommand(execute => _navigationService.NavigateToGame(), canExecute => _playData.CurrentPlayer is not null);
         }
         #endregion
 
 
-        #region Public methods properties
+        #region Public methods and properties
 
         /// <summary>
         /// The name of the current player
         /// </summary>
         public string? PlayerName => _playData.CurrentPlayer?.Name;
+
+        /// <summary>
+        /// Updates the player name (for example, after successful initialization)
+        /// </summary>
+        public void UpdatePlayerName()
+        {
+            OnPropertyChanged(nameof(PlayerName));
+            StartGameCommand.OnCanExecuteChanged();
+        }
 
         /// <summary>
         /// Command for the Start Game button
@@ -71,24 +63,7 @@ namespace TrickyTriviaTrip.ViewModel
 
         #region Private methods
 
-        private async Task InitializePlayer()
-        {
-            try
-            {
-                await _playData.InitializePlayerAsync();
-                OnPropertyChanged(nameof(PlayerName));
-            }
-            catch (DbException exception)
-            {
-                _loggingService.LogError("Database error during player initialization:\n" + exception.ToString());
-                _messageService.ShowMessage("Database error:\n" + exception.Message);
-            }
-            catch (Exception exception)
-            {
-                _loggingService.LogError("Error during player initialization:\n" + exception.ToString());
-                _messageService.ShowMessage("Error:\n" + exception.Message);
-            }
-        }
+
         #endregion
 
     }
