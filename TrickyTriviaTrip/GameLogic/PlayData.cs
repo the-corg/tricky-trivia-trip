@@ -32,6 +32,12 @@ namespace TrickyTriviaTrip.GameLogic
         Task RecordScore();
 
         /// <summary>
+        /// Updates the name of the current player, also in the database
+        /// </summary>
+        /// <param name="newPlayerName">New name for the player</param>
+        Task UpdatePlayerName(string newPlayerName);
+
+        /// <summary>
         /// The most recent score
         /// </summary>
         int Score { get; set; }
@@ -72,6 +78,10 @@ namespace TrickyTriviaTrip.GameLogic
         #region Public methods and properties 
         public async Task InitializeAsync()
         {
+
+            // TODO: delete this
+            //await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
+
             CurrentPlayer = await GetLastActivePlayerAsync();
         }
 
@@ -125,6 +135,30 @@ namespace TrickyTriviaTrip.GameLogic
             catch (Exception exception)
             {
                 _loggingService.LogError("Error while recording score in the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Error:\n" + exception.Message);
+            }
+        }
+
+        public async Task UpdatePlayerName(string newPlayerName)
+        {
+            if (CurrentPlayer is null)
+                return;
+
+            _loggingService.LogInfo($"The player name was edited from {CurrentPlayer.Name} to {newPlayerName}. Updating the database...");
+            CurrentPlayer.Name = newPlayerName;
+
+            try
+            {
+                await _playerRepository.UpdateAsync(CurrentPlayer);
+            }
+            catch (DbException exception)
+            {
+                _loggingService.LogError("Database error while updating player name in the database:\n" + exception.ToString());
+                _messageService.ShowMessage("Database error:\n" + exception.Message);
+            }
+            catch (Exception exception)
+            {
+                _loggingService.LogError("Error while updating player name in the database:\n" + exception.ToString());
                 _messageService.ShowMessage("Error:\n" + exception.Message);
             }
         }

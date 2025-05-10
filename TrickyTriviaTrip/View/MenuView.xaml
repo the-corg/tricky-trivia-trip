@@ -28,7 +28,7 @@
         </Grid.RowDefinitions>
 
         <!-- Welcome, PLAYER_NAME or Good job, PLAYER_NAME + Edit button -->
-        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center">
+        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Visibility="{Binding IsNothingBeingDoneToPlayer, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
@@ -38,12 +38,42 @@
             <TextBlock Text="{Binding GreetingText}" Style="{StaticResource MenuTextPrimary}"/>
             <Button Grid.Column="1" Content="{Binding PlayerName}" Margin="0" 
                     Style="{StaticResource MenuButton}" HorizontalContentAlignment="Left"
-                    ToolTip="Change player or add new player"/>
+                    ToolTip="Change player or add new player"
+                    Command="{Binding ChangePlayerCommand}"/>
             <TextBlock Grid.Column="2" Text="!" Style="{StaticResource MenuTextPrimary}"/>
             <Button Grid.Column="3" Content="✏️" Style="{StaticResource MenuButton}" 
                     Opacity="0.5" FontWeight="ExtraLight" ToolTip="Edit player name" 
-                    FontSize="{StaticResource MenuSecondaryFontSize}"/>
+                    FontSize="{StaticResource MenuSecondaryFontSize}"
+                    Command="{Binding EditPlayerCommand}"/>
         </Grid>
+        
+        <!-- Edit player TextBox + Button -->
+        <Grid Grid.Row="1" Grid.Column="1" Visibility="{Binding IsPlayerEditInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="❌" Style="{StaticResource MenuButton}" 
+                    ToolTip="Cancel player name edit" 
+                    Command="{Binding CancelPlayerEditCommand}"/>
+            
+            <TextBox Grid.Column="1" BorderThickness="0" Text="{Binding EditedPlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Background="Transparent"/>
+            
+            <Button Grid.Column="2" Content="✔️" Style="{StaticResource MenuButton}" 
+                    ToolTip="Confirm player name edit" 
+                    Command="{Binding ConfirmPlayerEditCommand}"/>
+        </Grid>
+
+        <!-- Change player Combobox -->
+        <ComboBox Grid.Row="1" Grid.Column="1" Visibility="{Binding IsPlayerChangeInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ComboBoxItem Content="Add New Player"/>
+            <ComboBoxItem Content="Item 1"/>
+            <ComboBoxItem Content="Item 2"/>
+            <ComboBoxItem Content="Item 3"/>
+            <ComboBoxItem Content="Item 4"/>
+            <ComboBoxItem Content="Item 5"/>
+        </ComboBox>
 
         <!-- Empty line or Your score is: XX -->
         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ScoreText}" Style="{StaticResource MenuTextSecondary}"/>
