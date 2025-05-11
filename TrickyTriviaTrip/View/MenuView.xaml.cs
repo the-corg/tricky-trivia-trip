@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace TrickyTriviaTrip.View
 {
@@ -17,9 +18,13 @@ namespace TrickyTriviaTrip.View
             // If the text box became visible, set the keyboard focus in it, put cursor at the end and scroll there
             if (e.NewValue is bool b && b)
             {
-                PlayerNameTextBox.Focus();
                 PlayerNameTextBox.Select(PlayerNameTextBox.Text.Length, 0);
                 PlayerNameTextBox.ScrollToHorizontalOffset(double.MaxValue);
+
+                // Have to use Dispatcher because otherwise the text box would lose focus to MainWindow 
+                // when becoming visible after a click on "Create new player" button. This click would
+                // be processed later than the visibility change for the TextBox
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => PlayerNameTextBox.Focus());
             }
         }
 

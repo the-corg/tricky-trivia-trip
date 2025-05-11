@@ -75,9 +75,10 @@
 
         <!-- Change player Combobox -->
         <ComboBox Grid.Row="1" Grid.Column="1" x:Name="PlayersComboBox" IsVisibleChanged="ComboBox_IsVisibleChanged"
-                  SelectedItem="{Binding SelectedPlayer, Mode=TwoWay, Delay=1}"
+                  SelectedItem="{Binding SelectedPlayer, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                   ItemsSource="{Binding Players}" DisplayMemberPath="Name" 
-                  Visibility="{Binding IsSelectionInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                  Visibility="{Binding IsSelectionInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  IsDropDownOpen="{Binding IsSelectionInProgress, Mode=OneWayToSource}"/>
 
         <!-- Empty line or Your score is: XX -->
         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ScoreText}" Style="{StaticResource MenuTextSecondary}"/>

@@ -125,6 +125,11 @@ namespace TrickyTriviaTrip.GameLogic
 
                 _currentPlayer = value;
 
+                // Since the player changed, the values from the last game session became irrelevant
+                Score = 0;
+                QuestionsAnswered = 0;
+                QuestionsAnsweredCorrectly = 0;
+
                 // Update IsCurrent for all players
                 if (_currentPlayer is not null)
                 {

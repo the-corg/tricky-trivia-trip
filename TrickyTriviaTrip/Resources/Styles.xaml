@@ -195,7 +195,7 @@
                         </Trigger>
                         <DataTrigger Binding="{Binding IsDummy}" Value="True">
                             <Setter Property="Foreground" Value="{StaticResource Gold}"/>
-                            <Setter Property="Background" Value="{StaticResource 1_VeryDark}"/>
+                            <Setter Property="Background" Value="{StaticResource 2_Dark}"/>
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="White"/>
