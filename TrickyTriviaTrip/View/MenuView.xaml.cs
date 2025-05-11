@@ -22,5 +22,22 @@ namespace TrickyTriviaTrip.View
                 PlayerNameTextBox.ScrollToHorizontalOffset(double.MaxValue);
             }
         }
+
+        private void ComboBox_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            // If the combobox became visible, scroll to the top
+            if (e.NewValue is bool b && b)
+            {
+                PlayersComboBox.IsDropDownOpen = true;
+
+                if (PlayersComboBox.ItemContainerGenerator.ContainerFromIndex(0) is ComboBoxItem item)
+                    item.BringIntoView();
+            }
+            else
+            {
+                PlayersComboBox.IsDropDownOpen = false;
+            }
+        }
+
     }
 }

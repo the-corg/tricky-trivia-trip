@@ -1,4 +1,6 @@
-﻿using TrickyTriviaTrip.GameLogic;
+﻿using System.ComponentModel;
+using System.Windows.Data;
+using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Services;
 
 namespace TrickyTriviaTrip.ViewModel
@@ -14,9 +16,9 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly INavigationService _navigationService;
         private readonly ILoggingService _loggingService;
         private readonly IMessageService _messageService;
-        private bool _isPlayerEditInProgress;
-        private bool _isPlayerChangeInProgress;
         private string _editedPlayerName = "";
+        private PlayerViewModel? _selectedPlayer;
+        private Operation _currentOperation = Operation.None;
 
         public MenuViewModel(IPlayData playData, INavigationService navigationService,
             ILoggingService loggingService, IMessageService messageService)
@@ -32,7 +34,13 @@ namespace TrickyTriviaTrip.ViewModel
             ChangePlayerCommand = new DelegateCommand(execute => ChangePlayer(), canExecute => _playData.CurrentPlayer is not null);
             EditPlayerCommand = new DelegateCommand(execute => EditPlayer(), canExecute => _playData.CurrentPlayer is not null);
             ConfirmPlayerEditCommand = new DelegateCommand(execute => ConfirmPlayerEdit(), canExecute => !string.IsNullOrWhiteSpace(EditedPlayerName));
-            CancelPlayerEditCommand = new DelegateCommand(execute => { IsPlayerEditInProgress = false; IsPlayerChangeInProgress = false; });
+            CancelPlayerEditCommand = new DelegateCommand(execute => CurrentOperation = Operation.None);
+
+            Players = new ListCollectionView(_playData.Players);
+            Players.SortDescriptions.Add(new SortDescription("IsDummy", ListSortDirection.Descending));
+            Players.SortDescriptions.Add(new SortDescription("IsCurrent", ListSortDirection.Descending));
+
+            SelectedPlayer = _playData.CurrentPlayer;
         }
         #endregion
 
@@ -71,50 +79,35 @@ namespace TrickyTriviaTrip.ViewModel
         public string CorrectAnswersText => (_playData.QuestionsAnswered == 0) ? "" : $"You answered {_playData.QuestionsAnsweredCorrectly}/{_playData.QuestionsAnswered} questions correctly";
 
         /// <summary>
-        /// Shows whether the player name is currently edited
+        /// Shows the current operation related to the player
         /// </summary>
-        public bool IsPlayerEditInProgress
+        private Operation CurrentOperation
         {
-            get => _isPlayerEditInProgress;
+            get => _currentOperation;
             set
             {
-                if (_isPlayerEditInProgress == value)
-                    return;
-
-                _isPlayerEditInProgress = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsNothingBeingDoneToPlayer));
-
-                if (value)
-                    IsPlayerChangeInProgress = false;
+                _currentOperation = value;
+                OnPropertyChanged(nameof(IsNothingBeingDone));
+                OnPropertyChanged(nameof(IsEditInProgress));
+                OnPropertyChanged(nameof(IsSelectionInProgress));
             }
         }
 
         /// <summary>
-        /// Shows whether the player is currently being changed
+        /// Shows whether the player name is currently being edited
         /// </summary>
-        public bool IsPlayerChangeInProgress
-        {
-            get => _isPlayerChangeInProgress;
-            set
-            {
-                if (_isPlayerChangeInProgress == value)
-                    return;
+        public bool IsEditInProgress => CurrentOperation == Operation.Edit || CurrentOperation == Operation.Add;
 
-                _isPlayerChangeInProgress = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsNothingBeingDoneToPlayer));
-
-                if (value)
-                    IsPlayerEditInProgress = false;
-            }
-        }
+        /// <summary>
+        /// Shows whether the player is currently being selected
+        /// </summary>
+        public bool IsSelectionInProgress => CurrentOperation == Operation.Change;
 
         /// <summary>
         /// Shows whether nothing is being done to the player
         /// (neither Edit nor Change)
         /// </summary>
-        public bool IsNothingBeingDoneToPlayer => !IsPlayerChangeInProgress && !IsPlayerEditInProgress;
+        public bool IsNothingBeingDone => CurrentOperation == Operation.None;
 
         /// <summary>
         /// Tentative player name while it's being edited
@@ -132,7 +125,41 @@ namespace TrickyTriviaTrip.ViewModel
                 ConfirmPlayerEditCommand.OnCanExecuteChanged();
             }
         }
+
+        /// <summary>
+        /// All players
+        /// </summary>
+        public ListCollectionView Players { get; }
         #endregion
+
+        /// <summary>
+        /// The player currently selected
+        /// </summary>
+        public PlayerViewModel? SelectedPlayer
+        {
+            get => _selectedPlayer;
+            set
+            {
+                if (value is PlayerViewModel p && p.IsDummy)
+                {
+                    // Add New Player
+                    EditedPlayerName = "";
+                    CurrentOperation = Operation.Add;
+                }
+                else
+                {
+                    CurrentOperation = Operation.None;
+                    if (value is null)
+                        return;
+
+                    _selectedPlayer = value;
+                    _playData.CurrentPlayer = _selectedPlayer;
+
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(PlayerName));
+                }
+            }
+        }
 
         #region Commands 
 
@@ -171,7 +198,11 @@ namespace TrickyTriviaTrip.ViewModel
 
         private void ChangePlayer()
         {
-            IsPlayerChangeInProgress = true;
+            _selectedPlayer = _playData.CurrentPlayer;
+
+            OnPropertyChanged(nameof(SelectedPlayer));
+            CurrentOperation = Operation.Change;
+            Players.Refresh();
         }
 
         private void EditPlayer()
@@ -180,7 +211,7 @@ namespace TrickyTriviaTrip.ViewModel
                 return;
 
             EditedPlayerName = PlayerName;
-            IsPlayerEditInProgress = true;
+            CurrentOperation = Operation.Edit;
         }
 
         private async void ConfirmPlayerEdit()
@@ -190,22 +221,57 @@ namespace TrickyTriviaTrip.ViewModel
                 _loggingService.LogWarning("CanExecute didn't work correctly for ConfirmPlayerEdit. The edited player name is null or empty.");
                 return;
             }
-            
-            IsPlayerEditInProgress = false;
-            IsPlayerChangeInProgress = false;
 
-            if (_playData.CurrentPlayer is null)
+            bool isAdd = CurrentOperation == Operation.Add;
+
+            if (isAdd && _playData.Players.Where(x => x.Name == EditedPlayerName).Any())
             {
-                _loggingService.LogError("Error in ConfirmPlayerEdit: CurrentPlayer is null");
+                _messageService.ShowMessage("Error: A player with this name exists in the database already.\n\nPlease choose a different name");
+                _loggingService.LogInfo($"User tried to create a new player named {EditedPlayerName} but a player with this name already existed in the database.");
                 return;
             }
-            
-            await _playData.UpdatePlayerName(EditedPlayerName);
+
+            // Stop editing
+            CurrentOperation = Operation.None;
+
+            if (isAdd)
+            {
+                // Create new player and add to the database
+
+                await _playData.AddPlayer(EditedPlayerName);
+            }
+            else
+            {
+                // Update an existing player
+                if (_playData.CurrentPlayer is null)
+                {
+                    _loggingService.LogError("Error in ConfirmPlayerEdit: CurrentPlayer is null");
+                    return;
+                }
+
+                if (_playData.CurrentPlayer.Name == EditedPlayerName)
+                    return;
+
+                await _playData.UpdatePlayerName(EditedPlayerName);
+            }
 
             OnPropertyChanged(nameof(PlayerName));
         }
 
         #endregion
 
+        #region Operation enum
+
+        public enum Operation
+        {
+            None = 0,
+            Change = 1,
+            Edit = 2,
+            Add = 3
+        }
+
+        #endregion
+
     }
+
 }

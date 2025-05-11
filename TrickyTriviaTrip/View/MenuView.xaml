@@ -28,7 +28,8 @@
         </Grid.RowDefinitions>
 
         <!-- Welcome, PLAYER_NAME or Good job, PLAYER_NAME + Edit button -->
-        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Visibility="{Binding IsNothingBeingDoneToPlayer, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" 
+              Visibility="{Binding IsNothingBeingDone, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
@@ -48,7 +49,8 @@
         </Grid>
         
         <!-- Edit player TextBox + Button -->
-        <Grid Grid.Row="1" Grid.Column="1" Visibility="{Binding IsPlayerEditInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Grid.Row="1" Grid.Column="1"
+              Visibility="{Binding IsEditInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
@@ -72,14 +74,10 @@
         </Grid>
 
         <!-- Change player Combobox -->
-        <ComboBox Grid.Row="1" Grid.Column="1" Visibility="{Binding IsPlayerChangeInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ComboBoxItem Content="Add New Player"/>
-            <ComboBoxItem Content="Item 1"/>
-            <ComboBoxItem Content="Item 2"/>
-            <ComboBoxItem Content="Item 3"/>
-            <ComboBoxItem Content="Item 4"/>
-            <ComboBoxItem Content="Item 5"/>
-        </ComboBox>
+        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="PlayersComboBox" 
+                  SelectedItem="{Binding SelectedPlayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  ItemsSource="{Binding Players}" DisplayMemberPath="Name" IsVisibleChanged="ComboBox_IsVisibleChanged"
+                  Visibility="{Binding IsSelectionInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
         <!-- Empty line or Your score is: XX -->
         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ScoreText}" Style="{StaticResource MenuTextSecondary}"/>

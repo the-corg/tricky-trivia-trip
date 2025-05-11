@@ -260,7 +260,7 @@ namespace TrickyTriviaTrip.GameLogic
         {
             try
             {
-                var questionsWithAnswers = await _questionRepository.GetLeastAnsweredWithAnswersAsync(count, _playData.CurrentPlayer);
+                var questionsWithAnswers = await _questionRepository.GetLeastAnsweredWithAnswersAsync(count, _playData.CurrentPlayer?.Model);
 
                 foreach (var q in questionsWithAnswers)
                     _queue.Enqueue(q);
