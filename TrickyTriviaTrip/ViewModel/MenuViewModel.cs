@@ -32,7 +32,7 @@ namespace TrickyTriviaTrip.ViewModel
             ChangePlayerCommand = new DelegateCommand(execute => ChangePlayer(), canExecute => _playData.CurrentPlayer is not null);
             EditPlayerCommand = new DelegateCommand(execute => EditPlayer(), canExecute => _playData.CurrentPlayer is not null);
             ConfirmPlayerEditCommand = new DelegateCommand(execute => ConfirmPlayerEdit(), canExecute => !string.IsNullOrWhiteSpace(EditedPlayerName));
-            CancelPlayerEditCommand = new DelegateCommand(execute => CancelPlayerEdit());
+            CancelPlayerEditCommand = new DelegateCommand(execute => { IsPlayerEditInProgress = false; IsPlayerChangeInProgress = false; });
         }
         #endregion
 
@@ -84,6 +84,9 @@ namespace TrickyTriviaTrip.ViewModel
                 _isPlayerEditInProgress = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsNothingBeingDoneToPlayer));
+
+                if (value)
+                    IsPlayerChangeInProgress = false;
             }
         }
 
@@ -101,8 +104,17 @@ namespace TrickyTriviaTrip.ViewModel
                 _isPlayerChangeInProgress = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsNothingBeingDoneToPlayer));
+
+                if (value)
+                    IsPlayerEditInProgress = false;
             }
         }
+
+        /// <summary>
+        /// Shows whether nothing is being done to the player
+        /// (neither Edit nor Change)
+        /// </summary>
+        public bool IsNothingBeingDoneToPlayer => !IsPlayerChangeInProgress && !IsPlayerEditInProgress;
 
         /// <summary>
         /// Tentative player name while it's being edited
@@ -120,12 +132,9 @@ namespace TrickyTriviaTrip.ViewModel
                 ConfirmPlayerEditCommand.OnCanExecuteChanged();
             }
         }
+        #endregion
 
-        /// <summary>
-        /// Shows whether nothing is being done to the player
-        /// (neither Edit nor Change)
-        /// </summary>
-        public bool IsNothingBeingDoneToPlayer => !IsPlayerChangeInProgress && !IsPlayerEditInProgress;
+        #region Commands 
 
         /// <summary>
         /// Command for the Start Game button
@@ -163,7 +172,6 @@ namespace TrickyTriviaTrip.ViewModel
         private void ChangePlayer()
         {
             IsPlayerChangeInProgress = true;
-            IsPlayerEditInProgress = false;
         }
 
         private void EditPlayer()
@@ -173,7 +181,6 @@ namespace TrickyTriviaTrip.ViewModel
 
             EditedPlayerName = PlayerName;
             IsPlayerEditInProgress = true;
-            IsPlayerChangeInProgress = false;
         }
 
         private async void ConfirmPlayerEdit()
@@ -196,12 +203,6 @@ namespace TrickyTriviaTrip.ViewModel
             await _playData.UpdatePlayerName(EditedPlayerName);
 
             OnPropertyChanged(nameof(PlayerName));
-        }
-
-        private void CancelPlayerEdit()
-        {
-            IsPlayerEditInProgress = false;
-            IsPlayerChangeInProgress = false;
         }
 
         #endregion

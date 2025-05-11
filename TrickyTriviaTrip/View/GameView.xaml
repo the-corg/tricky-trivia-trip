@@ -88,7 +88,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Column="1" Text="{Binding Question.Text}" Style="{StaticResource GameQuestionText}"/>
-            <Button Grid.Row="1" Grid.Column="1" Content="⇨ Next Question ⇨" Style="{StaticResource MenuButton}" Margin="0 6"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="{Binding NextQuestionButtonText}" Style="{StaticResource MenuButton}" Margin="0 6"/>
             <Grid x:Name="SpaceLeft" Grid.Row="2" Grid.Column="1"/>
         </Grid>
 
@@ -120,7 +120,7 @@
                 </ListBox.ItemsPanel>
             </ListBox>
 
-            <Button Grid.Row="3" Grid.Column="1"  Content="{Binding NextQuestionButtonText}" 
+            <Button Grid.Row="3" Grid.Column="1" Content="{Binding NextQuestionButtonText}" 
                     Command="{Binding NextQuestionCommand}" 
                     Style="{StaticResource NextQuestionButton}"/>
 

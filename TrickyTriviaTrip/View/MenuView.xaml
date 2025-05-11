@@ -35,12 +35,12 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding GreetingText}" Style="{StaticResource MenuTextPrimary}"/>
+            <TextBlock Text="{Binding GreetingText}" Style="{StaticResource MenuTextPrimary}" VerticalAlignment="Top"/>
             <Button Grid.Column="1" Content="{Binding PlayerName}" Margin="0" 
-                    Style="{StaticResource MenuButton}" HorizontalContentAlignment="Left"
+                    Style="{StaticResource MenuButton}" MaxHeight="150" 
                     ToolTip="Change player or add new player"
                     Command="{Binding ChangePlayerCommand}"/>
-            <TextBlock Grid.Column="2" Text="!" Style="{StaticResource MenuTextPrimary}"/>
+            <TextBlock Grid.Column="2" Text="!" Style="{StaticResource MenuTextPrimary}" VerticalAlignment="Bottom"/>
             <Button Grid.Column="3" Content="✏️" Style="{StaticResource MenuButton}" 
                     Opacity="0.5" FontWeight="ExtraLight" ToolTip="Edit player name" 
                     FontSize="{StaticResource MenuSecondaryFontSize}"
@@ -57,9 +57,15 @@
             <Button Content="❌" Style="{StaticResource MenuButton}" 
                     ToolTip="Cancel player name edit" 
                     Command="{Binding CancelPlayerEditCommand}"/>
-            
-            <TextBox Grid.Column="1" BorderThickness="0" Text="{Binding EditedPlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Background="Transparent"/>
-            
+
+            <TextBox x:Name="PlayerNameTextBox" Grid.Column="1" IsVisibleChanged="TextBox_IsVisibleChanged"
+                     Text="{Binding EditedPlayerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding ConfirmPlayerEditCommand}" Key="Enter"/>
+                    <KeyBinding Command="{Binding CancelPlayerEditCommand}" Key="Esc"/>
+                </TextBox.InputBindings>
+            </TextBox>
+
             <Button Grid.Column="2" Content="✔️" Style="{StaticResource MenuButton}" 
                     ToolTip="Confirm player name edit" 
                     Command="{Binding ConfirmPlayerEditCommand}"/>

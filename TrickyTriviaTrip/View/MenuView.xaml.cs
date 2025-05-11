@@ -11,5 +11,16 @@ namespace TrickyTriviaTrip.View
         {
             InitializeComponent();
         }
+
+        private void TextBox_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            // If the text box became visible, set the keyboard focus in it, put cursor at the end and scroll there
+            if (e.NewValue is bool b && b)
+            {
+                PlayerNameTextBox.Focus();
+                PlayerNameTextBox.Select(PlayerNameTextBox.Text.Length, 0);
+                PlayerNameTextBox.ScrollToHorizontalOffset(double.MaxValue);
+            }
+        }
     }
 }
