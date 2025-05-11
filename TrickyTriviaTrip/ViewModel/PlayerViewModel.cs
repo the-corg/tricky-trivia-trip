@@ -27,7 +27,7 @@ namespace TrickyTriviaTrip.ViewModel
         /// </summary>
         public string Name
         {
-            get => IsDummy ? "Add New Player..." : _model!.Name;
+            get => IsDummy ? "➕Create new...😎" : _model!.Name;
             set
             {
                 if (IsDummy || value == _model!.Name)

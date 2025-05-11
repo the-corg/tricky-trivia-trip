@@ -74,9 +74,9 @@
         </Grid>
 
         <!-- Change player Combobox -->
-        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="PlayersComboBox" 
-                  SelectedItem="{Binding SelectedPlayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  ItemsSource="{Binding Players}" DisplayMemberPath="Name" IsVisibleChanged="ComboBox_IsVisibleChanged"
+        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="PlayersComboBox" IsVisibleChanged="ComboBox_IsVisibleChanged"
+                  SelectedItem="{Binding SelectedPlayer, Mode=TwoWay, Delay=1}"
+                  ItemsSource="{Binding Players}" DisplayMemberPath="Name" 
                   Visibility="{Binding IsSelectionInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
         <!-- Empty line or Your score is: XX -->

@@ -17,6 +17,7 @@
     <SolidColorBrush Color="#3c2f2f" x:Key="ReddishBrown"/>
 
     <SolidColorBrush Color="#5F83ba7f" x:Key="SemiTransparent"/>
+    <SolidColorBrush Color="#CF83ba7f" x:Key="SlightlyTransparent"/>
 
     <SolidColorBrush Color="#af0000" x:Key="WrongAnswer"/>
     <SolidColorBrush Color="#70ff00" x:Key="CorrectAnswer"/>

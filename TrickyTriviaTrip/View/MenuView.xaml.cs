@@ -25,13 +25,10 @@ namespace TrickyTriviaTrip.View
 
         private void ComboBox_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            // If the combobox became visible, scroll to the top
+            // If the combobox became visible, open the dropdown, otherwise close it
             if (e.NewValue is bool b && b)
             {
                 PlayersComboBox.IsDropDownOpen = true;
-
-                if (PlayersComboBox.ItemContainerGenerator.ContainerFromIndex(0) is ComboBoxItem item)
-                    item.BringIntoView();
             }
             else
             {

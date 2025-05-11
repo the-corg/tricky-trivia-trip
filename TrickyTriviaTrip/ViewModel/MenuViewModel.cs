@@ -19,6 +19,7 @@ namespace TrickyTriviaTrip.ViewModel
         private string _editedPlayerName = "";
         private PlayerViewModel? _selectedPlayer;
         private Operation _currentOperation = Operation.None;
+        private bool _isSelectionNotFinished = true;
 
         public MenuViewModel(IPlayData playData, INavigationService navigationService,
             ILoggingService loggingService, IMessageService messageService)
@@ -37,9 +38,9 @@ namespace TrickyTriviaTrip.ViewModel
             CancelPlayerEditCommand = new DelegateCommand(execute => CurrentOperation = Operation.None);
 
             Players = new ListCollectionView(_playData.Players);
-            Players.SortDescriptions.Add(new SortDescription("IsDummy", ListSortDirection.Descending));
             Players.SortDescriptions.Add(new SortDescription("IsCurrent", ListSortDirection.Descending));
-
+            Players.SortDescriptions.Add(new SortDescription("IsDummy", ListSortDirection.Descending));
+            
             SelectedPlayer = _playData.CurrentPlayer;
         }
         #endregion
@@ -103,6 +104,21 @@ namespace TrickyTriviaTrip.ViewModel
         /// </summary>
         public bool IsSelectionInProgress => CurrentOperation == Operation.Change;
 
+        /* TODO : REMOVE  public bool IsSelectionNotFinished
+        {
+            get => _isSelectionNotFinished;
+            set
+            {
+                if (_isSelectionNotFinished == value)
+                    return;
+
+                _isSelectionNotFinished = value;
+                if (!_isSelectionNotFinished)
+                    CurrentOperation = Operation.None;
+            }
+
+        }*/
+
         /// <summary>
         /// Shows whether nothing is being done to the player
         /// (neither Edit nor Change)
@@ -144,6 +160,8 @@ namespace TrickyTriviaTrip.ViewModel
                 {
                     // Add New Player
                     EditedPlayerName = "";
+                    _selectedPlayer = _playData.CurrentPlayer;
+                    OnPropertyChanged();
                     CurrentOperation = Operation.Add;
                 }
                 else
@@ -198,10 +216,10 @@ namespace TrickyTriviaTrip.ViewModel
 
         private void ChangePlayer()
         {
-            _selectedPlayer = _playData.CurrentPlayer;
-
-            OnPropertyChanged(nameof(SelectedPlayer));
             CurrentOperation = Operation.Change;
+            _selectedPlayer = _playData.CurrentPlayer;
+            OnPropertyChanged(nameof(SelectedPlayer));
+            
             Players.Refresh();
         }
 

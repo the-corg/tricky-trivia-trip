@@ -89,9 +89,6 @@ namespace TrickyTriviaTrip.GameLogic
 
         public async Task InitializeAsync()
         {
-            // TODO: delete this
-            //await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
-
             var currentPlayer = await GetLastActivePlayerAsync();
 
             var allPlayers = await _playerRepository.GetAllAsync();
@@ -121,6 +118,9 @@ namespace TrickyTriviaTrip.GameLogic
             set
             {
                 if (value == _currentPlayer)
+                    return;
+
+                if (value is PlayerViewModel p && p.IsDummy)
                     return;
 
                 _currentPlayer = value;
