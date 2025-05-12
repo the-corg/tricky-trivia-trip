@@ -1,5 +1,8 @@
 ﻿namespace TrickyTriviaTrip.Model
 {
+    /// <summary>
+    /// Model class for an average score
+    /// </summary>
     public class AverageScore
     {
         public required string PlayerName { get; set; }

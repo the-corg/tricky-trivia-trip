@@ -363,7 +363,13 @@
         <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
     </Style>
-    
+
+    <Style TargetType="TextBlock" x:Key="StatsTextBlock" BasedOn="{StaticResource MenuTextPrimary}">
+        <Setter Property="Foreground" Value="{StaticResource Gold}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
+    </Style>
+
     <!-- Tab Control with a button in the header -->
     <Style TargetType="TabItem">
         <Setter Property="Foreground" Value="{StaticResource 1_VeryDark}"/>

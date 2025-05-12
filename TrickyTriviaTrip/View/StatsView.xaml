@@ -19,16 +19,26 @@
             <DataGrid ItemsSource="{Binding History}"/>
         </TabItem>
         <TabItem Header="Player Stats">
-            <StackPanel>
-                <ComboBox ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer}" DisplayMemberPath="Name">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ComboBox Margin="0" ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer}" DisplayMemberPath="Name">
                     <ComboBox.Resources>
                         <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                             <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
                         </Style>
                     </ComboBox.Resources>
                 </ComboBox>
-                <DataGrid ItemsSource="{Binding UserStats}"/>
-            </StackPanel>
+                <TextBlock Grid.Row="1" Text="Difficulties" Style="{StaticResource StatsTextBlock}"/>
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Difficulties}"/>
+                <TextBlock Grid.Row="3" Text="Categories" Style="{StaticResource StatsTextBlock}"/>
+                <DataGrid Grid.Row="4" ItemsSource="{Binding Categories}"/>
+            </Grid>
         </TabItem>
 
         <!-- Tables with raw DB data for debugging -->

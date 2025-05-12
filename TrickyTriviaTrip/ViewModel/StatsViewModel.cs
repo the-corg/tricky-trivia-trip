@@ -21,8 +21,8 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly IPlayerRepository _playerRepository;
         private readonly IAnswerAttemptRepository _anwerAttemptRepository;
         private readonly IScoreRepository _scoreRepository;
-
         private readonly IPlayData _playData;
+        private readonly IPlayerStatsQueries _playerStatsQueries;
         private readonly INavigationService _navigationService;
         private readonly ILoggingService _loggingService;
         private readonly IMessageService _messageService;
@@ -31,16 +31,16 @@ namespace TrickyTriviaTrip.ViewModel
 
         public StatsViewModel(IQuestionRepository questionRepository, IAnswerOptionRepository answerOptionRepository,
             IPlayerRepository playerRepository, IAnswerAttemptRepository anwerAttemptRepository,
-            IScoreRepository scoreRepository, IPlayData playData, INavigationService navigationService,
-            ILoggingService loggingService, IMessageService messageService)
+            IScoreRepository scoreRepository, IPlayData playData, IPlayerStatsQueries playerStatsQueries,
+            INavigationService navigationService, ILoggingService loggingService, IMessageService messageService)
         {
             _questionRepository = questionRepository;
             _answerOptionRepository = answerOptionRepository;
             _playerRepository = playerRepository;
             _scoreRepository = scoreRepository;
             _anwerAttemptRepository = anwerAttemptRepository;
-
             _playData = playData;
+            _playerStatsQueries = playerStatsQueries;
             _navigationService = navigationService;
             _loggingService = loggingService;
             _messageService = messageService;
@@ -69,19 +69,19 @@ namespace TrickyTriviaTrip.ViewModel
         #endregion
 
 
-        #region Data Initialization
+        #region Data Initialization 
 
         private async void InitializeData()
         {
             try
             {
-
                 var scoresWithPlayerNames = await _scoreRepository.GetAllWithPlayerNamesAsync();
                 foreach (var score in scoresWithPlayerNames) History.Add(score);
 
                 var averageScores = await _scoreRepository.GetAllAverageAsync();
                 foreach (var score in averageScores) AverageScores.Add(score);
 
+                await LoadPlayerStats();
 
 
                 // TODO: These are for debug tabs. Remove or comment out later
@@ -111,6 +111,7 @@ namespace TrickyTriviaTrip.ViewModel
                 _messageService.ShowMessage("Error:\n" + exception.Message);
             }
         }
+
         #endregion
 
 
@@ -132,6 +133,17 @@ namespace TrickyTriviaTrip.ViewModel
         public ObservableCollection<AverageScore> AverageScores { get; set; } = new();
 
         /// <summary>
+        /// Stats for each category for a particular player
+        /// </summary>
+        public ObservableCollection<AnswerStats> Categories { get; set; } = new();
+
+        /// <summary>
+        /// Stats for each difficulty for a particular player
+        /// </summary>
+        public ObservableCollection<AnswerStats> Difficulties { get; set; } = new();
+
+
+        /// <summary>
         /// All players
         /// </summary>
         public ListCollectionView Players { get; }
@@ -150,7 +162,7 @@ namespace TrickyTriviaTrip.ViewModel
                 _selectedPlayer = value;
 
                 OnPropertyChanged();
-                // TODO: Update data
+                UpdatePlayerStats();
             }
         }
 
@@ -174,5 +186,42 @@ namespace TrickyTriviaTrip.ViewModel
 
         #endregion
 
+        #region Private methods
+
+        private async Task LoadPlayerStats()
+        {
+            if (SelectedPlayer is null)
+                return;
+
+            var categories = await _playerStatsQueries.GetAnswerStatsAsync(SelectedPlayer.Id, Criterion.Category);
+            foreach (var category in categories) Categories.Add(category);
+
+            var difficulties = await _playerStatsQueries.GetAnswerStatsAsync(SelectedPlayer.Id, Criterion.Difficulty);
+            foreach (var difficulty in difficulties) Difficulties.Add(difficulty);
+        }
+
+        private async void UpdatePlayerStats()
+        {
+            Categories.Clear();
+            Difficulties.Clear();
+
+            try
+            {
+                await LoadPlayerStats();
+            }
+            catch (DbException exception)
+            {
+                _loggingService.LogError("Database error during statistics update:\n" + exception.ToString());
+                _messageService.ShowMessage("Database error:\n" + exception.Message);
+            }
+            catch (Exception exception)
+            {
+                _loggingService.LogError("Error during statistics update:\n" + exception.ToString());
+                _messageService.ShowMessage("Error:\n" + exception.Message);
+            }
+
+            #endregion
+
+        }
     }
 }

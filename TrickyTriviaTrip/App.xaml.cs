@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using TrickyTriviaTrip.Api;
 using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.GameLogic;
-using TrickyTriviaTrip.Model;
 using TrickyTriviaTrip.Services;
 using TrickyTriviaTrip.ViewModel;
 
@@ -82,6 +81,9 @@ namespace TrickyTriviaTrip
             services.AddSingleton<IAnswerOptionRepository, AnswerOptionRepository>();
             services.AddSingleton<IScoreRepository, ScoreRepository>();
             services.AddSingleton<IAnswerAttemptRepository, AnswerAttemptRepository>();
+
+            // Queries
+            services.AddSingleton<IPlayerStatsQueries, PlayerStatsQueries>();
 
             // Game logic
             services.AddSingleton<IPlayData, PlayData>();
