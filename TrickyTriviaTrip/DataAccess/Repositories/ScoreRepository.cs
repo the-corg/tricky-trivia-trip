@@ -100,11 +100,11 @@ namespace TrickyTriviaTrip.DataAccess
             using var connection = await _connectionFactory.GetConnectionAsync();
 
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = @"SELECT p.Name, AVG(s.Value) AS AvgScore, COUNT(s.Id), MIN(s.Timestamp), MAX(s.Timestamp) 
+            cmd.CommandText = @"SELECT p.Name, AVG(s.Value) AS AvgScore, COUNT(s.Id) AS GamesCount, MIN(s.Timestamp), MAX(s.Timestamp) 
                                 FROM Score s 
                                 JOIN Player p ON s.PlayerId = p.Id 
                                 GROUP BY p.Id 
-                                ORDER BY AvgScore DESC";
+                                ORDER BY AvgScore DESC, GamesCount DESC";
 
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())

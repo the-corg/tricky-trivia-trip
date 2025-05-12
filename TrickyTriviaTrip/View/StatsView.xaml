@@ -32,6 +32,8 @@
         </TabItem>
 
         <!-- Tables with raw DB data for debugging -->
+        
+        <!-- 
         <TabItem Header="Debug: DB.Question">
             <DataGrid ItemsSource="{Binding Questions}"/>
 
@@ -48,6 +50,7 @@
             <DataGrid ItemsSource="{Binding AnswerAttempts}"/>
 
         </TabItem>
+        -->
         <TabItem Header="Debug: DB.Score">
             <DataGrid ItemsSource="{Binding Scores}"/>
 
