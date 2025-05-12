@@ -19,7 +19,7 @@ namespace TrickyTriviaTrip.ViewModel
         private readonly IAnswerOptionRepository _answerOptionRepository;
         private readonly IPlayerRepository _playerRepository;
         private readonly IAnswerAttemptRepository _anwerAttemptRepository;
-        private readonly IRepository<Score> _scoreRepository;
+        private readonly IScoreRepository _scoreRepository;
 
         private readonly IPlayData _playData;
         private readonly INavigationService _navigationService;
@@ -28,7 +28,7 @@ namespace TrickyTriviaTrip.ViewModel
 
         public StatsViewModel(IQuestionRepository questionRepository, IAnswerOptionRepository answerOptionRepository,
             IPlayerRepository playerRepository, IAnswerAttemptRepository anwerAttemptRepository,
-            IRepository<Score> scoreRepository, IPlayData playData, INavigationService navigationService)
+            IScoreRepository scoreRepository, IPlayData playData, INavigationService navigationService)
         {
             _questionRepository = questionRepository;
             _answerOptionRepository = answerOptionRepository;

@@ -70,14 +70,14 @@ namespace TrickyTriviaTrip.GameLogic
         #region Private fields, constructor and the initializer
 
         private readonly IPlayerRepository _playerRepository;
-        private readonly IRepository<Score> _scoreRepository;
+        private readonly IScoreRepository _scoreRepository;
         private readonly IAnswerAttemptRepository _answerAttemptRepository;
         private readonly ILoggingService _loggingService;
         private readonly IMessageService _messageService;
         
         private PlayerViewModel? _currentPlayer;
 
-        public PlayData(IPlayerRepository playerRepository, IRepository<Score> scoreRepository,
+        public PlayData(IPlayerRepository playerRepository, IScoreRepository scoreRepository,
             IAnswerAttemptRepository answerAttemptRepository, ILoggingService loggingService, IMessageService messageService)
         {
             _playerRepository = playerRepository;

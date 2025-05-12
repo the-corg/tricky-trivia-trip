@@ -29,12 +29,12 @@ namespace TrickyTriviaTrip.ViewModel
         /// <summary>
         /// Is shown to the left of the answer text after an answer option is selected
         /// </summary>
-        public string LeftCorrectnessDecorator => IsSelected ? (IsCorrect ? "✔️⇨ " : "❌⇨ ") : "";
+        public string LeftCorrectnessDecorator => IsSelected ? IsCorrect ? "✔️⇨ " : "❌⇨ " : "";
 
         /// <summary>
         /// Is shown to the right of the answer text after an answer option is selected
         /// </summary>
-        public string RightCorrectnessDecorator => IsSelected ? (IsCorrect ? " ⇦✔️" : " ⇦❌") : "";
+        public string RightCorrectnessDecorator => IsSelected ? IsCorrect ? " ⇦✔️" : " ⇦❌" : "";
 
         /// <summary>
         /// Shows whether the answer option is correct

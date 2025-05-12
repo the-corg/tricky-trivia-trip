@@ -52,7 +52,7 @@ namespace TrickyTriviaTrip.ViewModel
             get => _isCurrent;
             set
             {
-                if (_isCurrent == value) 
+                if (_isCurrent == value)
                     return;
 
                 _isCurrent = value;

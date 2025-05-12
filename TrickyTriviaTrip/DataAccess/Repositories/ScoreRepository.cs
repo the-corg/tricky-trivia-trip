@@ -7,7 +7,23 @@ namespace TrickyTriviaTrip.DataAccess
     /// <summary>
     /// Provides basic database operations for Score
     /// </summary>
-    public class ScoreRepository : BaseRepository<Score>
+    public interface IScoreRepository : IRepository<Score>
+    {
+        /// <summary>
+        /// Gets all scores with player names
+        /// </summary>
+        /// <returns>A collection of all scores with player names</returns>
+        Task<List<ScoreWithPlayerName>> GetAllWithPlayerNamesAsync();
+
+        /// <summary>
+        /// Gets average scores for each player
+        /// </summary>
+        /// <returns>A collection with the average score for each player</returns>
+        Task<List<AverageScore>> GetAllAverageAsync();
+    }
+
+
+    public class ScoreRepository : BaseRepository<Score>, IScoreRepository
     {
         // Ordinal positions of table columns, lazily loaded in MapToEntity
         private int? _ordinalId;
@@ -47,6 +63,63 @@ namespace TrickyTriviaTrip.DataAccess
             cmd.Parameters.Add(new SQLiteParameter("@Id", entity.Id));
 
             await cmd.ExecuteNonQueryAsync();
+        }
+        #endregion
+
+
+        #region Public methods specific to Score (IScoreRepository) 
+
+        public async Task<List<ScoreWithPlayerName>> GetAllWithPlayerNamesAsync()
+        {
+            var list = new List<ScoreWithPlayerName>();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = @"SELECT s.Timestamp, p.Name, s.Value 
+                                FROM Score s
+                                JOIN Player p ON s.PlayerId = p.Id
+                                ORDER BY s.Timestamp DESC";
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                list.Add(new ScoreWithPlayerName
+                {
+                    Timestamp = reader.GetDateTime(0),
+                    PlayerName = reader.GetString(1),
+                    Value = reader.GetInt32(2)
+                });
+            }
+
+            return list;
+        }
+
+        public async Task<List<AverageScore>> GetAllAverageAsync()
+        {
+            var list = new List<AverageScore>();
+            using var connection = await _connectionFactory.GetConnectionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = @"SELECT p.Name, AVG(s.Value) AS AvgScore, COUNT(s.Id), MIN(s.Timestamp), MAX(s.Timestamp) 
+                                FROM Score s 
+                                JOIN Player p ON s.PlayerId = p.Id 
+                                GROUP BY p.Id 
+                                ORDER BY AvgScore DESC";
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                list.Add(new AverageScore
+                {
+                    PlayerName = reader.GetString(0),
+                    Value = reader.GetDouble(1),
+                    NumberOfGames = reader.GetInt32(2),
+                    From = reader.GetDateTime(3),
+                    To = reader.GetDateTime(4)
+                });
+            }
+
+            return list;
         }
         #endregion
 
