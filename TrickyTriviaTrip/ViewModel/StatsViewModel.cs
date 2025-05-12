@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 using TrickyTriviaTrip.DataAccess;
 using TrickyTriviaTrip.GameLogic;
 using TrickyTriviaTrip.Model;
@@ -13,79 +15,115 @@ namespace TrickyTriviaTrip.ViewModel
     {
         #region Private fields and the constructor
 
-        // TODO: remove this (initial debug only)
-        private readonly IQuestionQueue _questionQueue;
         private readonly IQuestionRepository _questionRepository;
         private readonly IAnswerOptionRepository _answerOptionRepository;
         private readonly IPlayerRepository _playerRepository;
         private readonly IAnswerAttemptRepository _anwerAttemptRepository;
         private readonly IRepository<Score> _scoreRepository;
 
-
+        private readonly IPlayData _playData;
         private readonly INavigationService _navigationService;
 
-        public StatsViewModel(INavigationService navigationService, IQuestionQueue questionQueue, IQuestionRepository questionRepository,
-            IAnswerOptionRepository answerOptionRepository, IPlayerRepository playerRepository,
-            IAnswerAttemptRepository anwerAttemptRepository, IRepository<Score> scoreRepository)
+        private PlayerViewModel? _selectedPlayer;
+
+        public StatsViewModel(IQuestionRepository questionRepository, IAnswerOptionRepository answerOptionRepository,
+            IPlayerRepository playerRepository, IAnswerAttemptRepository anwerAttemptRepository,
+            IRepository<Score> scoreRepository, IPlayData playData, INavigationService navigationService)
         {
-            _navigationService = navigationService;
-
-            BackCommand = new DelegateCommand(execute => _navigationService.NavigateToMenu());
-
-            _questionQueue = questionQueue;
             _questionRepository = questionRepository;
             _answerOptionRepository = answerOptionRepository;
             _playerRepository = playerRepository;
             _scoreRepository = scoreRepository;
             _anwerAttemptRepository = anwerAttemptRepository;
+
+            _playData = playData;
+            _navigationService = navigationService;
+
+            BackCommand = new DelegateCommand(execute => _navigationService.NavigateToMenu());
+
+            Players = new ListCollectionView(_playData.Players);
+            // Filter out the "dummy player"
+            Players.Filter = player => (!((PlayerViewModel)player).IsDummy);
+            // And sort players by id
+            Players.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Ascending));
+
+            _selectedPlayer = _playData.CurrentPlayer;
+
             Initialize();
         }
 
         #endregion
 
-        // TODO: remove this (initial debug only)
+
+        #region Data Initialization
+
         private async void Initialize()
         {
-            QuestionQueue q = (QuestionQueue) _questionQueue;
-            var questions = q._queue;
-            foreach (var question in questions)
-            {
-                QuestionsFromQueue.Add(question.Question);
-            }
 
+
+
+
+            // TODO: These are for debug tabs. Remove or comment out later
             var dbQuestions = await _questionRepository.GetAllAsync();
-            var dbAnswerOptions = await _answerOptionRepository.GetAllAsync();
-            var dbPlayers = await _playerRepository.GetAllAsync();
-            var dbAnswerAttempts = await _anwerAttemptRepository.GetAllAsync();
-            var dbScores = await _scoreRepository.GetAllAsync();
-            foreach (var x in dbQuestions)
-                Questions.Add(x);
-            foreach (var x in dbAnswerOptions)
-                AnswerOptions.Add(x);
-            foreach (var x in dbPlayers)
-                Players.Add(x);
-            foreach (var x in dbAnswerAttempts)
-                AnswerAttempts.Add(x);
-            foreach (var x in dbScores)
-                Scores.Add(x);
+            foreach (var x in dbQuestions) Questions.Add(x);
 
+            var dbAnswerOptions = await _answerOptionRepository.GetAllAsync();
+            foreach (var x in dbAnswerOptions) AnswerOptions.Add(x);
+
+            var dbPlayers = await _playerRepository.GetAllAsync();
+            foreach (var x in dbPlayers) PlayersRaw.Add(x);
+
+            var dbAnswerAttempts = await _anwerAttemptRepository.GetAllAsync();
+            foreach (var x in dbAnswerAttempts) AnswerAttempts.Add(x);
+
+            var dbScores = await _scoreRepository.GetAllAsync();
+            foreach (var x in dbScores) Scores.Add(x);
         }
+        #endregion
+
 
         #region Public properties
 
-        // TODO: remove this (initial debug only)
-        public ObservableCollection<Question> QuestionsFromQueue { get; set; } = new();
-        public ObservableCollection<Question> Questions { get; set; } = new();
-        public ObservableCollection<AnswerOption> AnswerOptions { get; set; } = new();
-        public ObservableCollection<Player> Players { get; set; } = new();
-        public ObservableCollection<AnswerAttempt> AnswerAttempts { get; set; } = new();
-        public ObservableCollection<Score> Scores { get; set; } = new();
+        /// <summary>
+        /// All players
+        /// </summary>
+        public ListCollectionView Players { get; }
+
+        /// <summary>
+        /// The player currently selected
+        /// </summary>
+        public PlayerViewModel? SelectedPlayer
+        {
+            get => _selectedPlayer;
+            set
+            {
+                if (value is null)
+                    return;
+
+                _selectedPlayer = value;
+
+                OnPropertyChanged();
+                // TODO: Update data
+            }
+        }
 
 
         /// <summary>
         /// Command for the Back to Menu button
         /// </summary>
         public DelegateCommand BackCommand { get; }
+
+        #endregion
+
+
+        #region Debug public properties
+
+        // TODO: These are for debug tabs. Remove or comment out later
+        public ObservableCollection<Question> Questions { get; set; } = new();
+        public ObservableCollection<AnswerOption> AnswerOptions { get; set; } = new();
+        public ObservableCollection<Player> PlayersRaw { get; set; } = new();
+        public ObservableCollection<AnswerAttempt> AnswerAttempts { get; set; } = new();
+        public ObservableCollection<Score> Scores { get; set; } = new();
 
         #endregion
 

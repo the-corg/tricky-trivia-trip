@@ -13,7 +13,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="14*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -36,12 +36,12 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding GreetingText}" Style="{StaticResource MenuTextPrimary}" VerticalAlignment="Top"/>
+            <TextBlock Text="{Binding GreetingText}" Style="{StaticResource MenuTextPrimary}" VerticalAlignment="Top" Margin="0 1 4 0"/>
             <Button Grid.Column="1" Content="{Binding PlayerName}" Margin="0" 
                     Style="{StaticResource MenuButton}" MaxHeight="150" 
                     ToolTip="Change player or add new player"
                     Command="{Binding ChangePlayerCommand}"/>
-            <TextBlock Grid.Column="2" Text="!" Style="{StaticResource MenuTextPrimary}" VerticalAlignment="Bottom"/>
+            <TextBlock Grid.Column="2" Text="!" Style="{StaticResource MenuTextPrimary}" VerticalAlignment="Bottom" Margin="2 0 1 1"/>
             <Button Grid.Column="3" Content="✏️" Style="{StaticResource MenuButton}" 
                     Opacity="0.5" FontWeight="ExtraLight" ToolTip="Edit player name" 
                     FontSize="{StaticResource MenuSecondaryFontSize}"

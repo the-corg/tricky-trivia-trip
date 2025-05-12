@@ -28,8 +28,8 @@ namespace TrickyTriviaTrip.ViewModel
             _loggingService = loggingService;
             _messageService = messageService;
 
-            ViewStatsCommand = new DelegateCommand(execute => _navigationService.NavigateToStats());
             ExitGameCommand = new DelegateCommand(execute => App.Current.Shutdown());
+            ViewStatsCommand = new DelegateCommand(execute => _navigationService.NavigateToStats(), canExecute => _playData.CurrentPlayer is not null);
             StartGameCommand = new DelegateCommand(execute => _navigationService.NavigateToGame(), canExecute => _playData.CurrentPlayer is not null);
             ChangePlayerCommand = new DelegateCommand(execute => ChangePlayer(), canExecute => _playData.CurrentPlayer is not null);
             EditPlayerCommand = new DelegateCommand(execute => EditPlayer(), canExecute => _playData.CurrentPlayer is not null);
@@ -37,7 +37,9 @@ namespace TrickyTriviaTrip.ViewModel
             CancelPlayerEditCommand = new DelegateCommand(execute => CurrentOperation = Operation.None);
 
             Players = new ListCollectionView(_playData.Players);
+            // First show the current player in the list
             Players.SortDescriptions.Add(new SortDescription("IsCurrent", ListSortDirection.Descending));
+            // Then the "dummy player" (Create new player)
             Players.SortDescriptions.Add(new SortDescription("IsDummy", ListSortDirection.Descending));
 
             SelectedPlayer = _playData.CurrentPlayer;
@@ -59,6 +61,7 @@ namespace TrickyTriviaTrip.ViewModel
         {
             OnPropertyChanged(nameof(PlayerName));
             StartGameCommand.OnCanExecuteChanged();
+            ViewStatsCommand.OnCanExecuteChanged();
             ChangePlayerCommand.OnCanExecuteChanged();
             EditPlayerCommand.OnCanExecuteChanged();
         }

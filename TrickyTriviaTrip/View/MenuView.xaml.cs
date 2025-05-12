@@ -13,9 +13,11 @@ namespace TrickyTriviaTrip.View
             InitializeComponent();
         }
 
+        #region VisibleChanged event handlers for TextBox and ComboBox 
+
         private void TextBox_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            // If the text box became visible, set the keyboard focus in it, put cursor at the end and scroll there
+            // If the text box became visible, set the keyboard focus in it, put the cursor at the end and scroll there
             if (e.NewValue is bool b && b)
             {
                 PlayerNameTextBox.Select(PlayerNameTextBox.Text.Length, 0);
@@ -32,14 +34,10 @@ namespace TrickyTriviaTrip.View
         {
             // If the combobox became visible, open the dropdown, otherwise close it
             if (e.NewValue is bool b && b)
-            {
                 PlayersComboBox.IsDropDownOpen = true;
-            }
             else
-            {
                 PlayersComboBox.IsDropDownOpen = false;
-            }
         }
-
+        #endregion
     }
 }

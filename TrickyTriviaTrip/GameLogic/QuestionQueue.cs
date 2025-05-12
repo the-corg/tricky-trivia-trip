@@ -50,8 +50,7 @@ namespace TrickyTriviaTrip.GameLogic
         private readonly IMessageService _messageService;
         private readonly ILoggingService _loggingService;
 
-        // TODO: Change this to private
-        public readonly Queue<QuestionWithAnswers> _queue = new();
+        private readonly Queue<QuestionWithAnswers> _queue = new();
         private bool _isFetching = false;
 
         public QuestionQueue(ITriviaApiClient triviaApiClient, IQuestionRepository questionRepository, IPlayData playData,

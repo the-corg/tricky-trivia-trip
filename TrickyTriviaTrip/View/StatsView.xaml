@@ -8,47 +8,48 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <TabControl Style="{StaticResource TabControlWithButton}" Tag="Back to Menu"
                 FontSize="{StaticResource StatsHeaderFontSize}">
-        
+
         <TabItem Header="High Scores">
-
-
-
+            <DataGrid ItemsSource="{Binding HighScores}"/>
+        </TabItem>
+        <TabItem Header="Average Scores">
+            <DataGrid ItemsSource="{Binding AverageScores}"/>
         </TabItem>
         <TabItem Header="History">
-
+            <DataGrid ItemsSource="{Binding History}"/>
+        </TabItem>
+        <TabItem Header="Player Stats">
+            <StackPanel>
+                <ComboBox ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer}" DisplayMemberPath="Name">
+                    <ComboBox.Resources>
+                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                            <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
+                        </Style>
+                    </ComboBox.Resources>
+                </ComboBox>
+                <DataGrid ItemsSource="{Binding UserStats}"/>
+            </StackPanel>
         </TabItem>
 
-        <!-- Tables for debugging -->
-        <TabItem Header="Debug: Queue">
-
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding QuestionsFromQueue}"
-              AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
-
-        </TabItem>
-        
+        <!-- Tables with raw DB data for debugging -->
         <TabItem Header="Debug: DB.Question">
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding Questions}"
-                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+            <DataGrid ItemsSource="{Binding Questions}"/>
 
         </TabItem>
         <TabItem Header="Debug: DB.AnswerOption">
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding AnswerOptions}"
-                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+            <DataGrid ItemsSource="{Binding AnswerOptions}"/>
 
         </TabItem>
         <TabItem Header="Debug: DB.Player">
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding Players}"
-                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+            <DataGrid ItemsSource="{Binding PlayersRaw}"/>
 
         </TabItem>
         <TabItem Header="Debug: DB.AnswerAttempt">
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding AnswerAttempts}"
-                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+            <DataGrid ItemsSource="{Binding AnswerAttempts}"/>
 
         </TabItem>
         <TabItem Header="Debug: DB.Score">
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding Scores}"
-                      AutoGenerateColumns="True" FontSize="20" HeadersVisibility="Column"/>
+            <DataGrid ItemsSource="{Binding Scores}"/>
 
         </TabItem>
     </TabControl>
