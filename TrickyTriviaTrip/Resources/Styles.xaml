@@ -362,6 +362,20 @@
         <Setter Property="AutoGenerateColumns" Value="True"/>
         <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource Gold}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style TargetType="DataGridCell">
+        <Setter Property="Background" Value="{StaticResource SemiTransparent}"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource 1_VeryDark}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="TextBlock" x:Key="StatsTextBlock" BasedOn="{StaticResource MenuTextPrimary}">

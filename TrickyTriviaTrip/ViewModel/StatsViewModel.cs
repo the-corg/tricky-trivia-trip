@@ -188,18 +188,50 @@ namespace TrickyTriviaTrip.ViewModel
 
         #region Private methods
 
+        /// <summary>
+        /// Calculates total values for the summary row for Difficulties and Categories collections
+        /// </summary>
+        private AnswerStats SummaryRow(List<AnswerStats> collection, Criterion criterion, string criterionText)
+        {
+            var totalAnswered = collection.Sum(c => c.TotalAnswered);
+            var correctlyAnswered = collection.Sum(c => c.CorrectlyAnswered);
+
+            return new AnswerStats()
+            {
+                Criterion = criterion,
+                CriterionText = criterionText,
+                TotalAnswered = totalAnswered,
+                CorrectlyAnswered = correctlyAnswered,
+                CorrectPercentage = 100.0 * correctlyAnswered / totalAnswered
+            };
+        }
+
+        /// <summary>
+        /// Loads data into Categories and Difficulties collections
+        /// </summary>
         private async Task LoadPlayerStats()
         {
             if (SelectedPlayer is null)
                 return;
 
+            // Load data for categories from the database 
             var categories = await _playerStatsQueries.GetAnswerStatsAsync(SelectedPlayer.Id, Criterion.Category);
+
+            // Add the summary row and then all other rows to the observable collection
+            Categories.Add(SummaryRow(categories, Criterion.Category, "All categories (total)"));
             foreach (var category in categories) Categories.Add(category);
 
+            // Load data for difficulties from the database 
             var difficulties = await _playerStatsQueries.GetAnswerStatsAsync(SelectedPlayer.Id, Criterion.Difficulty);
+
+            // Add the summary row and then all other rows to the observable collection
+            Difficulties.Add(SummaryRow(difficulties, Criterion.Difficulty, "All difficulties (total)"));
             foreach (var difficulty in difficulties) Difficulties.Add(difficulty);
         }
 
+        /// <summary>
+        /// Clears and then reloads data into the Categories and Difficulties collections
+        /// </summary>
         private async void UpdatePlayerStats()
         {
             Categories.Clear();
