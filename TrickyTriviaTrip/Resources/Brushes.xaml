@@ -36,4 +36,17 @@
         <GradientStop Color="#115411" Offset="1.0"/>
     </LinearGradientBrush>
 
+    <!-- ScrollBar background -->
+    <SolidColorBrush Color="#58a254" x:Key="ScrollBarForeground"/>
+    <SolidColorBrush Color="#115411" x:Key="ScrollBarPressed"/>
+    <SolidColorBrush Color="#d5e8d4" x:Key="ScrollBarButtonHover"/>
+    <SolidColorBrush Color="#acd1a9" x:Key="ScrollBarThumbHover"/>
+    <LinearGradientBrush StartPoint="0 0.5" EndPoint="1 0.5" x:Key="ScrollBackgroundGradient" >
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Offset="0.0" Color="#9F115411"/>
+            <GradientStop Offset="0.5" Color="#2F115411"/>
+            <GradientStop Offset="1.0" Color="#9F115411"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
 </ResourceDictionary>

@@ -79,7 +79,7 @@ namespace TrickyTriviaTrip.Services
 
         #region Public methods and properties
 
-        public bool ShouldLogInfo { get; set; } = true; // TODO: set this to false before release
+        public bool ShouldLogInfo { get; set; } = false;
 
         public void LogInfo(string message) { if (ShouldLogInfo) Log("[i] " + message); }
         public void LogWarning(string message) { Log("[?!] " + message); }

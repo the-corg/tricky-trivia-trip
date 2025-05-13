@@ -16,10 +16,6 @@ namespace TrickyTriviaTrip.ViewModel
     {
         #region Private fields and the constructor
 
-        private readonly IQuestionRepository _questionRepository;
-        private readonly IAnswerOptionRepository _answerOptionRepository;
-        private readonly IPlayerRepository _playerRepository;
-        private readonly IAnswerAttemptRepository _anwerAttemptRepository;
         private readonly IScoreRepository _scoreRepository;
         private readonly IPlayData _playData;
         private readonly IPlayerStatsQueries _playerStatsQueries;
@@ -34,11 +30,7 @@ namespace TrickyTriviaTrip.ViewModel
             IScoreRepository scoreRepository, IPlayData playData, IPlayerStatsQueries playerStatsQueries,
             INavigationService navigationService, ILoggingService loggingService, IMessageService messageService)
         {
-            _questionRepository = questionRepository;
-            _answerOptionRepository = answerOptionRepository;
-            _playerRepository = playerRepository;
             _scoreRepository = scoreRepository;
-            _anwerAttemptRepository = anwerAttemptRepository;
             _playData = playData;
             _playerStatsQueries = playerStatsQueries;
             _navigationService = navigationService;
@@ -82,23 +74,6 @@ namespace TrickyTriviaTrip.ViewModel
                 foreach (var score in averageScores) AverageScores.Add(score);
 
                 await LoadPlayerStats();
-
-
-                // TODO: These are for debug tabs. Remove or comment out later
-                var questions = await _questionRepository.GetAllAsync();
-                foreach (var question in questions) Questions.Add(question);
-
-                var answerOptions = await _answerOptionRepository.GetAllAsync();
-                foreach (var answerOption in answerOptions) AnswerOptions.Add(answerOption);
-
-                var players = await _playerRepository.GetAllAsync();
-                foreach (var player in players) PlayersRaw.Add(player);
-
-                var answerAttempts = await _anwerAttemptRepository.GetAllAsync();
-                foreach (var answerAttempt in answerAttempts) AnswerAttempts.Add(answerAttempt);
-
-                var scores = await _scoreRepository.GetAllAsync();
-                foreach (var score in scores) Scores.Add(score);
             }
             catch (DbException exception)
             {
@@ -174,17 +149,6 @@ namespace TrickyTriviaTrip.ViewModel
 
         #endregion
 
-
-        #region Debug public properties
-
-        // TODO: These are for debug tabs. Remove or comment out later
-        public ObservableCollection<Question> Questions { get; set; } = new();
-        public ObservableCollection<AnswerOption> AnswerOptions { get; set; } = new();
-        public ObservableCollection<Player> PlayersRaw { get; set; } = new();
-        public ObservableCollection<AnswerAttempt> AnswerAttempts { get; set; } = new();
-        public ObservableCollection<Score> Scores { get; set; } = new();
-
-        #endregion
 
         #region Private methods
 
