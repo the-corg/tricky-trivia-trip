@@ -359,21 +359,55 @@
     <!-- View Stats -->
     <Style TargetType="DataGrid">
         <Setter Property="IsReadOnly" Value="True"/>
-        <Setter Property="AutoGenerateColumns" Value="True"/>
+        <Setter Property="EnableColumnVirtualization" Value="False"/>
+        <Setter Property="EnableRowVirtualization" Value="False"/>
+        <Setter Property="CanUserReorderColumns" Value="False"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource Gold}"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="AlternatingRowBackground" Value="{StaticResource AlmostTransparent}"/>
+        <Setter Property="RowBackground" Value="Transparent"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource 2_Dark}"/>
+        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource 2_Dark}"/>
+    </Style>
+
+    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+        <Setter Property="Foreground" Value="{StaticResource 1_VeryDark}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
+        
+        <!--
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="SeparatorVisibility" Value="Visible"/>
+        <Setter Property="SeparatorBrush" Value="{StaticResource 1_VeryDark}"/>
+        -->
+    </Style>
+
+    <Style TargetType="DataGridRow">
+        <Setter Property="Foreground" Value="{StaticResource 7_VeryLight}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource 2_Dark}"/>
+        <Setter Property="BorderThickness" Value="1 0 0 0"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource 4_Medium}"/>
+                <Setter Property="Foreground" Value="{StaticResource 1_VeryDark}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="DataGridCell">
-        <Setter Property="Background" Value="{StaticResource SemiTransparent}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{StaticResource 1_VeryDark}"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="BorderBrush" Value="White"/>
+                <Setter Property="Background" Value="{StaticResource 5_MediumLight}"/>
+                <Setter Property="Foreground" Value="{StaticResource 1_VeryDark}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -382,6 +416,7 @@
         <Setter Property="Foreground" Value="{StaticResource Gold}"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
+        <Setter Property="Margin" Value="0 0 0 2"/>
     </Style>
 
     <!-- Tab Control with a button in the header -->

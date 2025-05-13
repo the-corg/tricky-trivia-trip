@@ -5,18 +5,55 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TrickyTriviaTrip.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:sysGlob="clr-namespace:System.Globalization;assembly=mscorlib">
     <TabControl Style="{StaticResource TabControlWithButton}" Tag="Back to Menu"
                 FontSize="{StaticResource StatsHeaderFontSize}">
 
         <TabItem Header="High Scores">
-            <DataGrid ItemsSource="{Binding HighScores}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="4*" MinWidth="624"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <DataGrid ItemsSource="{Binding HighScores}" Grid.Column="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Score" Binding="{Binding Value}" Width="*" MinWidth="60"/>
+                        <DataGridTextColumn Header="Player" Binding="{Binding PlayerName}" Width="6*" MinWidth="360"/>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Timestamp, StringFormat=d, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="2*" MinWidth="104"/>
+                        <DataGridTextColumn Header="Time" Binding="{Binding Timestamp, StringFormat=t, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="60"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </TabItem>
         <TabItem Header="Average Scores">
-            <DataGrid ItemsSource="{Binding AverageScores}"/>
+            <DataGrid ItemsSource="{Binding AverageScores}" Grid.Column="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Player" Binding="{Binding PlayerName}" Width="3*" MinWidth="220"/>
+                    <DataGridTextColumn Header="Average Score" Binding="{Binding Value, StringFormat=N2, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="82"/>
+                    <DataGridTextColumn Header="Games Played" Binding="{Binding NumberOfGames}" Width="*" MinWidth="70"/>
+                    <DataGridTextColumn Header="From" Binding="{Binding From, StringFormat=d, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="104"/>
+                    <DataGridTextColumn Header="To" Binding="{Binding To, StringFormat=d, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="104"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </TabItem>
         <TabItem Header="History">
-            <DataGrid ItemsSource="{Binding History}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="4*" MinWidth="624"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <DataGrid ItemsSource="{Binding History}" Grid.Column="1">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Timestamp, StringFormat=d, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="2*" MinWidth="104"/>
+                        <DataGridTextColumn Header="Time" Binding="{Binding Timestamp, StringFormat=t, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="60"/>
+                        <DataGridTextColumn Header="Player" Binding="{Binding PlayerName}" Width="6*" MinWidth="360"/>
+                        <DataGridTextColumn Header="Score" Binding="{Binding Value}" Width="*" MinWidth="60"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </TabItem>
         <TabItem Header="Player Stats">
             <Grid>
@@ -27,7 +64,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <ComboBox Margin="0" ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer}" DisplayMemberPath="Name">
+                <ComboBox ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer}" DisplayMemberPath="Name">
                     <ComboBox.Resources>
                         <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                             <Setter Property="FontSize" Value="{StaticResource StatsDataFontSize}"/>
@@ -35,14 +72,28 @@
                     </ComboBox.Resources>
                 </ComboBox>
                 <TextBlock Grid.Row="1" Text="Difficulties" Style="{StaticResource StatsTextBlock}"/>
-                <DataGrid Grid.Row="2" ItemsSource="{Binding Difficulties}"/>
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Difficulties}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Description" Binding="{Binding CriterionText}" Width="3*" MinWidth="250"/>
+                        <DataGridTextColumn Header="Total Answered" Binding="{Binding TotalAnswered}" Width="*" MinWidth="80"/>
+                        <DataGridTextColumn Header="Correct" Binding="{Binding CorrectlyAnswered}" Width="*" MinWidth="80"/>
+                        <DataGridTextColumn Header="% Correct" Binding="{Binding CorrectPercentage, StringFormat=P1, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
                 <TextBlock Grid.Row="3" Text="Categories" Style="{StaticResource StatsTextBlock}"/>
-                <DataGrid Grid.Row="4" ItemsSource="{Binding Categories}"/>
+                <DataGrid Grid.Row="4" ItemsSource="{Binding Categories}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Description" Binding="{Binding CriterionText}" Width="3*" MinWidth="250"/>
+                        <DataGridTextColumn Header="Total Answered" Binding="{Binding TotalAnswered}" Width="*" MinWidth="80"/>
+                        <DataGridTextColumn Header="Correct" Binding="{Binding CorrectlyAnswered}" Width="*" MinWidth="80"/>
+                        <DataGridTextColumn Header="% Correct" Binding="{Binding CorrectPercentage, StringFormat=P1, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </TabItem>
 
         <!-- Tables with raw DB data for debugging -->
-        
+
         <!-- 
         <TabItem Header="Debug: DB.Question">
             <DataGrid ItemsSource="{Binding Questions}"/>
@@ -60,11 +111,12 @@
             <DataGrid ItemsSource="{Binding AnswerAttempts}"/>
 
         </TabItem>
-        -->
+        
         <TabItem Header="Debug: DB.Score">
             <DataGrid ItemsSource="{Binding Scores}"/>
 
         </TabItem>
+        -->
     </TabControl>
 
 </UserControl>

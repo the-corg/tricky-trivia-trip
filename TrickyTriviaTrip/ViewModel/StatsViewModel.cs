@@ -202,7 +202,7 @@ namespace TrickyTriviaTrip.ViewModel
                 CriterionText = criterionText,
                 TotalAnswered = totalAnswered,
                 CorrectlyAnswered = correctlyAnswered,
-                CorrectPercentage = 100.0 * correctlyAnswered / totalAnswered
+                CorrectPercentage = 1.0 * correctlyAnswered / totalAnswered
             };
         }
 

@@ -85,7 +85,7 @@ namespace TrickyTriviaTrip.DataAccess
             {
                 list.Add(new ScoreWithPlayerName
                 {
-                    Timestamp = reader.GetDateTime(0),
+                    Timestamp = DateTime.SpecifyKind(reader.GetDateTime(0), DateTimeKind.Utc).ToLocalTime(),
                     PlayerName = reader.GetString(1),
                     Value = reader.GetInt32(2)
                 });
@@ -114,8 +114,8 @@ namespace TrickyTriviaTrip.DataAccess
                     PlayerName = reader.GetString(0),
                     Value = reader.GetDouble(1),
                     NumberOfGames = reader.GetInt32(2),
-                    From = reader.GetDateTime(3),
-                    To = reader.GetDateTime(4)
+                    From = DateTime.SpecifyKind(reader.GetDateTime(3), DateTimeKind.Utc).ToLocalTime(),
+                    To = DateTime.SpecifyKind(reader.GetDateTime(4), DateTimeKind.Utc).ToLocalTime()
                 });
             }
 
@@ -130,7 +130,7 @@ namespace TrickyTriviaTrip.DataAccess
                 Id = reader.GetInt64(_ordinalId ??= reader.GetOrdinal("Id")),
                 PlayerId = reader.GetInt64(_ordinalPlayerId ??= reader.GetOrdinal("PlayerId")),
                 Value = reader.GetInt32(_ordinalValue ??= reader.GetOrdinal("Value")),
-                Timestamp = reader.GetDateTime(_ordinalTimestamp ??= reader.GetOrdinal("Timestamp"))
+                Timestamp = DateTime.SpecifyKind(reader.GetDateTime(_ordinalTimestamp ??= reader.GetOrdinal("Timestamp")), DateTimeKind.Utc).ToLocalTime()
             };
         }
 

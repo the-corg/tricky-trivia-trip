@@ -16,6 +16,7 @@
     <SolidColorBrush Color="#8a9a5b" x:Key="PaleOlive"/>
     <SolidColorBrush Color="#3c2f2f" x:Key="ReddishBrown"/>
 
+    <SolidColorBrush Color="#3F83ba7f" x:Key="AlmostTransparent"/>
     <SolidColorBrush Color="#5F83ba7f" x:Key="SemiTransparent"/>
     <SolidColorBrush Color="#CF83ba7f" x:Key="SlightlyTransparent"/>
 

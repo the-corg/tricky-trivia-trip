@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Globalization;
+using System.Net.Http;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using TrickyTriviaTrip.Api;
@@ -21,6 +22,10 @@ namespace TrickyTriviaTrip
 
         public App()
         {
+            // For date, time, and decimal separator formatting (otherwise uses en-US in bindings)
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CurrentCulture;
+            //CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");
+
             ServiceCollection services = new();
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();

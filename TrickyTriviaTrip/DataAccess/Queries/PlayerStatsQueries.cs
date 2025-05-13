@@ -57,7 +57,7 @@ namespace TrickyTriviaTrip.DataAccess
 
             using var cmd = connection.CreateCommand();
             cmd.CommandText = $@"SELECT {criterionText}, TotalAnswered, CorrectlyAnswered,
-                                        100.0 * CorrectlyAnswered / TotalAnswered AS CorrectPercentage
+                                        1.0 * CorrectlyAnswered / TotalAnswered AS CorrectPercentage
                                  FROM (SELECT q.{criterionText} AS {criterionText},
                                               COUNT(*) AS TotalAnswered,
                                               SUM(CASE WHEN ao.IsCorrect = 1 THEN 1 ELSE 0 END) AS CorrectlyAnswered

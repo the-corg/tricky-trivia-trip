@@ -88,7 +88,7 @@ namespace TrickyTriviaTrip.DataAccess
                 PlayerId = reader.GetInt64(_ordinalPlayerId ??= reader.GetOrdinal("PlayerId")),
                 QuestionId = reader.GetInt64(_ordinalQuestionId ??= reader.GetOrdinal("QuestionId")),
                 AnswerOptionId = reader.GetInt64(_ordinalAnswerOptionId ??= reader.GetOrdinal("AnswerOptionId")),
-                Timestamp = reader.GetDateTime(_ordinalTimestamp ??= reader.GetOrdinal("Timestamp"))
+                Timestamp = DateTime.SpecifyKind(reader.GetDateTime(_ordinalTimestamp ??= reader.GetOrdinal("Timestamp")), DateTimeKind.Utc).ToLocalTime()
             };
         }
 
