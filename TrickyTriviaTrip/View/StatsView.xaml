@@ -31,8 +31,8 @@
             <DataGrid ItemsSource="{Binding AverageScores}" Grid.Column="1">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Player" Binding="{Binding PlayerName}" Width="3*" MinWidth="220"/>
-                    <DataGridTextColumn Header="Average Score" Binding="{Binding Value, StringFormat=N2, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="82"/>
-                    <DataGridTextColumn Header="Games Played" Binding="{Binding NumberOfGames}" Width="*" MinWidth="70"/>
+                    <DataGridTextColumn Header="Average Score" Binding="{Binding Value, StringFormat=N2, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="84"/>
+                    <DataGridTextColumn Header="Games Played" Binding="{Binding NumberOfGames}" Width="*" MinWidth="72"/>
                     <DataGridTextColumn Header="From" Binding="{Binding From, StringFormat=d, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="104"/>
                     <DataGridTextColumn Header="To" Binding="{Binding To, StringFormat=d, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="104"/>
                 </DataGrid.Columns>
@@ -75,7 +75,7 @@
                 <DataGrid Grid.Row="2" ItemsSource="{Binding Difficulties}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Description" Binding="{Binding CriterionText}" Width="3*" MinWidth="250"/>
-                        <DataGridTextColumn Header="Total Answered" Binding="{Binding TotalAnswered}" Width="*" MinWidth="80"/>
+                        <DataGridTextColumn Header="Total Answered" Binding="{Binding TotalAnswered}" Width="*" MinWidth="56"/>
                         <DataGridTextColumn Header="Correct" Binding="{Binding CorrectlyAnswered}" Width="*" MinWidth="80"/>
                         <DataGridTextColumn Header="% Correct" Binding="{Binding CorrectPercentage, StringFormat=P1, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="100"/>
                     </DataGrid.Columns>
@@ -84,7 +84,7 @@
                 <DataGrid Grid.Row="4" ItemsSource="{Binding Categories}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Description" Binding="{Binding CriterionText}" Width="3*" MinWidth="250"/>
-                        <DataGridTextColumn Header="Total Answered" Binding="{Binding TotalAnswered}" Width="*" MinWidth="80"/>
+                        <DataGridTextColumn Header="Total Answered" Binding="{Binding TotalAnswered}" Width="*" MinWidth="56"/>
                         <DataGridTextColumn Header="Correct" Binding="{Binding CorrectlyAnswered}" Width="*" MinWidth="80"/>
                         <DataGridTextColumn Header="% Correct" Binding="{Binding CorrectPercentage, StringFormat=P1, ConverterCulture={x:Static sysGlob:CultureInfo.CurrentCulture}}" Width="*" MinWidth="100"/>
                     </DataGrid.Columns>

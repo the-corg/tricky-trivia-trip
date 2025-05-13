@@ -25,9 +25,15 @@
 
     <!-- Green gradient for background -->
     <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1" x:Key="GreenGradient">
-        <GradientStop Color="#115411" Offset="0.0" />
-        <GradientStop Color="#228b22" Offset="0.5" />
-        <GradientStop Color="#115411" Offset="1.0" />
+        <GradientStop Color="#115411" Offset="0.0"/>
+        <GradientStop Color="#228b22" Offset="0.5"/>
+        <GradientStop Color="#115411" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <!-- Gradient for datagrid column headers -->
+    <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1" x:Key="ColumnHeaderBackground">
+        <GradientStop Color="#228b22" Offset="0.0"/>
+        <GradientStop Color="#115411" Offset="1.0"/>
     </LinearGradientBrush>
 
 </ResourceDictionary>
