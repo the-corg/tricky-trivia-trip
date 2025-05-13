@@ -1,20 +1,18 @@
-# Tricky Trivia Trip - Work in Progress...
+# Tricky Trivia Trip
 
-A simple Trivia Game that fetches trivia questions from Open Trivia DB via Trivia API.
+A simple Trivia Game that fetches questions from Open Trivia Database API and uses a local SQLite database.
 
-The game will store player scores and answer history in an SQLite database using ADO.NET. I chose SQLite for this project because it is lightweight, easy to set up, and doesn't require a separate database server installation. This makes it convenient for running the game without additional setup.
+![Gameplay demo](TrickyTriviaTrip.gif)
+
+The game stores player scores and complete answer history in an SQLite database using ADO.NET. I chose SQLite for this project because it is lightweight, easy to set up, and doesn't require a separate database server installation. This makes it convenient for running the game without additional setup.
 
 The database access logic uses ADO.NET, so switching from SQLite to Microsoft SQL Server, PostgreSQL, or MySQL would be easy enough.
 
-The UI is only partly functional for now, since I first wanted to concentrate on designing the database and implementing API interaction.
-
-### Implemented as of now:
-- UI prototype with 3 independent views
-- Navigation between the views
-- Dependency injection infrastructure
+## Key Features
+- Question queue with automatic background replenishment from the API, as well as the ability to fall back to the database in case of API connection problems
+- Fully asynchronous API and database operations
+- MVVM architecture with clean separation of concerns
 - Normalized database design
-- Model classes
-- Initial database schema creation
-- All Repository classes
-- Getting questions from the API
-- (partially) Game logic, including automated QuestionQueue
+- Game statistics using fairly complex SQL queries
+- Logging in a background thread with communication via BlockingCollection
+- Extensive use of WPF control templates to achieve non-standard UI appearance and optimal user experience

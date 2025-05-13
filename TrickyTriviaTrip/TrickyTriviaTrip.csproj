@@ -6,10 +6,16 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\IconFile.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\IconWindow.ico" />
     <None Remove="DatabaseScripts\CreateDatabase.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\IconFile.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +25,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\IconWindow.ico" />
   </ItemGroup>
 
   <ItemGroup>

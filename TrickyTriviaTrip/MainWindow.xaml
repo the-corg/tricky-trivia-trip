@@ -13,7 +13,8 @@
         StateChanged="Window_StateChanged"
         FontSize="24" FontFamily="Segoe UI"
         SnapsToDevicePixels="True"
-        Loaded="MainWindow_Loaded">
+        Loaded="MainWindow_Loaded"
+        Icon="Assets\IconWindow.ico">
 
     <WindowChrome.WindowChrome>
         <!-- Nonzero GlassFrameThickness provides a dropshadow for the window -->
