@@ -239,12 +239,16 @@ namespace TrickyTriviaTrip.ViewModel
                 return;
             }
 
+            _editedPlayerName = EditedPlayerName.Trim();
+            OnPropertyChanged(nameof(EditedPlayerName));
+
             bool isAdd = CurrentOperation == Operation.Add;
 
-            if (isAdd && _playData.Players.Where(x => x.Name == EditedPlayerName).Any())
+            // If a player with this name already exists (unless the operation is Edit and the player with this name is the current one)
+            if (_playData.Players.Where(x => x.Name == EditedPlayerName).Any() && !(!isAdd && _playData.CurrentPlayer?.Name == EditedPlayerName))
             {
                 _messageService.ShowMessage("Error: A player with this name exists in the database already.\n\nPlease choose a different name");
-                _loggingService.LogInfo($"User tried to create a new player named {EditedPlayerName} but a player with this name already existed in the database.");
+                _loggingService.LogInfo($"User tried to create or change the name to {EditedPlayerName} but a player with this name already existed in the database.");
                 return;
             }
 
@@ -254,7 +258,6 @@ namespace TrickyTriviaTrip.ViewModel
             if (isAdd)
             {
                 // Create new player and add to the database
-
                 await _playData.AddPlayer(EditedPlayerName);
                 OnPropertyChanged(nameof(GreetingText));
                 OnPropertyChanged(nameof(ScoreText));

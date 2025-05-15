@@ -34,15 +34,6 @@ namespace TrickyTriviaTrip.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Version=3;")]
-        public string SqliteVersion {
-            get {
-                return ((string)(this["SqliteVersion"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://opentdb.com/api.php")]
         public string TriviaApiBaseUrl {
             get {

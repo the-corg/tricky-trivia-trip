@@ -60,7 +60,7 @@ namespace TrickyTriviaTrip.DataAccess
                                         1.0 * CorrectlyAnswered / TotalAnswered AS CorrectPercentage
                                  FROM (SELECT q.{criterionText} AS {criterionText},
                                               COUNT(*) AS TotalAnswered,
-                                              SUM(CASE WHEN ao.IsCorrect = 1 THEN 1 ELSE 0 END) AS CorrectlyAnswered
+                                              SUM(ao.IsCorrect) AS CorrectlyAnswered
                                        FROM AnswerAttempt aa
                                        JOIN Question q ON aa.QuestionId = q.Id
                                        JOIN AnswerOption ao ON aa.AnswerOptionId = ao.Id

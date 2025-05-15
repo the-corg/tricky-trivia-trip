@@ -175,28 +175,29 @@ namespace TrickyTriviaTrip.DataAccess
                                     ORDER BY COUNT(a.Id) ASC 
                                     LIMIT @Count";
 
-            using var connection = await _connectionFactory.GetConnectionAsync();
+            using (var connection = await _connectionFactory.GetConnectionAsync())
+            {
+                // Command to get the questions
+                using var cmd = connection.CreateCommand();
+                if (player is not null)
+                {
+                    // Full query for a specific player with an additional parameter
+                    cmd.CommandText = commandPart1 + commandPart2 + commandPart3;
+                    cmd.Parameters.Add(new SQLiteParameter("@PlayerId", player.Id));
+                }
+                else
+                {
+                    // Basic query that counts all players
+                    cmd.CommandText = commandPart1 + commandPart3;
+                }
+                // Parameter for both cases
+                cmd.Parameters.Add(new SQLiteParameter("@Count", count));
 
-            // Command to get the questions
-            using var cmd = connection.CreateCommand();
-            if (player is not null)
-            {
-                // Full query for a specific player with an additional parameter
-                cmd.CommandText = commandPart1 + commandPart2 + commandPart3;
-                cmd.Parameters.Add(new SQLiteParameter("@PlayerId", player.Id));
-            }
-            else
-            {
-                // Basic query that counts all players
-                cmd.CommandText = commandPart1 + commandPart3;
-            }
-            // Parameter for both cases
-            cmd.Parameters.Add(new SQLiteParameter("@Count", count));
-
-            using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                listOfQuestions.Add(MapToEntity(reader));
+                using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    listOfQuestions.Add(MapToEntity(reader));
+                }
             }
 
             // Get all answer options and pack them together with each question

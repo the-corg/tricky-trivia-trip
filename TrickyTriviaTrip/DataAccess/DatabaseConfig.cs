@@ -24,7 +24,8 @@ namespace TrickyTriviaTrip.DataAccess
 
         public string FullDatabasePath => Path.Combine(_databaseFolderPath, _databaseFileName);
 
-        public string ConnectionString => $"Data Source={FullDatabasePath};{Settings.Default.SqliteVersion}";
+        // Connection string documentation: https://system.data.sqlite.org/home/doc/tip/System.Data.SQLite/SQLiteConnectionStringBuilder.cs
+        public string ConnectionString => $"Data Source={FullDatabasePath};Version=3;Foreign Keys=true;Cache Size=-10000;Default Timeout=30;BusyTimeout=15000;Synchronous=Off;";
 
     }
 }
